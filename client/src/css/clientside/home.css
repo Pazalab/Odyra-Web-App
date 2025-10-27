@@ -90,3 +90,235 @@
     line-height: 1.6;
     color:var(--faded);
 }
+
+.services-row{
+     margin: 40px 40px 0px 40px;
+     display: grid;
+     grid-template-columns: repeat(4, 1fr);
+     gap: 30px;
+}
+
+.service-moja{
+     background: white;
+     border-radius: 12px;
+     -webkit-border-radius: 12px;
+     -moz-border-radius: 12px;
+     -ms-border-radius: 12px;
+     -o-border-radius: 12px;
+}
+.service-moja img{
+     height: 350px;
+     border-radius: 12px 12px 0px 0px;
+     -webkit-border-radius: 12px 12px 0px 0px;
+     -moz-border-radius: 12px 12px 0px 0px;
+     -ms-border-radius: 12px 12px 0px 0px;
+     -o-border-radius: 12px 12px 0px 0px;
+}
+.service-moja-texts{
+     padding: 20px;
+}
+.service-moja-texts h3{
+     font-size: 20px;
+     font-weight: 500;
+     margin-bottom: 5px;
+}
+.service-moja-texts p{
+     font-size: 16px;
+     line-height: 1.5;
+     color: rgb(80, 80, 80);
+}
+
+.about-section{
+     background: var(--bg-dark);
+     overflow-x: hidden;
+}
+
+
+.about-banner-image{
+      display: flex;
+      justify-content: center;
+}
+.about-banner-image img{
+     border-radius: 20px;
+     -webkit-border-radius: 20px;
+     -moz-border-radius: 20px;
+     -ms-border-radius: 20px;
+     -o-border-radius: 20px;
+      width: 75%;
+      height: 650px;
+}
+
+.about-section-texts{
+     background: white;
+     padding: 100px 0;
+}
+.about-section-content{
+      width: 1060px;
+      margin: auto;
+}
+.about-section-content h2{
+     font-size: 70px;
+     margin-bottom: 20px;
+}
+.about-section-content h2 span{
+     color: var(--main-color);
+}
+
+.about-section-content p{
+     font-size: 20px;
+     color: rgb(50, 50, 50);
+     line-height: 1.5;
+}
+
+.about-section-features{
+     display: grid;
+     grid-template-columns:repeat(3, 1fr);
+     gap: 30px;
+     margin-top: 40px;
+}
+
+.about-feature-moja{
+     background: rgba(248, 247, 245, 0.31);
+     padding: 25px;
+     border-radius: 10px;
+     -webkit-border-radius: 10px;
+     -moz-border-radius: 10px;
+     -ms-border-radius: 10px;
+     -o-border-radius: 10px;
+     transition: all 0.6s ease;
+     -webkit-transition: all 0.6s ease;
+     -moz-transition: all 0.6s ease;
+     -ms-transition: all 0.6s ease;
+     -o-transition: all 0.6s ease;
+}
+
+.about-feature-moja:hover{
+     background: var(--bg-dark);
+     transform: scale(1.01);
+     -webkit-transform: scale(1.01);
+     -moz-transform: scale(1.01);
+     -ms-transform: scale(1.01);
+     -o-transform: scale(1.01);
+}
+.about-feature-moja img{
+      width: 45px;
+      height: 45px;
+}
+
+.about-feature-moja:hover img{
+      filter: invert(17%) sepia(78%) saturate(1835%) hue-rotate(348deg) brightness(88%) contrast(85%);
+}
+.about-feature-moja h3{
+     margin: 10px 0;
+     font-weight: 500;
+     line-height: 1.5;
+}
+.about-feature-moja p{
+     font-size: 16px;
+     color: rgb(80, 80, 80);
+}
+
+.about-body-content{
+      padding: 100px 0;
+      background: var(--main-color);
+}
+
+.about-intro{
+      width: 900px;
+      margin: auto;
+      text-align: center;
+}
+.about-intro h3{
+       color: gainsboro;
+       font-weight: 400;
+}
+.about-intro h2{
+     font-size: 50px;
+     color: whitesmoke;
+     margin: 10px 0
+}
+.about-intro p{
+     width: 80%;
+     margin: 10px auto;
+     font-size: 20px;
+     color: gainsboro;
+     line-height: 1.5;
+}
+
+.about-body-texts a{
+      width: 200px;
+      display: flex;
+      height: 50px;
+      align-items: center;
+      justify-content: center;
+      background: white;
+      margin-top: 30px;
+      border-radius: 6px;
+      -webkit-border-radius: 6px;
+      -moz-border-radius: 6px;
+      -ms-border-radius: 6px;
+      -o-border-radius: 6px;
+      color: black;
+      font-size: 15px;
+}
+
+.about-body-row{
+      display: grid;
+      grid-template-columns: 1.25fr 1fr;
+      gap: 70px;
+      margin-top: 50px;
+      align-items: center;
+}
+
+.about-body-texts p{
+      color: gainsboro;
+      font-size: 20px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+}
+.about-body-image img{
+     max-height: 700px;
+     border-radius: 20px;
+     -webkit-border-radius: 20px;
+     -moz-border-radius: 20px;
+     -ms-border-radius: 20px;
+     -o-border-radius: 20px;
+}
+
+.call-to-action{
+     padding: 120px;
+     background: linear-gradient(to right, rgb(250, 249, 248), rgb(250, 249, 248),  rgba(250, 249, 248, 0.2), transparent), url("../../assets/cta.jpg") no-repeat;
+     background-size: cover;
+     background-position: center;
+}
+
+.call-to-action-texts{
+     width: 600px;
+}
+.call-to-action-texts h2{
+       font-size: 70px;
+       margin-bottom: 20px;
+}
+
+.call-to-action-texts p{
+       font-size: 18px;
+       line-height: 1.5;
+       width: 90%;
+       margin-bottom: 20px;
+}
+
+.call-to-action-texts a{
+      width: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--main-color);
+      height: 50px;
+      border-radius: 6px;;
+      -webkit-border-radius: 6px;
+      -moz-border-radius: 6px;
+      -ms-border-radius: 6px;
+      -o-border-radius: 6px;
+      color: white;
+
+}
