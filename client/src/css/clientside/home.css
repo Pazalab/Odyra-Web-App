@@ -286,7 +286,7 @@
 }
 
 .call-to-action{
-     padding: 120px;
+     padding: 120px 0px;
      background: linear-gradient(to right, rgb(250, 249, 248), rgb(250, 249, 248),  rgba(250, 249, 248, 0.2), transparent), url("../../assets/cta.jpg") no-repeat;
      background-size: cover;
      background-position: center;
@@ -294,6 +294,7 @@
 
 .call-to-action-texts{
      width: 600px;
+     margin-left: 5%;
 }
 .call-to-action-texts h2{
        font-size: 70px;
@@ -320,5 +321,72 @@
       -ms-border-radius: 6px;
       -o-border-radius: 6px;
       color: white;
+}
 
+
+
+@media(max-width: 1090px){
+      .hero-texts h1,
+      .services-intro h2,
+      .about-section-content h2,
+      .call-to-action-texts h2{
+            font-size: 55px;
+      }
+      .hero-texts p,
+      .about-section-content p{
+            font-size: 18px;
+      }
+      .services-intro,
+      .about-section-content,
+      .about-intro,
+      .about-intro p{
+            width: 100%;
+      }
+      .services-row{
+            grid-template-columns: 1fr 1fr;
+      }
+      .about-section-features{
+            grid-template-columns: 1fr;
+      }
+}
+
+@media(max-width: 768px){
+      .hero-texts{
+             grid-template-columns: 1fr;
+             gap: 10px;
+      }
+      .hero-texts h1,
+      .services-intro h2,
+      .about-section-content h2,
+      .about-intro h2,
+      .call-to-action-texts h2{
+            font-size: 45px;
+      }
+      .services-row,
+      .about-body-row{
+            grid-template-columns: 1fr;
+      }
+      .about-body-row{
+           gap: 20px
+      }
+      .call-to-action{
+          background: linear-gradient(to right, rgb(250, 249, 248), rgb(250, 249, 248, 0.65)), url("../../assets/cta.jpg") no-repeat;
+         background-size: cover;
+          background-position: center;
+      }
+      .call-to-action-texts{
+            width: 90%;
+      }
+}
+
+@media(max-width: 540px){
+        .hero-texts h1,
+        .services-intro h2,
+        .about-intro h2,
+        .call-to-action-texts h2{
+             font-size: 40px;
+        }
+        .call-to-action-texts p{
+           width: 100%
+        }
 }
