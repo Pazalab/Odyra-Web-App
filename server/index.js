@@ -4,6 +4,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import connectToDatabase from "./config/dbConfig.js";
 import ClientRoutes from "./routes/clientRoutes.js"
+import { errorHandler, notFound } from "./middlewares/errorMiddleware.js";
 
 //initialize express app
 const app = express();
@@ -13,12 +14,12 @@ app.use(express.urlencoded({ extended: true }));
 //initialize env variables
 dotenv.config();
 
-const port = process.env.PORT || 9000;
+const port = process.env.PORT || 4000;
 
 //set up cookies
-app.use(cookieParser);
+app.use(cookieParser());
 
-//set up cors
+// //set up cors
 app.use(cors({
        credentials: true,
        origin: true
@@ -27,8 +28,10 @@ app.use(cors({
 //Routes
 app.use("/api/v1/client", ClientRoutes);
 
-//Error handling middleware
 
+//Error handling middleware
+app.use(notFound);
+app.use(errorHandler);
 
 app.listen(port, () => console.log(`Server listening at port ${port}`));
 

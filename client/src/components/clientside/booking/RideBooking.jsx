@@ -11,6 +11,8 @@ import paypal from "../../../assets/paypal.png"
 import { APIProvider, Map, useMapsLibrary, useMap }  from "@vis.gl/react-google-maps";
 import usePlacesAutocomplete from "use-places-autocomplete";
 import { useForm } from 'react-hook-form';
+import { useRecordBookingMutation } from "../../../redux/slices/client/clientApiSlice";
+import BtnSpinner from "../common/BtnSpinner";
 
 const RideBooking = () => {
     const [ waitingCharge, setWaitingCharge ] = useState(false);
@@ -22,14 +24,16 @@ const RideBooking = () => {
 
     const position = { lat: -31.9514, lng: 115.8617 }
     const [ chosenLeg, setChosenLeg ] = useState();
-//     console.log(chosenLeg)
+    // console.log(chosenLeg)
+    const [ SubmitBooking , { isLoading } ] = useRecordBookingMutation();
 
-    const handleBookingSubmit = (data) => {
+    const handleBookingSubmit = async(data) => {
            if(payment === ""){
                 setPaymentChoiceErr("Please select a payment option");
                 return;
            }
            const formData = {
+                 rideType: "Point-to-Point",
                  pickupAddress: chosenLeg ? chosenLeg.start_address : "",
                  dropoffAddress: chosenLeg ? chosenLeg.end_address : "",
                  waitingCharge: chosenLeg && waitingCharge ? ((parseFloat(chosenLeg.distance.text.split(" ")[0])*1.85)*0.2).toFixed(2) : 0,
@@ -39,7 +43,13 @@ const RideBooking = () => {
                  paymentMethod: payment
            }
 
-           console.log(formData)
+           try {
+                const res = await SubmitBooking(formData).unwrap();
+
+                console.log(res)
+           } catch (error) {
+                 console.log(error)
+           }
     }
 
     const handlePaymentChoiceChange = (val) => {
@@ -230,7 +240,7 @@ const RideBooking = () => {
                                                 </div>
 
                                                 <div className="booking-form-btn">
-                                                           <button type="submit">Book now</button>
+                                                           <button type="submit">{ isLoading ? <BtnSpinner /> : "Book Now"}</button>
                                                 </div>
                                         </div>
                             </div>
