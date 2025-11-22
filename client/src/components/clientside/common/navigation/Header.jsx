@@ -24,7 +24,7 @@ const Header = () => {
                               </nav>
                               <div className="header-actions">
                                          <div className="action-links">
-                                                 <Link to={"/"}>Sign in</Link>
+                                                 <Link to={"/auth/login"}>Sign in</Link>
                                                   <Link to={"/new-booking"}>Book a ride</Link>
                                          </div>
                                         <span className="menu-btn" onClick={() => setSidebarStatus(true)}><CgMenuRight /></span>

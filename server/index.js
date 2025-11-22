@@ -3,7 +3,8 @@ import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import connectToDatabase from "./config/dbConfig.js";
-import ClientRoutes from "./routes/clientRoutes.js"
+import ClientRoutes from "./routes/clientRoutes.js";
+import AdminRoutes from "./routes/adminRoutes.js"
 import { errorHandler, notFound } from "./middlewares/errorMiddleware.js";
 
 //initialize express app
@@ -27,7 +28,7 @@ app.use(cors({
 
 //Routes
 app.use("/api/v1/client", ClientRoutes);
-
+app.use("/api/v1/admin", AdminRoutes);
 
 //Error handling middleware
 app.use(notFound);
