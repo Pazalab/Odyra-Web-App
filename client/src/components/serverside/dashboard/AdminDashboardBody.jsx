@@ -2,6 +2,7 @@ import DashboardNotification from "../common/nofitications/DashboardNotification
 import DashboardSidebar from "../common/DashboardSidebar"
 import Topbar from "../common/Topbar"
 import AdminSummary from "./AdminSummary"
+import RecentBookings from "./RecentBookings"
 
 
 const AdminDashboardBody = () => {
@@ -12,6 +13,7 @@ const AdminDashboardBody = () => {
              <div className="dashboard-wrapper">
                         <Topbar />
                         <AdminSummary />
+                        <RecentBookings />
              </div>
     </div>
   )

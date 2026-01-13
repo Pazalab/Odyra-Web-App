@@ -46,7 +46,7 @@ export const LoginUser = asyncHandler(async(req, res) => {
 
       if(user && (await user.matchPasswords(password))){
              generateAuthTokenForAdmin(res, user._id);
-             res.status(201).json({
+             res.status(200).json({
                     message: "Login successful",
                     role: user.role.toLowerCase(),
                     name: user.name,

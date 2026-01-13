@@ -58,6 +58,16 @@ textarea{
     -o-border-radius:3px;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+  appearance: textfield; 
+}
 
 .inner-row{
      width: 1275px;
@@ -362,6 +372,87 @@ header{
     animation: rotation 1s linear infinite;
 }
 
+.data-loader {
+      border-radius: 50%;
+      position: relative;
+      animation: rotate 1s linear infinite
+}
+.data-loader.big{
+     width: 60px;
+     height: 60px;
+}
+.data-loader.small{
+      width: 20px;
+      height: 20px;
+}
+.data-loader::before {
+      content: "";
+      box-sizing: border-box;
+      position: absolute;
+      inset: 0px;
+      border-radius: 50%;
+      border: 2px solid var(--main-color);
+      animation: prixClipFix 2s linear infinite ;
+ }
+
+@keyframes rotate {
+     100%   {transform: rotate(360deg)}
+}
+
+@keyframes prixClipFix {
+     0%   {clip-path:polygon(50% 50%,0 0,0 0,0 0,0 0,0 0)}
+     25%  {clip-path:polygon(50% 50%,0 0,100% 0,100% 0,100% 0,100% 0)}
+     50%  {clip-path:polygon(50% 50%,0 0,100% 0,100% 100%,100% 100%,100% 100%)}
+     75%  {clip-path:polygon(50% 50%,0 0,100% 0,100% 100%,0 100%,0 100%)}
+     100% {clip-path:polygon(50% 50%,0 0,100% 0,100% 100%,0 100%,0 0)}
+}
+
+
+
+
+/* Utilities */
+.box-profile{
+      width: 50px;
+      height: 50px;
+      border-radius: 6px;
+      -webkit-border-radius: 6px;
+      -moz-border-radius: 6px;
+      -ms-border-radius: 6px;
+      -o-border-radius: 6px;
+}
+
+
+.recharts-default-tooltip{
+      border: none !important;
+      box-shadow: 0px 0px 2px -1px rgb(179, 208, 197);
+      border-radius: 10px;
+      -webkit-border-radius: 10px;
+      -moz-border-radius: 10px;
+      -ms-border-radius: 10px;
+      -o-border-radius: 10px;
+}
+.recharts-tooltip-label{
+     font-size: 14px;
+}
+.recharts-tooltip-item-list li{
+     font-size: 13px;
+     padding: 0 !important;
+}
+.recharts-legend-item{
+      display: flex;
+      align-items: center !important;
+      margin-right: 0 !important;
+}
+.recharts-legend-item svg{
+     border-radius: 10px;
+     -webkit-border-radius: 10px;
+     -moz-border-radius: 10px;
+     -ms-border-radius: 10px;
+     -o-border-radius: 10px;
+}
+.recharts-legend-item-text{
+       font-size: 14px;
+}
 @keyframes rotation {
      0% {
           transform: rotate(0deg);
@@ -373,7 +464,7 @@ header{
 
 
 
-@media(max-width: 1290px){
+@media(max-width: 1300px){
       .inner-row{
            width: 90%;
       }

@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
 
 const bookingsSchema = mongoose.Schema({
+       rideID: { type: String, },
        rideType: {
              type: String,
-             enum: [ "Airport Transfer", "Point-to-Point", "Tour", "Corporate"],
+             enum: [ "Airport Transfer", "Point to Point", "By the Hour",],
              required: true
        },
        customer: {
@@ -14,13 +15,14 @@ const bookingsSchema = mongoose.Schema({
        },
        rideStatus: {
              type: String,
-             enum: ["requested", "accepted", "arrived", "in-progress", "completed", "canceled"],
+             enum: ["requested", "accepted", "arrived", "in-progress", "completed", "canceled", "paid"],
              default: "requested"
        },
        cancellationReason: String,
        pickup: {
             address: { type: String, required: true },
-            timeOfPickup: Date
+            timeOfPickup: Date,
+            scheduledTimeofPickup: String
        },
        dropoff: {
              address: { type: String, required: true},
@@ -29,7 +31,7 @@ const bookingsSchema = mongoose.Schema({
        estimatedRideDuration: { type: String, required: true },
        passengers: { type: String, required: true },
        luggageCount: { type: String, required: true },
-       pricing: {
+       rideCost: {
               rideFare: Number,
               taxes: Number,
               waitingFee: Number,
@@ -40,9 +42,8 @@ const bookingsSchema = mongoose.Schema({
                     enum: [ "paid", "pending", "canceled"],
                     default: "pending"
               },
-              transactionId: String,
-              paymentMethod: String
        },
+       stripeSessionId: String
 }, { timestamps: true });
 
 const Booking = mongoose.model("Booking", bookingsSchema);

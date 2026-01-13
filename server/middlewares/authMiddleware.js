@@ -19,3 +19,21 @@ export const protect = asyncHandler(async(req, res, next) => {
            throw new Error("Not authorized. No present token")
       }
 })
+
+export const customerProtect = asyncHandler(async(req, res, next) => {
+       const token = req.cookies.cjwt;
+
+      if(token){
+           try {
+                 const decoded = jwt.verify(token, process.env.JWT_SECRET);
+                 req.user = await User.findById(decoded.userId).select("-password");
+                 next();
+           } catch (error) {
+                res.status(401);
+                throw new Error("Not authorized. Invalid token.")
+           }
+      }else{
+           res.status(403);
+           throw new Error("Not authorized. No present token")
+      }
+})

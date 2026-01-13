@@ -6,10 +6,12 @@ import connectToDatabase from "./config/dbConfig.js";
 import ClientRoutes from "./routes/clientRoutes.js";
 import AdminRoutes from "./routes/adminRoutes.js"
 import { errorHandler, notFound } from "./middlewares/errorMiddleware.js";
+import { webhookSort } from "./middlewares/webhookMiddleware.js";
 
 //initialize express app
 const app = express();
-app.use(express.json());
+
+app.use(webhookSort);
 app.use(express.urlencoded({ extended: true }));
 
 //initialize env variables

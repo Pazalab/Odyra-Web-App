@@ -3,15 +3,15 @@ import { LiaUserClockSolid } from "react-icons/lia";
 import { useEffect, useState } from "react";
 import { BsFillLuggageFill } from "react-icons/bs";
 import { IoPeopleOutline } from "react-icons/io5";
-import { GiTakeMyMoney } from "react-icons/gi";
+// import { GiTakeMyMoney } from "react-icons/gi";
 import visa from "../../../assets/visa.png"
 import mastercard from "../../../assets/mastercard.png"
-import gpay from "../../../assets/google-pay.png"
-import paypal from "../../../assets/paypal.png"
+// import gpay from "../../../assets/google-pay.png"
+// import paypal from "../../../assets/paypal.png"
 import { APIProvider, Map, useMapsLibrary, useMap }  from "@vis.gl/react-google-maps";
 import usePlacesAutocomplete from "use-places-autocomplete";
 import { useForm } from 'react-hook-form';
-import { useRecordBookingMutation } from "../../../redux/slices/client/clientApiSlice";
+import { useInitiatePaymentMutation } from "../../../redux/slices/client/clientApiSlice";
 import BtnSpinner from "../common/BtnSpinner";
 
 const RideBooking = () => {
@@ -24,8 +24,7 @@ const RideBooking = () => {
 
     const position = { lat: -31.9514, lng: 115.8617 }
     const [ chosenLeg, setChosenLeg ] = useState();
-    // console.log(chosenLeg)
-    const [ SubmitBooking , { isLoading } ] = useRecordBookingMutation();
+    const [ InitiateStripe, { isLoading }] = useInitiatePaymentMutation();
 
     const handleBookingSubmit = async(data) => {
            if(payment === ""){
@@ -33,20 +32,20 @@ const RideBooking = () => {
                 return;
            }
            const formData = {
-                 rideType: "Point-to-Point",
+                 rideType: "Point to Point",
                  pickupAddress: chosenLeg ? chosenLeg.start_address : "",
                  dropoffAddress: chosenLeg ? chosenLeg.end_address : "",
-                 waitingCharge: chosenLeg && waitingCharge ? ((parseFloat(chosenLeg.distance.text.split(" ")[0])*1.85)*0.2).toFixed(2) : 0,
+                 waitingCharge: chosenLeg && waitingCharge ? ((Number(chosenLeg.distance.text.split(" ")[0])*1.85)*0.2).toFixed(2) : 0,
                  rideDuration: chosenLeg ? chosenLeg.duration.text : "",
-                 rideCost: chosenLeg ? (parseFloat(chosenLeg.distance.text.split(" ")[0])*1.85).toFixed(2) : 0,
+                 rideCost: chosenLeg ? (Number(chosenLeg.distance.text.split(" ")[0])*1.85).toFixed(2) : 0,
                  ...data,
                  paymentMethod: payment
            }
 
            try {
-                const res = await SubmitBooking(formData).unwrap();
+                const res = await InitiateStripe(formData).unwrap();
 
-                console.log(res)
+                window.location.href = res.url;
            } catch (error) {
                  console.log(error)
            }
@@ -74,7 +73,7 @@ const RideBooking = () => {
                                                                 <div className="booking-input">
                                                                         <span><LiaUserClockSolid /></span>
                                                                         <div className="input-row">
-                                                                                    <label htmlFor="pickup">Date of journey</label>
+                                                                                    <label htmlFor="pickup">Date and Time of journey</label>
                                                                                     <input {...register("pickupDateTime", { required: "Please enter time and date of pickup"})} type="datetime-local" placeholder="Enter location" className="input-row-control" />
                                                                         </div>
                                                                 </div>
@@ -127,17 +126,17 @@ const RideBooking = () => {
                                                 </div>
                                                 <h4>Choose payment method:</h4>
                                                 <div className="payment-blocks">
-                                                            <div className={ payment === "Cash" ? "payment-block active" : "payment-block"} onClick={() => handlePaymentChoiceChange("Cash")}>
+                                                            {/* <div className={ payment === "Cash" ? "payment-block active" : "payment-block"} onClick={() => handlePaymentChoiceChange("Cash")}>
                                                                     <span><GiTakeMyMoney /></span>
                                                                     <h5>Cash</h5>
-                                                            </div>
+                                                            </div> */}
                                                             <div className={ payment === "Card" ? "payment-block active" : "payment-block"} onClick={() => handlePaymentChoiceChange("Card")}>
                                                                     <div className="images-block">
                                                                             <img src={visa} alt="" />
                                                                             <img src={mastercard} alt="" />
                                                                     </div>
                                                             </div>
-                                                            <div className={ payment === "Google Pay" ? "payment-block active" : "payment-block"} onClick={() => handlePaymentChoiceChange("Google Pay")}>
+                                                            {/* <div className={ payment === "Google Pay" ? "payment-block active" : "payment-block"} onClick={() => handlePaymentChoiceChange("Google Pay")}>
                                                                     <div className="images-block">
                                                                                 <img src={gpay} alt="" />
                                                                     </div>
@@ -146,7 +145,7 @@ const RideBooking = () => {
                                                                     <div className="images-block">
                                                                                 <img src={paypal} alt="" />
                                                                     </div>
-                                                            </div>
+                                                            </div> */}
                                                 </div>
                                                 { paymentChoiceErr && <span className="error">{paymentChoiceErr}</span>}
                                         </div>
@@ -221,22 +220,24 @@ const RideBooking = () => {
                                                            <h3>Cost</h3>
                                                            <div className="ride-cost-block">
                                                                     <p>Ride</p>
-                                                                    <h4>{chosenLeg ? `${(parseFloat(chosenLeg.distance.text.split(" ")[0])*1.85).toFixed(2)}`: 0 } AUD $</h4>
+                                                                    <h4>{chosenLeg ? `${(Number(chosenLeg.distance.text.split(" ")[0])*1.85).toFixed(2)}`: 0 } AUD $</h4>
                                                            </div>
                                                            <div className="ride-cost-block">
                                                                      <p>Wait time</p>
-                                                                     <h4>{waitingCharge && chosenLeg ? `${((parseFloat(chosenLeg.distance.text.split(" ")[0])*1.85) * 0.2).toFixed(2)}` : 0} AUD $</h4>
+                                                                     <h4>{waitingCharge && chosenLeg ? `${ ((Number(chosenLeg.distance.text.split(" ")[0])*1.85) * 0.2).toFixed(2)}` : 0} AUD $</h4>
                                                            </div>
                                                 </div>
+                                                <h4>
+
+                                                </h4>
                                                 <div className="total-row">
                                                            <h4>Total</h4>
-                                                           <h5>{
-                                                                   chosenLeg ? <>
-                                                                         { parseFloat((parseFloat(chosenLeg.distance.text.split(" ")[0])*1.85).toFixed(2))+(
-                                                                             waitingCharge  ?   parseFloat(((parseFloat(chosenLeg.distance.text.split(" ")[0])*1.85)*0.2).toFixed(2)) : 0
-                                                                         )}
-                                                                   </> : 0
-                                                                } AUD $</h5>
+                                                           
+                                                           <h5>
+                                                                 { chosenLeg && waitingCharge ? 
+                                                                      (Number((Number(chosenLeg.distance.text.split(" ")[0])*1.85).toFixed(2)) + Number(((Number(chosenLeg.distance.text.split(" ")[0])*1.85)*0.2).toFixed(2))).toFixed(2) :
+                                                                     chosenLeg ? (Number(chosenLeg.distance.text.split(" ")[0])*1.85).toFixed(2) : "0"
+                                                       } AUD $</h5>
                                                 </div>
 
                                                 <div className="booking-form-btn">
