@@ -63,8 +63,8 @@ const Sidebar = () => {
 
                                 <div className="sidebar-extra">
                                           <div className="action-links">
-                                                 <Link to={"/"}>Sign in</Link>
-                                                  <Link to={"/"}>Book a ride</Link>
+                                                 <Link to={"/"} className="login-link">Sign in</Link>
+                                                  <Link to={"/"} className="booking-link">Book a ride</Link>
                                          </div>
                                 </div>
                        </div>

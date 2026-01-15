@@ -11,12 +11,15 @@ import visa from "../../../assets/visa.png"
 import mastercard from "../../../assets/mastercard.png"
 import { useInitiatePaymentMutation } from "../../../redux/slices/client/clientApiSlice";
 import { TfiTimer } from "react-icons/tfi";
+import { useSelector, useDispatch } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
+import { setGeneralNotification } from "../../../redux/slices/util/utilActionsSlice";
 
 const BytheHour = () => {
    const [ waitingCharge, setWaitingCharge ] = useState(false);
      const [ pickupPoint, setPickupPoint ] = useState("");
      const [ dropoffPoint, setDropoffPoint ] = useState("");
-     const { register, handleSubmit, formState: { errors }, watch} = useForm();
+     const { register, handleSubmit, formState: { errors }, watch, setValue } = useForm();
      const [ payment, setPayment ] = useState("");
      const [ paymentChoiceErr, setPaymentChoiceErr ] = useState("")
          
@@ -24,12 +27,27 @@ const BytheHour = () => {
     const [ chosenLeg, setChosenLeg ] = useState();
     const selectedHours = watch("durationHours");
 
-    console.log(selectedHours)
+    const { profile } = useSelector(state => state.client);
+    const { pathname } = useLocation();
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
  const handlePaymentChoiceChange = (val) => {
       setPaymentChoiceErr("");
       setPayment(val)
  }
+
+    const prefillLoggedInUser = () => {
+         setValue("customerName", profile.name);
+         setValue("customerEmail", profile.email);
+         setValue("customerPhone", profile.phone)
+   }
+
+   const redirectToLogin = () => {
+        navigate("/auth/login", {
+                state: { from: pathname}
+        })
+   }
 
  const [ InitiateStripe, { isLoading }] = useInitiatePaymentMutation();
  const handleBytheHourBooking = async(data) => {
@@ -53,7 +71,7 @@ const BytheHour = () => {
 
            window.location.href = res.url;
        } catch (error) {
-             console.log(error)
+             dispatch(setGeneralNotification({ status: true, message: error.data.message, type: "error"}))
        }
  }
   return (
@@ -159,7 +177,9 @@ const BytheHour = () => {
                                       <div className="customer-wrap">
                                                 <div className="wrap-head">
                                                         <h3>Personal Details</h3>
-                                                        <h5>Already a customer? Sign in</h5>
+                                                        { profile ? <h5 className="existing" onClick={prefillLoggedInUser}>Use your current details</h5> :
+                                                                 <h5 onClick={redirectToLogin}>Already a customer? Sign in</h5>
+                                                        }
                                                 </div>
                                                 <div className="booking-form-row">
                                                             <div className="booking-input">

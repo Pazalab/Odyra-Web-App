@@ -14,11 +14,29 @@ export const adminApiSlice = apiSlice.injectEndpoints({
                         url: "admin/logout",
                         method: "POST",
                    })
-              })
+              }),
+             
+           //get all bookings
+            getAllBookings: builder.query({
+                   query: () => ({
+                         url: "/admin/all-bookings",
+                         method: "GET"
+                   })
+            }),
+
+            //Get all customers
+            getAllCustomers: builder.query({
+                  query: () => ({
+                        url: "/admin/all-customers",
+                        method: "GET"
+                  })
+            })
        })
 })
 
 export const {
      useLoginAdminMutation,
-     useLogoutAdminMutation
+     useLogoutAdminMutation,
+     useGetAllBookingsQuery,
+     useGetAllCustomersQuery
 } = adminApiSlice;

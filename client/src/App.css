@@ -14,6 +14,7 @@
      --bg-dark: rgba(255, 245, 243, 0.499);
      --bg-faded: rgba(240, 234, 229, 0.3);
      --line: rgb(245, 232, 229);
+     --main-filter: invert(17%) sepia(78%) saturate(1835%) hue-rotate(348deg) brightness(88%) contrast(85%);
 }
 
 body{
@@ -153,7 +154,7 @@ header{
      align-items: center;
      flex-wrap: wrap;
 }
-.action-links a{
+.action-links .login-link{
      font-size: 15px;
      color: rgb(50, 50, 50);
      border-radius: 7px;
@@ -163,16 +164,17 @@ header{
      -ms-border-radius: 7px;
      -o-border-radius: 7px;
 }
-.action-links  a:first-child:hover{
+.action-links  .login-link:hover{
       font-weight: 500;
       color: var(--main-color);
 }
-.action-links a:last-child{
+.action-links .booking-link{
       width: 150px;
       height: 45px;
       background: var(--main-color);
       color: white;
       display: flex;
+      font-size: 14px;
       align-items: center;
       justify-content: center;
       border-radius: 6px;
@@ -197,6 +199,109 @@ header{
      -o-border-radius: 8px;
      display: none;
 }
+.action-profile{
+      position: relative;
+}
+.action-profile-image{
+       width: 45px;
+       height: 45px;
+       display: block;
+       border: 3px solid var(--line);
+       border-radius: 45px;
+       -webkit-border-radius: 45px;
+       -moz-border-radius: 45px;
+       -ms-border-radius: 45px;
+       -o-border-radius: 45px;
+       cursor: pointer;
+}
+.action-profile-image img{
+      border-radius: 50px;
+      -webkit-border-radius: 50px;
+      -moz-border-radius: 50px;
+      -ms-border-radius: 50px;
+      -o-border-radius: 50px;
+}
+
+.action-profile-box{
+     position: absolute;
+     top: 45px;
+     width: 200px;
+     right: 0;
+     z-index: 99;
+     padding: 20px;
+     border-radius: 10px;
+     -webkit-border-radius: 10px;
+     -moz-border-radius: 10px;
+     -ms-border-radius: 10px;
+     -o-border-radius: 10px;
+     background:rgb(254, 249, 247);
+     transform-origin: top;
+     transform: scaleY(0);
+     -webkit-transform: scaleY(0);
+     -moz-transform: scaleY(0);
+     -ms-transform: scaleY(0);
+     -o-transform: scaleY(0);
+     transition: all 0.5s ease-in-out;
+     -webkit-transition: all 0.5s ease-in-out;
+     -moz-transition: all 0.5s ease-in-out;
+     -ms-transition: all 0.5s ease-in-out;
+     -o-transition: all 0.5s ease-in-out;
+}
+.action-profile-box.active{
+     transform: scaleY(1);
+     -webkit-transform: scaleY(1);
+     -moz-transform: scaleY(1);
+     -ms-transform: scaleY(1);
+     -o-transform: scaleY(1);
+}
+.action-profile-box h3{
+     font-size: 16px;
+     color: rgb(50, 50, 50);
+     font-weight: 500;
+     padding-bottom: 5px;
+     margin-bottom: 10px;
+     border-bottom: 1px solid var(--line);
+}
+.action-profile-box ul{
+     display: flex;
+     gap: 10px;
+     flex-direction: column;
+     margin-bottom: 10px;
+     padding-bottom: 10px;
+     border-bottom: 1px solid var(--line);
+}
+.action-profile-box ul li a{
+     font-size: 14px;
+     font-weight: 430;
+     color: rgb(50, 50, 50);
+     transition: all 0.7s ease;
+     -webkit-transition: all 0.7s ease;
+     -moz-transition: all 0.7s ease;
+     -ms-transition: all 0.7s ease;
+     -o-transition: all 0.7s ease;
+}
+.action-profile-box ul li a:hover{
+      font-weight: 500;
+      color:var(--main-color);;
+}
+.action-profile-box button{
+     background: none;
+     width: 100%;
+     font-weight: 500;
+     display: flex;
+     color: rgb(50, 50, 50);
+     cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
 
 .sidebar-section{
      position: fixed;
@@ -282,8 +387,64 @@ header{
 }
 
 
-
-
+.general-notification-bar{
+     width: 100%;
+     height: 45px;
+     background: #1d0a00;
+     position: relative;
+     padding: 0 50px;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     max-height: 0;
+     opacity: 0;
+     transition: all 0.6s ease;
+     -webkit-transition: all 0.6s ease;
+     -moz-transition: all 0.6s ease;
+     -ms-transition: all 0.6s ease;
+     -o-transition: all 0.6s ease;
+}
+.general-notification-bar.active{
+     max-height: 45px;
+     opacity: 1;
+}
+.general-notification-bar p{
+      color: white;
+      font-size: 13px;
+      font-weight: 300;
+      display: flex;
+      gap: 2px;
+}
+.general-notification-bar p span{
+     display: flex;
+     margin-top: 1.2px;
+}
+.general-notification-bar.success p span{
+     color: rgb(26, 157, 83);
+}
+.general-notification-bar.error p span{
+      color: red;
+}
+.notification-close{
+     position: absolute;
+     right: 30px;
+}
+.notification-close span{
+     display: flex;
+     width: 30px;
+     height: 30px;
+     background-color: #2b0f00;
+     color: whitesmoke;
+     border-radius: 30px;
+     -webkit-border-radius: 30px;
+     -moz-border-radius: 30px;
+     -ms-border-radius: 30px;
+     -o-border-radius: 30px;
+     align-items: center;
+     justify-content: center;
+     border: 1px solid rgba(83, 39, 3, 0.404);
+     cursor: pointer;
+}
 
 .footer-content{
      padding: 80px 0;
@@ -493,7 +654,7 @@ header{
 
 
 @media(max-width: 768px){
-       .header-actions .action-links{
+       .header-actions .booking-link{
               display: none;
        }
        .sidebar-content{

@@ -47,7 +47,7 @@ export const CreateNewRide = async(data) => {
                  luggageCount: bags,
                  rideCost: {
                         rideFare: Number(ride_cost)/100,
-                        waiting_fee: Number(waiting_fee)/100,
+                        waitingFee: Number(waiting_fee)/100,
                         totalFare: parseFloat(full_ride_cost),
                         paymentStatus: payment_status,
                  },

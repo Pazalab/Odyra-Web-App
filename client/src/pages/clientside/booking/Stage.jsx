@@ -1,5 +1,5 @@
 import logo from "../../../assets/logo.png"
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import DataLoader from "../../../components/clientside/common/spinners/DataLoader"
 import { useDispatch, useSelector } from "react-redux"
 import { CgDanger } from "react-icons/cg";
@@ -14,16 +14,17 @@ const Stage = () => {
   const navigate = useNavigate();
   const [ customerMessage, setCustomerMessage ] = useState("")
   const { data, isLoading } = useGetCustomerProfileQuery({ refetchOnMountOrArgChange: true })
+  const location = useLocation();
+  const redirectPath = location.state?.from || "/"
 
   useEffect(() => {
           if(data) {
-                console.log(data)
                 dispatch(setCustomerProfile({...data.customer}));
-                navigate("/")
+                navigate(redirectPath, { replace: true})
           }else{ 
                 setCustomerMessage("Could not fetch your account at the moment. Please try again later")
           }
-  }, [data, dispatch, navigate])
+  }, [data, dispatch, navigate, redirectPath])
   return (
     <div className="auth-wrapper">
             <div className="inner-row">
@@ -35,7 +36,7 @@ const Stage = () => {
                                      { isLoading ?  <DataLoader size={"big"} /> : <span><CgDanger /></span> }
                                       <div className="">
                                                 <h3>{clientInfo && clientInfo.message}</h3>
-                                                { isLoading && !data ? <p>{customerMessage}</p> : <p>{`Please wait ${clientInfo && clientInfo.name.split(" ")[0]}....redirecting shortly`}</p>}
+                                                { isLoading && !data ? <p>{customerMessage}</p> : <p>{`Please wait....redirecting shortly`}</p>}
                                       </div>
                                </div>
                      </div>

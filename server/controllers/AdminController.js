@@ -1,6 +1,7 @@
 import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
 import { generateAuthTokenForAdmin } from "../utils/tokens.js";
+import Booking from "../models/bookings.js";
 
 //Register user
 export const RegisterUser = asyncHandler(async(req, res) => {
@@ -67,4 +68,25 @@ export const LogoutUser = asyncHandler(async(req, res) => {
             expires: new Date(0)
        })
        res.status(200).json({ message: "You have logged out of your account."})
+})
+
+//Get all bookings
+export const GetAllBookings = asyncHandler(async(req, res) => {
+      try {
+            const bookings = await Booking.find({})
+            
+            res.status(200).json({ bookings })
+      } catch (error) {
+            res.status(500).json({ message: "Internal server error: bookings query"})
+      }
+})
+
+export const GetAllCustomers = asyncHandler(async(req, res) => {
+      try {
+            const customers = await User.find({ role: "Customer"})
+            
+            res.status(200).json({ customers })
+      } catch (error) {
+            res.status(500).json({ message: "Internal server error: bookings query"})
+      }
 })

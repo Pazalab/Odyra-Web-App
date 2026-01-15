@@ -506,6 +506,132 @@
       color: rgb(50, 50, 50)
 }
 
+.existing{
+      color: var(--main-color) !important;
+      cursor: pointer;
+}
+
+.booking-confirmation-wrap{
+      padding: 50px 0;
+      border-bottom: 1px solid var(--line);
+
+}
+
+.booking-confirmation-content{
+      display: flex;
+      justify-content: center;
+      min-height: 500px;
+}
+
+.booking-confirm-block,
+.booking-error-block{
+      width: 600px;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+}
+.booking-success img,
+.booking-error-block img{
+       width: 70px;
+       height: 70px;
+}
+
+.booking-error-block img{
+      filter: var(--main-filter);
+      -webkit-filter: var(--main-filter);
+}
+
+.verifying-booking{
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      gap: 30px;
+}
+.verifying-booking p{
+      font-size: 24px;
+      font-weight: 300;
+      color: rgb(100, 100, 100);
+}
+
+.booking-confirm-block h2{
+      font-size: 36px;
+      font-weight: 550;
+      text-align: center;
+      margin: 20px 0px 10px 0px;
+}
+.booking-confirm-block p{
+      font-size: 18px;
+      line-height: 1.5;
+      text-align: center;
+      color: rgb(100, 100, 100);
+}
+
+.booking-confirm-block p span{
+      color: var(--main-color);
+      font-weight: 400;
+}
+.booking-data-content{
+      background: rgba(248, 246, 245, 0.773);
+      padding: 20px;
+      margin-top: 20px;
+      border-radius: 8px;
+      -webkit-border-radius: 8px;
+      -moz-border-radius: 8px;
+      -ms-border-radius: 8px;
+      -o-border-radius: 8px;
+}
+.booking-data-item{
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+      gap: 20px;
+}
+
+.booking-data-item:last-child{
+      border-bottom: none;
+}
+.booking-data-item h3{
+      font-size: 16px;
+      font-weight: 500;
+      color: rgb(50, 50, 50);
+}
+
+.booking-data-item p{
+      font-size: 15px;
+      text-align: right;
+}
+
+.booking-data-btns{
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+      gap: 20px;
+}
+
+.booking-data-btns a{
+       height: 45px;
+       background: rgb(239, 238, 236);
+       padding: 0 30px;
+       border-radius: 6px;
+       -webkit-border-radius: 6px;
+       -moz-border-radius: 6px;
+       -ms-border-radius: 6px;
+       -o-border-radius: 6px;
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       font-size: 15px;
+       color: rgb(50, 50, 50);
+       font-weight: 400;
+}
+.booking-data-btns a:nth-child(1){
+      background: var(--main-color);
+      color: white;
+}
+
+
+
 
 
 @media(max-width: 1090px){
@@ -514,7 +640,9 @@
         }
 }
 @media(max-width: 768px){
-      .auth-form-body{
+      .auth-form-body,
+      .booking-confirm-block,
+.booking-error-block{
              width: 90%;
       }
       .booking-body-wrap{
@@ -523,5 +651,11 @@
       .booking-options ul{
               gap: 10px;
               flex-direction: column;
+      }
+      .booking-confirm-block h2{
+             font-size: 25px;
+      }
+      .booking-confirm-block p{
+             font-size: 15px;
       }
 }

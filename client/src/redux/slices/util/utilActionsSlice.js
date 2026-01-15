@@ -2,7 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
       dashNotification: { status: false, message: "", type: ""},
-      authNotification: { status: true, message: "", type: ""}
+      authNotification: { status: false, message: "", type: ""},
+      generalNotification: { status: false, message: "", type: ""}
 }
 
 const utilActionSlice = createSlice({
@@ -28,6 +29,15 @@ const utilActionSlice = createSlice({
                state.authNotification.status = false;
                state.authNotification.type = "";
           },
+          setGeneralNotification: (state, action) => {
+                state.generalNotification.status = action.payload.status;
+                state.generalNotification.message = action.payload.message;
+                state.generalNotification.type = action.payload.type;
+          },
+          clearGeneralNotification: (state) => {
+                state.generalNotification.status = false;
+                state.generalNotification.type = ""
+          }
       }
 })
 
@@ -36,6 +46,8 @@ export const {
     clearDashboardNotification,
     setAuthNotification,
     clearAuthNotification,
+    setGeneralNotification,
+    clearGeneralNotification
 } = utilActionSlice.actions
 
 export default utilActionSlice.reducer;

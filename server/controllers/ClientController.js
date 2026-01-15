@@ -10,7 +10,7 @@ dotenv.config()
 
 //Register Customer
 export const RegisterCustomer = asyncHandler(async(req, res) => {
-        const { name, email, password } = req.body;
+        const { name, email, password, phone } = req.body;
 
         const customerExists = await User.findOne({ email });
 
@@ -22,7 +22,7 @@ export const RegisterCustomer = asyncHandler(async(req, res) => {
        const default_photo = "https://files.pazalab.com/odyra/images/avatar.jpg";
        const role = "Customer";
 
-       const customer = await User.create({ name, email, password, role, profilePicture: default_photo })
+       const customer = await User.create({ name, email, password, role, profilePicture: default_photo, phone })
 
        if(customer){
               generateAuthTokenForCustomers(res, customer._id);
@@ -48,6 +48,10 @@ export const LoginCustomer = asyncHandler(async(req, res) => {
               res.status(401);
               throw new Error("Invalid account credentials");
        }
+       if(customer.role === "Admin"){
+              res.status(401);
+              throw new Error("Invalid customer account")
+       }
 
        if(customer && (await customer.matchPasswords(password))){
               generateAuthTokenForCustomers(res, customer._id);
@@ -60,6 +64,16 @@ export const LoginCustomer = asyncHandler(async(req, res) => {
               throw new Error("Invalid credentials. Please try again with correct ones")
        }
 })
+
+//
+export const LogoutCustomer = asyncHandler(async(req, res) => {
+       res.cookie("cjwt", "", {
+            httpOnly: true,
+            expires: new Date(0)
+       })
+       res.status(200).json({ message: "You have logged out of your account."})
+})
+
 
 //Get user profile
 export const GetCustomerProfile = asyncHandler(async(req, res) => {
@@ -123,9 +137,10 @@ export const InitiateStripePayment = asyncHandler(async(req, res) => {
                    bags: bagsNumber
              },
              mode: "payment",
-             cancel_url: "http://localhost:5174/booking",
-             success_url: "http://localhost:5174/booking-successful"
+             cancel_url: "http://localhost:5174/new-booking",
+             success_url: `http://localhost:5174/booking-confirmation?rideID=${customerRideId}`
       })
+
       if(!session){
             res.status(500);
             throw new Error("Internal server error")
@@ -162,4 +177,33 @@ export const fullfillStripePayment = asyncHandler(async(req, res) => {
               })
        }
       
+})
+
+export const ConfirmRideCreation = asyncHandler(async(req, res) => {
+      const { rideID } = req.params;
+      try {
+              const booking = await Booking.findOne({ rideID: rideID });
+
+              if(!booking){
+                     return res.status(404).json({ message: "Sorry! Your booking was not found"})
+              }
+
+              res.status(200).json({ exists: true, ride: {
+                      customer: booking.customer.name.split(" ")[0],
+                      pickupAddress: booking.pickup.address,
+                      dropOff: booking.dropoff.address,
+                      duration: booking.estimatedRideDuration,
+                      rideCost: booking.rideCost.totalFare,
+                      paymentStatus: booking.rideCost.paymentStatus
+              }})
+      } catch (error) {
+             //console.log(error)
+             res.status(500).json({ message: "Internal server error"})
+      }
+})
+
+export const GetCustomerBookings = asyncHandler(async(req, res) => {
+       const customerBookings = await Booking.find({ "customer.email": req.user.email })
+
+       res.status(200).json({ bookings: customerBookings})
 })

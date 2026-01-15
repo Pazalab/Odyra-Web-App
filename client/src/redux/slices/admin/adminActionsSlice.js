@@ -2,6 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
      adminInfo: localStorage.getItem("AdminInfo") ? JSON.parse(localStorage.getItem("AdminInfo")) : null,
+     bookings: localStorage.getItem("AdminBookings") ? JSON.parse(localStorage.getItem("AdminBookings")) : [],
+     customers: localStorage.getItem("AllCustomers") ? JSON.parse(localStorage.getItem("AllCustomers")) : []
 }
 
 const adminActionSlice = createSlice({
@@ -15,6 +17,14 @@ const adminActionSlice = createSlice({
               clearAdminCredentials: (state) => {
                      state.adminInfo = null;
                      localStorage.removeItem("AdminInfo")
+              },
+              setRideBookings: (state, action) => {
+                     state.bookings = action.payload;
+                     localStorage.setItem("AdminBookings", JSON.stringify(action.payload));
+              },
+              setAllCustomers: (state, action) => {
+                     state.customers = action.payload;
+                     localStorage.setItem("AllCustomers", JSON.stringify(action.payload))
               }
        }
 })
@@ -22,6 +32,8 @@ const adminActionSlice = createSlice({
 export const {
       setAdminCredentials,
       clearAdminCredentials,
+      setRideBookings,
+      setAllCustomers
 } = adminActionSlice.actions;
 
 export default adminActionSlice.reducer;

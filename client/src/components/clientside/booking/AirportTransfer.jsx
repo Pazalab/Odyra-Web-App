@@ -10,15 +10,22 @@ import { IoPeopleOutline } from "react-icons/io5";
 import visa from "../../../assets/visa.png"
 import mastercard from "../../../assets/mastercard.png"
 import { useInitiatePaymentMutation } from "../../../redux/slices/client/clientApiSlice";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setGeneralNotification } from "../../../redux/slices/util/utilActionsSlice";
 
 const AirportTransfer = () => {
    const [ waitingCharge, setWaitingCharge ] = useState(false);
    const [ pickupPoint, setPickupPoint ] = useState("");
    const [ dropoffPoint, setDropoffPoint ] = useState("");
-   const { register, handleSubmit, formState: { errors }} = useForm();
+   const { register, handleSubmit, formState: { errors }, setValue} = useForm();
    const [ transferOption, setTransferOption ] = useState("To")
      const [ payment, setPayment ] = useState("");
       const [ paymentChoiceErr, setPaymentChoiceErr ] = useState("")
+      const navigate = useNavigate();
+      const dispatch = useDispatch();
+      const { profile } = useSelector(state => state.client);
+      const { pathname} = useLocation();
        
   const position = { lat: -31.9514, lng: 115.8617 }
   const [ chosenLeg, setChosenLeg ] = useState();
@@ -33,6 +40,19 @@ const AirportTransfer = () => {
       setPaymentChoiceErr("");
       setPayment(val)
 }
+
+   const prefillLoggedInUser = () => {
+         setValue("customerName", profile.name);
+         setValue("customerEmail", profile.email);
+         setValue("customerPhone", profile.phone)
+   }
+
+   const redirectToLogin = () => {
+        navigate("/auth/login", {
+                state: { from: pathname}
+        })
+   }
+
 const [ InitiateStripe, { isLoading }] = useInitiatePaymentMutation();
 const handleAirportTransferBooking = async(data) => {
       if(payment === ""){
@@ -54,7 +74,7 @@ const handleAirportTransferBooking = async(data) => {
 
            window.location.href = res.url;
      } catch (error) {
-            console.log(error) 
+            dispatch(setGeneralNotification({ status: true, message: error.data.message, type: "error"}))
      }
 }
   return (
@@ -177,7 +197,9 @@ const handleAirportTransferBooking = async(data) => {
                                          <div className="customer-wrap">
                                                 <div className="wrap-head">
                                                         <h3>Personal Details</h3>
-                                                        <h5>Already a customer? Sign in</h5>
+                                                        { profile ? <h5 className="existing" onClick={prefillLoggedInUser}>Use your current details</h5> :
+                                                                 <h5 onClick={redirectToLogin}>Already a customer? Sign in</h5>
+                                                        }
                                                 </div>
                                                 <div className="booking-form-row">
                                                             <div className="booking-input">

@@ -13,6 +13,9 @@ import usePlacesAutocomplete from "use-places-autocomplete";
 import { useForm } from 'react-hook-form';
 import { useInitiatePaymentMutation } from "../../../redux/slices/client/clientApiSlice";
 import BtnSpinner from "../common/BtnSpinner";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useLocation } from "react-router-dom";
+import { setGeneralNotification } from "../../../redux/slices/util/utilActionsSlice";
 
 const RideBooking = () => {
     const [ waitingCharge, setWaitingCharge ] = useState(false);
@@ -20,7 +23,11 @@ const RideBooking = () => {
     const [ pickupPoint, setPickupPoint ] = useState("");
     const [ dropoffPoint, setDropoffPoint ] = useState("");
     const [ paymentChoiceErr, setPaymentChoiceErr ] = useState("")
-    const { register, handleSubmit, formState: { errors }} = useForm();
+    const { register, handleSubmit, formState: { errors }, setValue} = useForm();
+    const { profile } = useSelector(state => state.client);
+    const { pathname } = useLocation();
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const position = { lat: -31.9514, lng: 115.8617 }
     const [ chosenLeg, setChosenLeg ] = useState();
@@ -47,7 +54,7 @@ const RideBooking = () => {
 
                 window.location.href = res.url;
            } catch (error) {
-                 console.log(error)
+                 dispatch(setGeneralNotification({ status: true, message: error.data.message, type: 'error'}))
            }
     }
 
@@ -56,6 +63,17 @@ const RideBooking = () => {
           setPayment(val)
     }
 
+   const prefillLoggedInUser = () => {
+         setValue("customerName", profile.name);
+         setValue("customerEmail", profile.email);
+         setValue("customerPhone", profile.phone)
+   }
+
+   const redirectToLogin = () => {
+        navigate("/auth/login", {
+                state: { from: pathname}
+        })
+   }
   return (
       <form onSubmit={handleSubmit(handleBookingSubmit)}>
              <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAP_KEY}>
@@ -153,7 +171,9 @@ const RideBooking = () => {
                                         <div className="customer-wrap">
                                                 <div className="wrap-head">
                                                         <h3>Personal Details</h3>
-                                                        <h5>Already a customer? Sign in</h5>
+                                                        { profile ? <h5 className="existing" onClick={prefillLoggedInUser}>Use your current details</h5> :
+                                                                 <h5 onClick={redirectToLogin}>Already a customer? Sign in</h5>
+                                                        }
                                                 </div>
                                                 <div className="booking-form-row">
                                                             <div className="booking-input">

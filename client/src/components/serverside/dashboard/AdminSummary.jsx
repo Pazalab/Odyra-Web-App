@@ -4,28 +4,43 @@ import { HiOutlineStatusOnline } from "react-icons/hi";
 import { RiMore2Fill } from "react-icons/ri";
 import { GoArrowUp, GoArrowDown } from "react-icons/go";
 import { LuChevronRight } from "react-icons/lu";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { activity_data } from "../../../data/dummy_data";
+import { useGetAllCustomersQuery } from "../../../redux/slices/admin/adminApiSlice";
+import { useEffect } from "react";
+import { setAllCustomers } from "../../../redux/slices/admin/adminActionsSlice";
 
 const AdminSummary = () => {
- const { adminInfo } =  useSelector(state => state.admin);
- 
+ const { adminInfo, bookings, customers } =  useSelector(state => state.admin);
+ const { data } = useGetAllCustomersQuery();
+ const dispatch = useDispatch();
+
+ useEffect(() => {
+         if(data){
+              dispatch(setAllCustomers([...data.customers]))
+         }
+ }, [data, dispatch])
+
+ const earnings = bookings.map(item => item.rideCost.totalFare).reduce((acc, curr) => {
+        return acc+curr
+ }, 0);
+ console.log(earnings)
   return (
     <div className="admin-summary">
               <div className="admin-summary-numbers">
                         <div className="summary-block-grid">
                                   <div className="summary-block-moja">
                                            <p><span><HiOutlineStatusOnline /></span>Active</p>
-                                           <h2>1</h2>
+                                           <h2>0</h2>
                                   </div>
                                   <div className="summary-block-moja">
-                                           <p><span><PiClipboardTextLight /></span>On order</p>
-                                           <h2>30</h2>
+                                           <p><span><PiClipboardTextLight /></span>Requested</p>
+                                           <h2>{bookings.length}</h2>
                                   </div>
                                   <div className="summary-block-moja">
                                             <p><span><PiPhoneCall /></span>Awaiting</p>
-                                            <h2>12</h2>
+                                            <h2>0</h2>
                                   </div>
                         </div>
                         <div className="bookings-wrap">
@@ -43,7 +58,7 @@ const AdminSummary = () => {
                                                                                    <span className="icon"><GoArrowUp /></span>
                                                                         </div>
                                                                  </div>
-                                                                 <h5>2305</h5>
+                                                                 <h5>{bookings.length}</h5>
                                                        </div>
                                                        <div className="wrap-block-range">
                                                              <span className="total"></span>
@@ -58,7 +73,7 @@ const AdminSummary = () => {
                                                                                    <span className="icon"><GoArrowDown /></span>
                                                                         </div>
                                                                  </div>
-                                                                 <h5>158</h5>
+                                                                 <h5>0</h5>
                                                        </div>
                                                        <div className="wrap-block-range">
                                                              <span className="cancel"></span>
@@ -73,7 +88,7 @@ const AdminSummary = () => {
                                                                                    <span className="icon"><GoArrowUp /></span>
                                                                         </div>
                                                                  </div>
-                                                                 <h5>4805</h5>
+                                                                 <h5>{customers.length}</h5>
                                                        </div>
                                                        <div className="wrap-block-range">
                                                              <span className="customer"></span>
@@ -90,7 +105,7 @@ const AdminSummary = () => {
                                                         <span>+40%</span>
                                             </div>
                                             <div className="money-block-column">
-                                                      <h2>$324.00</h2>
+                                                      <h2>{earnings} <span className="aud">AUD $</span></h2>
                                                       <p>From last year</p>
                                             </div>
                                   </div>
@@ -100,7 +115,7 @@ const AdminSummary = () => {
                                                         <span>+18%</span>
                                             </div>
                                             <div className="money-block-column">
-                                                      <h2>$8724.00</h2>
+                                                      <h2>0.00 <span className="aud">AUD $</span></h2>
                                                       <p>From last year</p>
                                             </div>
                                   </div>
@@ -110,7 +125,7 @@ const AdminSummary = () => {
                                                         <span>+40%</span>
                                             </div>
                                             <div className="money-block-column">
-                                                      <h2>$324.00</h2>
+                                                      <h2>0.00 <span className="aud">AUD $</span></h2>
                                                       <p>From last year</p>
                                             </div>
                                   </div>
@@ -132,9 +147,9 @@ const AdminSummary = () => {
                                                                 </div>
                                                      </div>
                                                      <div className="driver-block-col-extra">
-                                                               <h5>Orders: 5</h5>
+                                                               <h5>Orders: {bookings.length}</h5>
                                                                <span className="line"></span>
-                                                               <h5>Income: $7600</h5>
+                                                               <h5>Income: { earnings} <span className="aud">AUD $</span></h5>
                                                      </div>
                                             </div>
                                   </div>

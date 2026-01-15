@@ -20,6 +20,14 @@ export const clientApiSlice = apiSlice.injectEndpoints({
                    })
               }),
 
+              //Logout Customer
+              logoutCustomer: builder.mutation({
+                    query: () => ({
+                           url: "/client/logout",
+                           method: "POST"
+                    })
+              }),
+
               //getcustomer profile
               getCustomerProfile: builder.query({
                     query: () => ({
@@ -36,6 +44,21 @@ export const clientApiSlice = apiSlice.injectEndpoints({
                    })
               }),
          
+              //Get customer bookings
+             getCustomerBookings: builder.query({
+                   query: () => ({
+                        url: "/client/customer-bookings",
+                        method: "GET"
+                   })
+             }),
+
+             //confirm ride creation
+             checkRideStatus: builder.query({
+                   query: (rideID) => ({
+                          url: `/client/check-ride/${rideID}`,
+                          method: "GET"
+                   })
+             }),
        })
 })
 
@@ -44,4 +67,7 @@ export const {
      useLoginCustomerMutation,
      useInitiatePaymentMutation,
      useGetCustomerProfileQuery,
+     useLogoutCustomerMutation,
+     useGetCustomerBookingsQuery,
+     useCheckRideStatusQuery
 } = clientApiSlice;

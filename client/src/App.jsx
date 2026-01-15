@@ -9,7 +9,10 @@ import AdminDashboard from './pages/serverside/AdminDashboard';
 import BookingSuccessful from './pages/clientside/booking/BookingSuccessful';
 import Signup from './pages/clientside/booking/Signup';
 import Stage from './pages/clientside/booking/Stage';
-//import ProtectedRoutes from './utils/ProtectedRoutes';
+import CustomerAccount from './pages/clientside/customer/CustomerAccount';
+import PersonalInfo from './pages/clientside/customer/PersonalInfo';
+import CustomerRoutes from './utils/CustomerRoutes';
+import ProtectedRoutes from './utils/ProtectedRoutes';
 
 function App() {
   const location = useLocation();
@@ -25,10 +28,16 @@ function App() {
                <Route path='/admin/auth/login' element={<AdminLogin />} />
                <Route path="/auth/signup" element={<Signup />} />
                <Route path='/auth/stage' element={<Stage />} />
-               <Route path='/booking-successful' element={<BookingSuccessful />} />
+               <Route path='/booking-confirmation' element={<BookingSuccessful />} />
+               <Route element={<CustomerRoutes />}>
+                         <Route path='/customer/account' element={<CustomerAccount />} />
+                        <Route path='/customer/personal-information' element={<PersonalInfo />} />
+               </Route>
 
-               { /* Protected routes */}
-              <Route path='/admin/:id/dashboard' element={<AdminDashboard />} />
+               { /* Protected admin routes */}
+               <Route element={<ProtectedRoutes />}>
+                        <Route path='/admin/:id/dashboard' element={<AdminDashboard />} />
+               </Route>
     </Routes>
   )
 }

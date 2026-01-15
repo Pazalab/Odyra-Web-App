@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import logo from "../../../assets/logo.png"
 import { BsEnvelopeAt } from "react-icons/bs";
 import { SlLock } from "react-icons/sl";
@@ -8,15 +8,32 @@ import "../../../css/clientside/auth.css"
 import Footer from "../../../components/clientside/common/Footer";
 import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
+import { useLoginCustomerMutation } from "../../../redux/slices/client/clientApiSlice";
+import { setCustomerCredentials } from "../../../redux/slices/client/clientActionsSlice";
+import { setAuthNotification } from "../../../redux/slices/util/utilActionsSlice";
+import AuthNotification from "../../../components/clientside/common/notifications/AuthNotification";
+import BtnSpinner from "../../../components/clientside/common/BtnSpinner";
 
 const Login = () => {
     const [ passwordStatus, setPasswordStatus ] = useState(false);
      const { register, handleSubmit, formState: { errors}} = useForm();
      const dispatch = useDispatch();
      const navigate = useNavigate();
+     const location = useLocation();
+     
+     const path = location.state?.from || "/";
 
+     const [ InitiateLogin, { isLoading }] = useLoginCustomerMutation();
      const LoginClientUser = async(data) => {
-           console.log(data)
+           try {
+                const res = await InitiateLogin(data).unwrap();
+                dispatch(setCustomerCredentials({...res}))
+                navigate("/auth/stage", {
+                       state: { from: path}
+                })
+           } catch (error) {
+                dispatch(setAuthNotification({ status: true, message: error.data.message, type: "error"}))
+           }
      }
   return (
          <>
@@ -39,6 +56,7 @@ const Login = () => {
                                                               <h2>Welcome Back</h2>
                                                               <p>Enter your details to access your account and book rides conveniently.</p>
                                                     </div>
+                                                    <AuthNotification />
                                                     <form onSubmit={handleSubmit(LoginClientUser)} >
                                                               <div className="auth-form-row">
                                                                         <div className="auth-form-inner">
@@ -63,7 +81,7 @@ const Login = () => {
                                                                         <p>Forgot your password?</p>
                                                               </div>
                                                               <div className="auth-form-btn">
-                                                                      <button type="submit">Sign in</button>
+                                                                      <button type="submit">{ isLoading ? <BtnSpinner /> : "Sign in" }</button>
                                                               </div>
                                                     </form>
 

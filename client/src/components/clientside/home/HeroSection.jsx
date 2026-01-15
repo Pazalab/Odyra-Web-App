@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom"
 import hero1 from "../../../assets/hero1.jpg"
 import hero2 from "../../../assets/hero3.jpg"
+import { useSelector } from "react-redux"
 const HeroSection = () => {
+  const { profile } = useSelector(state => state.client);
   return (
     <div className="hero-section">
              <div className="inner-row">
@@ -10,7 +12,10 @@ const HeroSection = () => {
                                              <h1>Driven by Excellence, Every Mile.</h1>
                                              <div className="hero-texts-column">
                                                       <p>We’re trusted by travelers who value their time, appreciate true comfort, and expect reliability in every ride.</p>
-                                                      <Link to={"/auth/signup"}>Sign up to ride</Link>
+                                                      { profile ?
+                                                           <Link to={"/new-booking"}>Book a ride</Link> :
+                                                           <Link to={"/auth/signup"}>Sign up to ride</Link>
+                                                      }
                                              </div>
                                    </div>
 

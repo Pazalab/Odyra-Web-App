@@ -3,11 +3,12 @@ import { useState } from "react"
 import { sidebarContext } from "./navcontext"
 import Header from "./Header";
 import Sidebar from "./Sidebar";
-
+import GeneralNotification from "../notifications/GeneralNotification";
 const Navbar = () => {
     const [ sidebarStatus, setSidebarStatus ] = useState(false);
   return (
     <sidebarContext.Provider value={[sidebarStatus, setSidebarStatus]}>
+            <GeneralNotification />
             <Header />
             <Sidebar />
     </sidebarContext.Provider>

@@ -24,6 +24,13 @@ const clientActionSlice = createSlice({
            clearCustomerProfile: (state) => {
                 state.profile = null;
                 localStorage.removeItem("ClientProfile")
+           },
+           addBookingsToProfile: (state, action) => {
+                state.profile.bookings = action.payload;
+                localStorage.setItem("ClientProfile", JSON.stringify(state.profile))
+           },
+           clearProfileBookings: (state) => {
+                state.profile.bookings = null;
            }
 
      }
@@ -34,7 +41,8 @@ export const {
       clearCustomerCredentials,
       setCustomerProfile,
       clearCustomerProfile,
-      
+      addBookingsToProfile,
+      clearProfileBookings,
 } = clientActionSlice.actions;
 
 export default clientActionSlice.reducer;
