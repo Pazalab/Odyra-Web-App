@@ -13,6 +13,8 @@ import CustomerAccount from './pages/clientside/customer/CustomerAccount';
 import PersonalInfo from './pages/clientside/customer/PersonalInfo';
 import CustomerRoutes from './utils/CustomerRoutes';
 import ProtectedRoutes from './utils/ProtectedRoutes';
+import AdminBookings from './pages/serverside/AdminBookings';
+import SingleAdminBooking from './pages/serverside/SingleAdminBooking';
 
 function App() {
   const location = useLocation();
@@ -37,6 +39,8 @@ function App() {
                { /* Protected admin routes */}
                <Route element={<ProtectedRoutes />}>
                         <Route path='/admin/:id/dashboard' element={<AdminDashboard />} />
+                        <Route path='/admin/:id/bookings' element={<AdminBookings />} />
+                        <Route path='/admin/:id/booking/:book_id' element={<SingleAdminBooking />} />
                </Route>
     </Routes>
   )

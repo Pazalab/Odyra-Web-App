@@ -2,7 +2,7 @@ import asyncHandler from "express-async-handler";
 import Booking from "../models/bookings.js";
 import Stripe from "stripe";
 import dotenv from "dotenv"
-import { generateRideID } from "../utils/chores.js";
+import { generateCustomerId, generateRideID } from "../utils/chores.js";
 import { CreateNewRide } from "../services/newBookingService.js";
 import User from "../models/userModel.js";
 import { generateAuthTokenForCustomers } from "../utils/tokens.js";
@@ -82,6 +82,70 @@ export const GetCustomerProfile = asyncHandler(async(req, res) => {
        })
 })
 
+
+//Request booking
+export const RequestRide = asyncHandler(async(req, res) => {
+      const { 
+            rideType, 
+            pickupAddress, 
+            dropoffAddress, 
+            customerName, 
+            customerEmail, 
+            rideDuration, 
+            rideCost, 
+            waitingCharge,
+            pickupDateTime,
+            passengersNumber,
+            bagsNumber,
+            customerPhone,
+            customerRideId,
+      } = req.body;
+     
+      const rideExists = await Booking.findOne({ rideID: customerRideId });
+      if(rideExists){
+            res.status(503);
+            throw new Error("Your ride request has already been sent. Please be patient.");
+      }
+
+      try {
+           const newBooking = await Booking.create({
+                     rideID: customerRideId,
+                     rideType: rideType,
+                     customer: {
+                            id: req.user?._id ?? generateCustomerId(),
+                            name: customerName,
+                            email: customerEmail,
+                            phone: customerPhone
+                     },
+                     rideStatus: "Requested",
+                     pickup: {
+                            address: pickupAddress,
+                            scheduledTimeofPickup: pickupDateTime
+                     },
+                     dropoff: {
+                            address: dropoffAddress
+                     },
+                     estimatedRideDuration: rideDuration,
+                     passengers: passengersNumber,
+                     luggageCount: bagsNumber,
+                     rideCost: {
+                            rideFare: Number(rideCost),
+                            waitingFee: Number(waitingCharge),
+                            totalFare: (Number(rideCost)+Number(waitingCharge)),
+                     }
+              })
+
+              if(!newBooking){
+                     res.status(404);
+                     throw new Error("Sorry! Your booking was not successful. Please try again later.")
+              }
+
+              res.json({ rideID: newBooking.rideID })
+      } catch (error) {
+               console.log(error)
+              res.status(500).json({ message: "An error occured. We are currently resolving it."})
+      }
+})
 
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);

@@ -4,9 +4,11 @@ import { IoIosArrowDown } from "react-icons/io";
 import { useLogoutAdminMutation } from "../../../redux/slices/admin/adminApiSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { clearAdminCredentials } from "../../../redux/slices/admin/adminActionsSlice";
+import { clearAdminCredentials, openMobileSidebar } from "../../../redux/slices/admin/adminActionsSlice";
 import { IoCloseOutline } from "react-icons/io5";
 import { useCallback, useEffect, useRef, useState } from "react";
+import logo from "../../../assets/logo.png"
+import { CgMenuLeft } from "react-icons/cg";
 
 const Topbar = () => {
     const [ logoutUser ] = useLogoutAdminMutation();
@@ -18,7 +20,7 @@ const Topbar = () => {
 
     const handleUserLogout = async() => {
           try {
-               const res = await logoutUser().unwrap();
+                 await logoutUser().unwrap();
                 navigate("/admin/auth/login")
                 dispatch(clearAdminCredentials());
           } catch (error) {
@@ -41,12 +43,24 @@ const Topbar = () => {
           return () => document.removeEventListener("click", handleOutsideClick, true)
     }, [handleOutsideClick])
 
+
+    const handleOpenMobileSidebar = () => {
+          dispatch(openMobileSidebar());
+    }
   return (
     <div className="dashboard-topbar">
                <div className="search-bar">
                          <span><FiSearch /></span>
                          <input type="text" placeholder="Search here"/>
                </div>
+              <div className="dashboard-mobile-items">
+                        <span onClick={handleOpenMobileSidebar}><CgMenuLeft /></span>
+                        <div className="dashboard-tiny-logo">
+                                  <Link to={`/admin/${adminInfo.id}/dashboard`} className="mobile-logo">
+                                          <img src={logo} alt="" />
+                                   </Link>
+                        </div>
+              </div>
                <div className="topbar-column">
                          <div className="notification-block">
                                   <span><IoNotificationsOutline /></span>

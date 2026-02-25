@@ -1,0 +1,481 @@
+.admin-bookings-body{
+    padding: 20px 0;
+}
+
+.admin-bookings-title{
+     padding-bottom: 10px;
+     border-bottom: 1px solid var(--line);
+     margin-bottom: 10px;
+}
+
+.admin-bookings-title h2{
+      font-size: 24px;
+      font-weight: 550;
+      margin-bottom: 5px;
+}
+
+.admin-bookings-title p{
+     font-size: 16px;
+     color: rgb(50, 50, 50);
+}
+
+
+.table-filters{
+    display: flex;
+    align-items: end;
+    justify-content: end;
+    gap:10px;
+}
+.filter-icon{
+      height: 45px;
+      display: flex;
+      align-items: center;
+      padding-bottom: 10px;
+      font-size: 20px;
+      color: gray;
+}
+.custom-drop-selection{
+     position: relative;
+     padding: 5px;
+}
+.custom-drop-selection h5{
+     font-size: 14px;
+     font-weight: 480;
+     color: rgb(60, 60, 60);
+     margin-bottom: 1px;
+}
+
+.drop-active-selection{
+      display: flex;
+     width: 160px;
+     height: 45px;
+      border-radius: 6px;
+     -webkit-border-radius: 6px;
+     -moz-border-radius: 6px;
+     -ms-border-radius: 6px;
+     -o-border-radius: 6px;
+    border: 1px solid var(--line);
+    align-items: center;
+    padding: 0px 6px 0px 10px;
+    justify-content: space-between;
+    cursor: pointer;
+}
+.drop-active-selection:hover{
+     background: rgb(240, 239, 238);
+}
+.drop-active-selection span{
+     font-size: 15px;
+     font-weight: 450;
+     color: rgb(80, 80, 80);
+}
+
+.options-dropdown{
+    position: absolute;
+    top: 100%;
+    overflow: hidden;
+    z-index: 99;
+    max-height: 0;
+    transition: all 0.6s ease-in-out;
+    -webkit-transition: all 0.6s ease-in-out;
+    -moz-transition: all 0.6s ease-in-out;
+    -ms-transition: all 0.6s ease-in-out;
+    -o-transition: all 0.6s ease-in-out;
+}
+.options-dropdown.active{
+    max-height: 400px;
+}
+
+.options-dropdown ul{
+     display: flex;
+     flex-direction: column;
+     padding: 6px;
+     gap: 2px;
+    background: white;
+    box-shadow: 0px 0px 2px -1px gainsboro;
+    border: 1px solid rgba(237, 237, 237, 0.29);
+      width: 180px;
+    border-radius: 6px;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    -ms-border-radius: 6px;
+    -o-border-radius: 6px;
+}
+.options-dropdown ul li{
+    padding: 7px;
+    border-radius: 6px;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    -ms-border-radius: 6px;
+    -o-border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    font-weight: 450;
+}
+.options-dropdown ul li:hover{
+    background: rgb(244, 240, 236);
+}
+
+.bookingTable{
+     display: grid;
+    grid-template-columns: 1fr 1fr 2fr 1fr 1fr 1fr;
+}
+
+.simple-table{
+     position: relative;
+     margin: 20px 0;
+}
+
+.simple-table-header{
+     padding: 10px;
+     border-bottom: 1px solid var(--line);
+}
+
+.simple-table-header h4{
+     font-size: 15px;
+     font-weight: 450;
+     color: rgb(60, 60, 60);
+}
+
+.table-loader{
+    display: flex;
+    padding-top: 20px;
+    width: 100%;
+    height: 50px;
+    align-items: center;
+    justify-content: center;
+}
+
+.simple-table-row{
+    padding: 10px;
+}
+.simple-table-row .booking-col{
+      padding: 10px 0;
+}
+
+.table-empty-block{
+      display: flex;
+      justify-content: center;
+      padding: 30px 0;
+}
+.table-empty-block p{
+     font-size: 18px;
+     font-weight: 360;
+     color: rgb(80, 80, 80);
+}
+
+.pagination-block{
+     display: flex;
+     margin-top: 35px;
+     gap: 20px;
+     flex-wrap: wrap;
+     padding: 10px;
+     justify-content: space-between;
+     align-items: center;
+}
+
+.pagination-status p{
+      font-size: 14px;
+      font-weight: 500;
+      color: rgb(80, 80, 80);
+      display: flex;
+      gap: 5px;
+}
+
+.paginate-btn{
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      border-radius: 6px;
+      -webkit-border-radius: 6px;
+      -moz-border-radius: 6px;
+      -ms-border-radius: 6px;
+      -o-border-radius: 6px;
+      border: 1px solid rgba(241, 235, 231, 0.54);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 500;
+}
+.paginate-btn.inactive{
+     pointer-events: none;
+     border: none;;
+}
+.paginate-btn.active,
+.paginate-btn:hover{
+    background: var(--main-color);
+    color: white;
+}
+.paginate-btn span{
+     display: flex;
+}
+.page-size-options{
+     display: flex;
+     align-items: center;
+     gap: 10px;
+}
+.page-size-options p{
+      font-size: 14px;
+      font-weight: 500;
+      color: rgb(70, 70,70);
+}
+.page-size-changer{
+      position: relative;
+      height: 36px;
+      padding: 0 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(220, 220, 220, 0.5);
+      border-radius: 6px;
+      -webkit-border-radius: 6px;
+      -moz-border-radius: 6px;
+      -ms-border-radius: 6px;
+      -o-border-radius: 6px;
+}
+.page-size-changer .size{
+       font-size: 13px;
+       font-weight: 550;
+       color: var(--main-color);
+}
+.page-size-indicator{
+     display: flex;
+     gap: 3px;
+     cursor: pointer;
+     align-items: center;
+     justify-content: center;
+}
+.page-size-changer span.icon{
+     display: flex;
+     font-size: 13px;
+}
+
+.page-size-pop{
+      position:absolute;
+      bottom: 100%;
+      background: white;
+      border: 1px solid rgba(238, 238, 238, 0.6);
+      border-radius: 6px;
+      -webkit-border-radius: 6px;
+      -moz-border-radius: 6px;
+      -ms-border-radius: 6px;
+      -o-border-radius: 6px;
+      overflow: hidden;
+      transition: all 0.5s ease;
+      -webkit-transition: all 0.5s ease;
+      -moz-transition: all 0.5s ease;
+      -ms-transition: all 0.5s ease;
+      -o-transition: all 0.5s ease;
+      transform-origin: bottom;
+      transform: scaleY(0);
+      -webkit-transform: scaleY(0);
+      -moz-transform: scaleY(0);
+      -ms-transform: scaleY(0);
+      -o-transform: scaleY(0);
+}
+.page-size-pop.active{
+     transform: scaleY(1);
+     -webkit-transform: scaleY(1);
+     -moz-transform: scaleY(1);
+     -ms-transform: scaleY(1);
+     -o-transform: scaleY(1);
+}
+.page-size-pop ul{
+     display: flex;
+     flex-direction: column;
+     gap: 2px;
+     padding: 2px;
+}
+.page-size-pop ul li{
+     font-weight: 500;
+     color: rgb(80, 80, 80);
+     padding: 5px 8px;
+     cursor: pointer;
+     font-size: 13px;
+}
+.page-size-pop ul li:hover{
+     background: rgba(237, 237, 237, 0.29)
+}
+
+.pagination-items{
+     display: flex;
+     gap: 10px;
+     flex-shrink: 0;
+     justify-content: center;
+     align-items: center;
+}
+
+.single-booking-body{
+     padding: 20px 0;
+}
+
+.single-booking-header{
+     border-bottom: 1px solid var(--line);
+     padding-bottom: 10px;
+     margin-bottom: 10px;
+     display: flex;
+     justify-content: space-between;
+     flex-wrap: wrap;
+     gap: 15px;
+
+}
+
+.single-booking-col{
+     display: flex;
+     gap: 10px;
+     align-items: center;
+     flex-wrap: wrap;
+}
+
+.single-booking-col.right{
+      gap: 40px;
+}
+.single-booking-col-texts h2{
+     font-size: 20px;
+     font-weight: 500;
+     margin-bottom: 5px;
+}
+.single-booking-col-texts span{
+     padding: 8px 10px;
+     align-items: center;
+     justify-content: center;
+     color: rgb(80, 80, 80);
+     font-size: 14px;
+     display: flex;
+     border-radius: 5px;
+     -webkit-border-radius: 5px;
+     -moz-border-radius: 5px;
+     -ms-border-radius: 5px;
+     -o-border-radius: 5px;
+     background: rgb(244, 243, 243);
+}
+.single-booking-col span.icon{
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 100px;
+      -webkit-border-radius: 100px;
+      -moz-border-radius: 100px;
+      -ms-border-radius: 100px;
+      -o-border-radius: 100px;
+      font-size: 24px;
+      background: var(--line);
+      color: var(--main-color);
+}
+
+.single-booking-item h4{
+     font-weight: 550;
+     font-size: 15px;
+     color: rgb(70, 70, 70);
+     margin-bottom: 5px;
+}
+.single-booking-item span{
+     color: rgb(116, 116, 116);
+     font-size: 15px;
+}
+
+.single-booking-col button{
+      width: 180px;
+      height: 45px;
+      border-radius: 6px;
+      -webkit-border-radius: 6px;
+      -moz-border-radius: 6px;
+      -ms-border-radius: 6px;
+      -o-border-radius: 6px;
+      font-weight: 450;
+      background: var(--main-color);
+      color: whitesmoke;
+      cursor: pointer;
+}
+
+.single-booking-timeline{
+     border: 1px solid;
+     display: flex;
+     justify-content: space-between;
+     margin:20px 0;
+}
+
+.timeline-step{
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      align-items: center;
+}
+.step-indicator{
+      width: 25px;
+      height: 25px;
+      flex-shrink: 0;
+      border: 2px solid gainsboro;
+      border-radius: 25px;
+      -webkit-border-radius: 25px;
+      -moz-border-radius: 25px;
+      -ms-border-radius: 25px;
+      -o-border-radius: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+}
+.step-indicator .block{
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      display: flex;
+      border-radius: 18px;
+      -webkit-border-radius: 18px;
+      -moz-border-radius: 18px;
+      -ms-border-radius: 18px;
+      -o-border-radius: 18px;
+      background: var(--main-color);
+}
+.step-indicator span.icon{
+     display: flex;
+     color: var(--main-color);
+     font-size: 20px;
+}
+.timeline-step h5{
+     font-size: 16px;
+     font-weight: 500;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media(max-width: 768px){
+      .single-booking-col.right{
+            gap: 20px;
+            justify-content: space-between;
+      }
+}

@@ -7,38 +7,47 @@ import { MdOutlineAnalytics } from "react-icons/md";
 import { IoSettingsOutline } from "react-icons/io5";
 import { LuCircleHelp } from "react-icons/lu";
 import { PiPowerBold } from "react-icons/pi";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLogoutAdminMutation } from "../../../redux/slices/admin/adminApiSlice";
-import { clearAdminCredentials } from "../../../redux/slices/admin/adminActionsSlice";
+import { clearAdminCredentials, closeMobileSidebar } from "../../../redux/slices/admin/adminActionsSlice";
+import { FiChevronLeft } from "react-icons/fi";
 
 const DashboardSidebar = () => {
    const [ logout ] = useLogoutAdminMutation();
+   const { adminInfo, isSidebarActive } = useSelector(state => state.admin);
    const dispatch = useDispatch();
    const navigate = useNavigate();
 
    const handleUserLogout = async() => {
           try {
-                const res = await logout().unwrap();
+                 await logout().unwrap();
                 dispatch(clearAdminCredentials());
                 navigate("/admin/auth/login")
           } catch (error) {
                 console.log(error)
           }
    }
+
+   const handleCloseMobileSidebar = () => {
+          dispatch(closeMobileSidebar())
+   }
   return (
-    <div className="dashboard-sidebar">
+    <div className={`${ isSidebarActive ? "dashboard-sidebar mobile-active" : "dashboard-sidebar"}`}>
             <div className="dashboard-logo">
-                    <Link to={"/"} >
+                    <Link to={`/admin/${adminInfo.id}/dashboard`} >
                             <img src={logo} alt="" />
                     </Link>
+                    <div className="mobile-close-btn" onClick={handleCloseMobileSidebar}>
+                                <span ><FiChevronLeft /></span>
+                    </div>
             </div>
             <div className="dashboard-nav">
                      <ul>
-                              <li><NavLink to={"/"} className="active"><span><RxDashboard /></span> Dashboard</NavLink></li>
-                              <li><NavLink to={"/"}><span><BsJournalBookmark /></span> Bookings</NavLink></li>
-                              <li><NavLink to={"/"}><span><MdOutlineAnalytics  /></span> Analytics</NavLink></li>
-                              <li><NavLink to={"/"}><span><AiOutlineBank /></span> Transactions</NavLink></li>
-                              <li><NavLink to={"/"}><span><IoSettingsOutline /></span> Settings</NavLink></li>
+                              <li><NavLink to={`/admin/${adminInfo.id}/dashboard`}><span><RxDashboard /></span> Dashboard</NavLink></li>
+                              <li><NavLink to={`/admin/${adminInfo.id}/bookings`}><span><BsJournalBookmark /></span> Bookings</NavLink></li>
+                              <li><NavLink to={`/admin/${adminInfo.id}/analytics`}><span><MdOutlineAnalytics  /></span> Analytics</NavLink></li>
+                              <li><NavLink to={`/admin/${adminInfo.id}/transactions`}><span><AiOutlineBank /></span> Transactions</NavLink></li>
+                              <li><NavLink to={`/admin/${adminInfo.id}/settings`}><span><IoSettingsOutline /></span> Settings</NavLink></li>
                      </ul>
 
                      <div className="dashboard-bottom">

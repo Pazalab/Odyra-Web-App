@@ -23,9 +23,9 @@ const AdminSummary = () => {
  }, [data, dispatch])
 
  const earnings = bookings.map(item => item.rideCost.totalFare).reduce((acc, curr) => {
-        return acc+curr
+        return Math.round(acc+curr)
  }, 0);
- console.log(earnings)
+
   return (
     <div className="admin-summary">
               <div className="admin-summary-numbers">
@@ -174,7 +174,7 @@ export default AdminSummary
 const SimpleBarChart = () => {
   return (
     <BarChart
-      style={{ width: '100%', maxWidth: '700px', maxHeight: '100vh', aspectRatio: 1.618 }}
+      style={{ width: '100%', height: '100%' }}
       responsive
       data={activity_data}
       margin={{

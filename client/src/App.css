@@ -48,6 +48,7 @@ textarea{
 
 ::-webkit-scrollbar {
        width: 6px;
+     height: 8px;
 }
 
  ::-webkit-scrollbar-thumb {
@@ -57,6 +58,7 @@ textarea{
     -moz-border-radius:3px;
     -ms-border-radius:3px;
     -o-border-radius:3px;
+
 }
 
 input::-webkit-outer-spin-button,
@@ -534,6 +536,8 @@ header{
 }
 
 .data-loader {
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       position: relative;
       animation: rotate 1s linear infinite

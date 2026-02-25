@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
 const bookingsSchema = mongoose.Schema({
-       rideID: { type: String, },
+       rideID: { type: String, unique: true },
        rideType: {
              type: String,
              enum: [ "Airport Transfer", "Point to Point", "By the Hour",],
-             required: true
+             required: true,
        },
        customer: {
              id: { type: String, required: true},
@@ -15,8 +15,8 @@ const bookingsSchema = mongoose.Schema({
        },
        rideStatus: {
              type: String,
-             enum: ["requested", "accepted", "arrived", "in-progress", "completed", "canceled", "paid"],
-             default: "requested"
+             enum: ["Requested", "Confirmed", "Arrived", "In-progress", "Completed", "Canceled",],
+             default: "Requested"
        },
        cancellationReason: String,
        pickup: {
@@ -39,8 +39,7 @@ const bookingsSchema = mongoose.Schema({
               totalFare: Number,
               paymentStatus: {
                     type: String,
-                    enum: [ "paid", "pending", "canceled"],
-                    default: "pending"
+                    default: "Not paid"
               },
        },
        stripeSessionId: String

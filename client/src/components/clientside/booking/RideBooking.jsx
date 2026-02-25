@@ -11,11 +11,13 @@ import mastercard from "../../../assets/mastercard.png"
 import { APIProvider, Map, useMapsLibrary, useMap }  from "@vis.gl/react-google-maps";
 import usePlacesAutocomplete from "use-places-autocomplete";
 import { useForm } from 'react-hook-form';
-import { useInitiatePaymentMutation } from "../../../redux/slices/client/clientApiSlice";
+import { useCreateNewBookingMutation } from "../../../redux/slices/client/clientApiSlice";
 import BtnSpinner from "../common/BtnSpinner";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import { setGeneralNotification } from "../../../redux/slices/util/utilActionsSlice";
+import { generateRideID } from "../../../utils/chores";
+import { useMemo } from "react";
 
 const RideBooking = () => {
     const [ waitingCharge, setWaitingCharge ] = useState(false);
@@ -31,7 +33,10 @@ const RideBooking = () => {
 
     const position = { lat: -31.9514, lng: 115.8617 }
     const [ chosenLeg, setChosenLeg ] = useState();
-    const [ InitiateStripe, { isLoading }] = useInitiatePaymentMutation();
+    //const [ InitiateStripe, { isLoading }] = useInitiatePaymentMutation();
+    const [ RequestBooking, { isLoading }] = useCreateNewBookingMutation();
+
+    const rideID = useMemo(() => generateRideID(), [])
 
     const handleBookingSubmit = async(data) => {
            if(payment === ""){
@@ -40,19 +45,21 @@ const RideBooking = () => {
            }
            const formData = {
                  rideType: "Point to Point",
+                 customerRideId: rideID,
                  pickupAddress: chosenLeg ? chosenLeg.start_address : "",
                  dropoffAddress: chosenLeg ? chosenLeg.end_address : "",
                  waitingCharge: chosenLeg && waitingCharge ? ((Number(chosenLeg.distance.text.split(" ")[0])*1.85)*0.2).toFixed(2) : 0,
                  rideDuration: chosenLeg ? chosenLeg.duration.text : "",
                  rideCost: chosenLeg ? (Number(chosenLeg.distance.text.split(" ")[0])*1.85).toFixed(2) : 0,
                  ...data,
-                 paymentMethod: payment
+                 paymentMethod: payment,
+
            }
 
            try {
-                const res = await InitiateStripe(formData).unwrap();
+                const res = await RequestBooking(formData).unwrap();
 
-                window.location.href = res.url;
+                 navigate(`/booking-confirmation?rideID=${res.rideID}`)
            } catch (error) {
                  dispatch(setGeneralNotification({ status: true, message: error.data.message, type: 'error'}))
            }

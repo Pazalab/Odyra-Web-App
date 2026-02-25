@@ -35,6 +35,15 @@ export const clientApiSlice = apiSlice.injectEndpoints({
                           method: "GET"
                     })
               }),
+
+              //create new booking
+              createNewBooking: builder.mutation({
+                     query: (payload) => ({
+                           url: "/client/create-booking",
+                           method: "POST",
+                           body: payload
+                     })
+              }),
               //initiate payment
               initiatePayment: builder.mutation({
                    query: (payload) => ({
@@ -65,6 +74,7 @@ export const clientApiSlice = apiSlice.injectEndpoints({
 export const {
      useCreateNewAccountMutation,
      useLoginCustomerMutation,
+     useCreateNewBookingMutation,
      useInitiatePaymentMutation,
      useGetCustomerProfileQuery,
      useLogoutCustomerMutation,
