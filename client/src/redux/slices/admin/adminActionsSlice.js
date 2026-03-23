@@ -2,8 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
      adminInfo: localStorage.getItem("AdminInfo") ? JSON.parse(localStorage.getItem("AdminInfo")) : null,
-     bookings: localStorage.getItem("AdminBookings") ? JSON.parse(localStorage.getItem("AdminBookings")) : [],
-     customers: localStorage.getItem("AllCustomers") ? JSON.parse(localStorage.getItem("AllCustomers")) : [],
+     bookings: [],
+     customers: [],
      isSidebarActive: false
 }
 

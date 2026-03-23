@@ -32,7 +32,8 @@ const SimpleTable = ({ headerTitles, gridClass, rowData, renderRow, isFetching, 
                                          ))
                                          :
                                          <div className="table-empty-block">
-                                                  <p>No data found</p>
+                                                  {/* <p>No data found</p> */}
+                                                  <DataLoader />
                                          </div>
                                  }
                         </div>
@@ -46,7 +47,7 @@ export default SimpleTable
 
 const TableRow = memo(({ gridClass, item, renderRow, redirectHandler }) => {
        return (
-             <div onClick={() => redirectHandler(item.rideID)} className={`simple-table-row ${gridClass}`}>
+             <div onClick={() => redirectHandler(item)} className={`simple-table-row ${gridClass}`}>
                        { renderRow(item)}
              </div>
        )

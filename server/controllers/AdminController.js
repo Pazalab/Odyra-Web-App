@@ -1,7 +1,8 @@
 import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
-import { generateAuthTokenForAdmin } from "../utils/tokens.js";
+import { generateAuthTokenForAdmin, generatePaymentToken } from "../utils/tokens.js";
 import Booking from "../models/bookings.js";
+import { sendPaymentLinkMail } from "../mail/actions/sendPaymentLinkMail.js"
 
 //Register user
 export const RegisterUser = asyncHandler(async(req, res) => {
@@ -89,4 +90,71 @@ export const GetAllCustomers = asyncHandler(async(req, res) => {
       } catch (error) {
             res.status(500).json({ message: "Internal server error: bookings query"})
       }
+})
+
+export const UpdateBookingStatus = asyncHandler(async(req, res) => {
+       const { bookingID, updateText } = req.body;
+
+       try {
+            const updatedBooking = await Booking.findOneAndUpdate({ rideID: bookingID}, {
+                    rideStatus: updateText
+            }, { new: true})
+
+             if(!updatedBooking){
+                    res.status(404).json({ message: "You booking couldn't be updated at this time."})
+             }
+
+             res.status(201).json({ 
+                  message: "Booking status updated successfully",
+                   data: updatedBooking
+            })
+       } catch (error) {
+            res.status(500).json({ message: 'Internal server error: booking status update failed'})
+       }
+})
+
+//Send out the payment link
+export const SendPaymentLink = asyncHandler(async(req, res) => {
+       const { bookingID } = req.body;
+
+       const existingBooking = await Booking.findOne({ rideID: bookingID});
+
+       if(!existingBooking){
+            res.status(404);
+            throw new Error("Booking not found.")
+       }
+
+       try {
+                  const token = generatePaymentToken(existingBooking);
+
+                  const paymentLink = `${process.env.CLIENT_URL}/payment/${token}`
+
+                  const userData = {
+                        name: existingBooking.customer.name,
+                        email: existingBooking.customer.email,
+                        paymentLink
+                  }
+                  const emailResult = await sendPaymentLinkMail(userData);
+
+                  if(emailResult.success){
+                        const updatedBooking = await Booking.findOneAndUpdate({ rideID: bookingID}, {
+                              rideStatus: "Awaiting Confirmation",
+                              "paymentLink.sent": true,
+                              "paymentLink.expiresAt": new Date(Date.now() + 15 * 60 * 1000)
+                        }, { new: true});
+
+                       res.status(201).json({ 
+                              message: "Payment link sent successfully",
+                              data: updatedBooking
+                        })
+
+                  }else{
+                        res.status(500).json({
+                               message: "Payment link not sent"
+                        })
+                  }
+       } catch (error) {
+            res.status(500).json({ message: 'Internal server error: booking status update failed'})
+       }
+
 })

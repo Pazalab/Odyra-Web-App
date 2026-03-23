@@ -43,8 +43,9 @@ const BookingsBody = () => {
           return bookings.slice(startIndex, endIndex)
   }, [page, limit, bookings])
 
-  const handleRowRedirect = (id) => {
-         navigate(`/admin/${adminInfo.id}/booking/${id}`)
+  const handleRowRedirect = (booking) => {
+         navigate(`/admin/${adminInfo.id}/booking/${booking.rideID}`)
+         sessionStorage.setItem("Current Booking", JSON.stringify(booking))
   }
   return (
     <div className='admin-bookings-body'>
@@ -69,54 +70,61 @@ const BookingsBody = () => {
                         />
                </div>
 
-                <SimpleTable 
-                       headerTitles={headerTitles}
-                       isFetchingData={isLoading}
-                       gridClass="bookingTable"
-                       rowData={paginatedData}
-                       redirectHandler={handleRowRedirect}
-                       renderRow={(booking) => (
-                            <>
-                                   <div className="booking-col">
-                                          <h4>{booking.rideID}</h4>
-                                  </div>
-                                  <div className="booking-col">
-                                          <h4>{booking.rideType}</h4>
-                                  </div>
-                                  <div className="booking-col">
-                                          <div className="col-profile">
-                                                  <img src={defaultPhoto} alt="" />
-                                                  <h4>{booking.customer.name}</h4>
-                                          </div>
-                                  </div>
-                                  <div className="booking-col">
-                                          <h4>{Math.round(booking.rideCost.totalFare) } <span className="aud">AUD $</span></h4>
-                                  </div>
-                                  <div className="booking-col status">
-                                          <div className={
-                                                  booking.rideStatus === "Requested" || booking.rideStatus === "requested" ? "status requested" :
-                                                  booking.rideStatus === "Confirmed" ? "status confirmed" :
-                                                  booking.rideStatus === "Ongoing" ? "status ongoing" :
-                                                  booking.rideStatus === "Completed" ? "status completed" : "status"
-                                          }>
-                                          <h5>{booking.rideStatus}</h5>
-                                  </div>
-                                  </div>
-                                  <div className="booking-col date">
-                                          <h4>{ ConvertDateToReadable(booking.createdAt)}</h4>
-                                  </div>
-                            </>
-                       )}
-                />
+               <div className="table-container">
+                        <div className="table-container-wrap">
+                                     <SimpleTable 
+                                                headerTitles={headerTitles}
+                                                isFetchingData={isLoading}
+                                                gridClass="bookingTable"
+                                                rowData={paginatedData}
+                                                redirectHandler={handleRowRedirect}
+                                                renderRow={(booking) => (
+                                                        <>
+                                                                <div className="booking-col">
+                                                                        <h4>{booking.rideID}</h4>
+                                                                </div>
+                                                                <div className="booking-col">
+                                                                        <h4>{booking.rideType}</h4>
+                                                                </div>
+                                                                <div className="booking-col">
+                                                                        <div className="col-profile">
+                                                                                <img src={defaultPhoto} alt="" />
+                                                                                <h4>{booking.customer.name}</h4>
+                                                                        </div>
+                                                                </div>
+                                                                <div className="booking-col">
+                                                                        <h4>{Math.round(booking.rideCost.totalFare) } <span className="aud">AUD $</span></h4>
+                                                                </div>
+                                                                <div className="booking-col status">
+                                                                        <div className={
+                                                                                booking.rideStatus === "Ride Requested" ? "status requested" :
+                                                                                booking.rideStatus === "Awaiting Confirmation" ? "status confirm" :
+                                                                                booking.rideStatus === "Payment Made" ? "status paid" :
+                                                                                booking.rideStatus === "Customer Picked" ? "status picked" :
+                                                                                booking.rideStatus === "Ride Completed" ? "status completed" : "status"
+                                                                        }>
+                                                                        <h5>{booking.rideStatus}</h5>
+                                                                </div>
+                                                                </div>
+                                                                <div className="booking-col date">
+                                                                        <h4>{ ConvertDateToReadable(booking.createdAt)}</h4>
+                                                                </div>
+                                                        </>
+                                                )}
+                                                />
 
-                <PaginationBlock
-                        totalResults={bookings.length}
-                        currentPage={page}
-                        pageSize={limit}
-                        onPageChange={(page) => moveToTheClickedPage(page, limit)}
-                        onPageSizeChange={(size) => moveToTheClickedPage(1, size)}
-                        pageSizeOptions={[5, 10, 20, 50]}
-                />
+                                                <PaginationBlock
+                                                        totalResults={bookings.length}
+                                                        currentPage={page}
+                                                        pageSize={limit}
+                                                        onPageChange={(page) => moveToTheClickedPage(page, limit)}
+                                                        onPageSizeChange={(size) => moveToTheClickedPage(1, size)}
+                                                        pageSizeOptions={[5, 10, 20, 50]}
+                                                />
+                        </div>
+               </div>
+
+                
     </div>
   )
 }

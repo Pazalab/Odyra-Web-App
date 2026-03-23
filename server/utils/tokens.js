@@ -21,3 +21,14 @@ export const generateAuthTokenForCustomers = (res, userId) => {
              maxAge: 2592000000 
        })
 }
+
+export const generatePaymentToken = (booking) => {
+      return jwt.sign(
+             {
+                  rideID: booking.rideID,
+                  email: booking.customer.email
+             },
+             process.env.JWT_SECRET,
+             { expiresIn: "15min" }
+      )
+}

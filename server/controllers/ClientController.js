@@ -117,7 +117,7 @@ export const RequestRide = asyncHandler(async(req, res) => {
                             email: customerEmail,
                             phone: customerPhone
                      },
-                     rideStatus: "Requested",
+                     rideStatus: "Ride Requested",
                      pickup: {
                             address: pickupAddress,
                             scheduledTimeofPickup: pickupDateTime

@@ -21,7 +21,8 @@ export const adminApiSlice = apiSlice.injectEndpoints({
                    query: () => ({
                          url: "/admin/all-bookings",
                          method: "GET"
-                   })
+                   }),
+                   providesTags: ["Bookings"]
             }),
 
             //Get all customers
@@ -30,7 +31,27 @@ export const adminApiSlice = apiSlice.injectEndpoints({
                         url: "/admin/all-customers",
                         method: "GET"
                   })
-            })
+            }),
+
+            //Update booking status
+             updateBookingStatus: builder.mutation({
+                   query: (payload) => ({
+                         url: "admin/booking/update-status",
+                         method: "PATCH",
+                         body: payload
+                   }),
+                   invalidatesTags: ["Bookings"]
+             }),
+
+             //Send payment link
+             sendPaymentLink: builder.mutation({
+                   query: (payload) => ({
+                          url: "/admin/booking/send-payment-link",
+                          method: "POST",
+                          body: payload,
+                   }),
+                   invalidatesTags: ["Bookings"]
+             })
        })
 })
 
@@ -38,5 +59,7 @@ export const {
      useLoginAdminMutation,
      useLogoutAdminMutation,
      useGetAllBookingsQuery,
-     useGetAllCustomersQuery
+     useGetAllCustomersQuery,
+     useUpdateBookingStatusMutation,
+     useSendPaymentLinkMutation
 } = adminApiSlice;

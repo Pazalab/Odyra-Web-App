@@ -15,8 +15,8 @@ const bookingsSchema = mongoose.Schema({
        },
        rideStatus: {
              type: String,
-             enum: ["Requested", "Confirmed", "Arrived", "In-progress", "Completed", "Canceled",],
-             default: "Requested"
+             enum: ['Ride Requested',"Awaiting Confirmation", "Payment Made", "Customer Picked", "Ride Completed", "Cancelled"],
+             default: "Ride Requested"
        },
        cancellationReason: String,
        pickup: {
@@ -42,7 +42,12 @@ const bookingsSchema = mongoose.Schema({
                     default: "Not paid"
               },
        },
-       stripeSessionId: String
+       stripeSessionId: String,
+       paymentLink: {
+             sent: Boolean,
+             expiresAt: Date,
+             paidAt: Date
+       }
 }, { timestamps: true });
 
 const Booking = mongoose.model("Booking", bookingsSchema);
