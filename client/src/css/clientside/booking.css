@@ -630,8 +630,62 @@
       color: white;
 }
 
+.payment-init-wrapper{
+       width: 100%;
+       height: 100vh;
+       display: flex;
+       align-items: center;
+       justify-content: center;
+}
 
+.verification-failure{
+      text-align: center;
+}
 
+.verification-failure span{
+      font-size: 60px;
+}
+.verification-failure span.success{
+      color: green;
+}
+.verification-failure span.error{
+      color: red;
+}
+.verification-failure h2{
+      font-size: 30px;
+      font-weight: 600;
+      color: rgb(50, 50, 50);
+}
+
+.verification-failure p{
+      font-size: 18px;
+      color: rgb(80, 80, 80);
+      margin: 10px 0;
+}
+
+.failure-btns{
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 20px;
+      flex-wrap: wrap;
+}
+.failure-btns button{
+      height: 45px;
+      padding: 0 30px;
+      border-radius: 6px;
+      -webkit-border-radius: 6px;
+      -moz-border-radius: 6px;
+      -ms-border-radius: 6px;
+      -o-border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      color: rgb(50, 50, 50);
+}
+.failure-btns .request{
+     background: var(--main-color);
+     color: white;
+}
 
 
 @media(max-width: 1090px){

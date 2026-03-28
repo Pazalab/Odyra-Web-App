@@ -68,6 +68,16 @@ export const clientApiSlice = apiSlice.injectEndpoints({
                           method: "GET"
                    })
              }),
+
+                        //Verify Payment Link
+           verifyPaymentLink: builder.mutation({
+                 query: (payload) => ({
+                         url: "/client/booking/verify-payment-link",
+                         method: "POST",
+                         body: payload
+                 })
+           }),
+
        })
 })
 
@@ -79,5 +89,6 @@ export const {
      useGetCustomerProfileQuery,
      useLogoutCustomerMutation,
      useGetCustomerBookingsQuery,
-     useCheckRideStatusQuery
+     useCheckRideStatusQuery,
+     useVerifyPaymentLinkMutation
 } = clientApiSlice;

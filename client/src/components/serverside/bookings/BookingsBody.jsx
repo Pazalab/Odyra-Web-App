@@ -20,6 +20,10 @@ const BookingsBody = () => {
   const { pathname } = useLocation();
   const { bookings, adminInfo } = useSelector(state => state.admin)
 
+  const sanitizedBookings = [...bookings].reverse();
+
+  console.log(sanitizedBookings)
+
   useEffect(() => {
           if(data) dispatch(setRideBookings([...data.bookings]))
   }, [data, dispatch])
@@ -40,8 +44,8 @@ const BookingsBody = () => {
           const startIndex = (page - 1) * limit;
           const endIndex = startIndex + limit;
 
-          return bookings.slice(startIndex, endIndex)
-  }, [page, limit, bookings])
+          return sanitizedBookings.slice(startIndex, endIndex)
+  }, [page, limit, sanitizedBookings])
 
   const handleRowRedirect = (booking) => {
          navigate(`/admin/${adminInfo.id}/booking/${booking.rideID}`)

@@ -51,7 +51,17 @@ export const adminApiSlice = apiSlice.injectEndpoints({
                           body: payload,
                    }),
                    invalidatesTags: ["Bookings"]
-             })
+             }),
+
+             //Resend Payment Link
+             resendPaymentLink: builder.mutation({
+                   query: (payload) => ({
+                          url: "/admin/booking/resend-payment-link",
+                          method: "POST",
+                          body: payload
+                   })
+             }),
+
        })
 })
 
@@ -61,5 +71,6 @@ export const {
      useGetAllBookingsQuery,
      useGetAllCustomersQuery,
      useUpdateBookingStatusMutation,
-     useSendPaymentLinkMutation
+     useSendPaymentLinkMutation,
+     useResendPaymentLinkMutation
 } = adminApiSlice;

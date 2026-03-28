@@ -10,6 +10,7 @@ import RideDetails from "./RideDetails";
 import { useSendPaymentLinkMutation } from "../../../redux/slices/admin/adminApiSlice";
 import ActionLoader from "../common/spinners/ActionLoader";
 import { setDashboardNotification } from "../../../redux/slices/util/utilActionsSlice";
+import ResendPaymentLinkBtn from "./ResendPaymentLinkBtn";
 
 const SingleBookingBody = () => {
   const { adminInfo } = useSelector(state => state.admin);
@@ -46,6 +47,7 @@ const SingleBookingBody = () => {
          }
   }
 
+
   return (
     <div className="single-booking-body">
                <div className="single-booking-header">
@@ -68,7 +70,10 @@ const SingleBookingBody = () => {
                                    <button>
                                               { isLoading ? <ActionLoader /> : <>
                                                      { currentBooking.paymentLink && currentBooking.paymentLink.sent ?
-                                                           <span>Resend Payment Link</span> :
+                                                            <ResendPaymentLinkBtn  
+                                                                     bookingID={currentBooking.rideID}
+                                                                     statusChange={setCurrentBooking}
+                                                                /> :
                                                            <span onClick={sendPaymentLink}>Send Payment Link</span>
                                                     }
                                               </>}

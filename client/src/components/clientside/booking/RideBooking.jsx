@@ -48,9 +48,9 @@ const RideBooking = () => {
                  customerRideId: rideID,
                  pickupAddress: chosenLeg ? chosenLeg.start_address : "",
                  dropoffAddress: chosenLeg ? chosenLeg.end_address : "",
-                 waitingCharge: chosenLeg && waitingCharge ? ((Number(chosenLeg.distance.text.split(" ")[0])*1.85)*0.2).toFixed(2) : 0,
+                 waitingCharge: chosenLeg && waitingCharge ? Math.round((Number(chosenLeg.distance.text.split(" ")[0]) * 1.85) * 0.2) : 0,
                  rideDuration: chosenLeg ? chosenLeg.duration.text : "",
-                 rideCost: chosenLeg ? (Number(chosenLeg.distance.text.split(" ")[0])*1.85).toFixed(2) : 0,
+                 rideCost: chosenLeg ? Math.round(Number(chosenLeg.distance.text.split(" ")[0]) * 1.85) : 0,
                  ...data,
                  paymentMethod: payment,
 
@@ -247,11 +247,11 @@ const RideBooking = () => {
                                                            <h3>Cost</h3>
                                                            <div className="ride-cost-block">
                                                                     <p>Ride</p>
-                                                                    <h4>{chosenLeg ? `${(Number(chosenLeg.distance.text.split(" ")[0])*1.85).toFixed(2)}`: 0 } AUD $</h4>
+                                                                    <h4>{ chosenLeg ? `${Math.round(Number(chosenLeg.distance.text.split(" ")[0]) * 1.85)}` : 0 } AUD</h4>
                                                            </div>
                                                            <div className="ride-cost-block">
                                                                      <p>Wait time</p>
-                                                                     <h4>{waitingCharge && chosenLeg ? `${ ((Number(chosenLeg.distance.text.split(" ")[0])*1.85) * 0.2).toFixed(2)}` : 0} AUD $</h4>
+                                                                      <h4>{waitingCharge && chosenLeg ? `${Math.round((Number(chosenLeg.distance.text.split(" ")[0]) * 1.85) * 0.2)}` : 0} AUD</h4>
                                                            </div>
                                                 </div>
                                                 <h4>
@@ -260,11 +260,16 @@ const RideBooking = () => {
                                                 <div className="total-row">
                                                            <h4>Total</h4>
                                                            
-                                                           <h5>
-                                                                 { chosenLeg && waitingCharge ? 
-                                                                      (Number((Number(chosenLeg.distance.text.split(" ")[0])*1.85).toFixed(2)) + Number(((Number(chosenLeg.distance.text.split(" ")[0])*1.85)*0.2).toFixed(2))).toFixed(2) :
-                                                                     chosenLeg ? (Number(chosenLeg.distance.text.split(" ")[0])*1.85).toFixed(2) : "0"
-                                                       } AUD $</h5>
+                                                          <h5>
+                                                                 {chosenLeg && waitingCharge ? 
+                                                                        Math.round(
+                                                                        Math.round(Number(chosenLeg.distance.text.split(" ")[0]) * 1.85) + 
+                                                                        Math.round((Number(chosenLeg.distance.text.split(" ")[0]) * 1.85) * 0.2)
+                                                                        ) :
+                                                                        chosenLeg ? 
+                                                                        Math.round(Number(chosenLeg.distance.text.split(" ")[0]) * 1.85) : 
+                                                                        "0"
+                                                                } AUD</h5>
                                                 </div>
 
                                                 <div className="booking-form-btn">
