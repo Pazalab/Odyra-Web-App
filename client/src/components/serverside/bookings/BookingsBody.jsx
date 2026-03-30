@@ -22,8 +22,6 @@ const BookingsBody = () => {
 
   const sanitizedBookings = [...bookings].reverse();
 
-  console.log(sanitizedBookings)
-
   useEffect(() => {
           if(data) dispatch(setRideBookings([...data.bookings]))
   }, [data, dispatch])

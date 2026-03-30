@@ -7,14 +7,15 @@ import Footer from "../../../components/clientside/common/Footer";
 import errorIcon from "../../../assets/folder.png"
 import { useSelector } from "react-redux";
 
-const BookingSuccessful = () => {
-  const [searchParams] = useSearchParams();
+const BookingConfirmation = () => {
+    const [searchParams] = useSearchParams();
 
-  const rideID = searchParams.get("rideID");
-  const { data, isLoading, error } = useCheckRideStatusQuery(rideID, {
-      skip: !rideID
-  })
- const { profile } = useSelector(state => state.client);
+    const rideID = searchParams.get("rideID");
+    const { data, isLoading, error } = useCheckRideStatusQuery(rideID, {
+        skip: !rideID
+    })
+    const { profile } = useSelector(state => state.client);
+
   return (
     <>
             <Navbar />
@@ -38,10 +39,10 @@ const BookingSuccessful = () => {
                                                                <div className="booking-success">
                                                                       <img src={successIcon} alt="" />
                                                                 </div>
-                                                                <h2>Booking made successfully!</h2>
+                                                                <h2>Booking Confirmation Successful</h2>
                                                                 { data && 
                                                                         <div className="booking-data">
-                                                                                <p>Hi,{data.ride.customer}. Thank you for booking your ride with Odyra safaris, the driver will send you a payment link 1 hour before your journey to confirm the booking.</p>
+                                                                                <p>Hi,{data.ride.customer}. Your ride with Odyra Safaris has been successfully confirmed. The driver will give you a call to streamline the details about your journey.</p>
                                                                                 <p>Below is a summary of your ride:</p>
                                                                                 <div className="booking-data-content">
                                                                                          <div className="booking-data-item">
@@ -58,7 +59,7 @@ const BookingSuccessful = () => {
                                                                                          </div>
                                                                                          <div className="booking-data-item">
                                                                                                   <h3>Total ride cost</h3>
-                                                                                                  <p>{data && data.ride.rideCost} <span className="aud">AUD </span></p>
+                                                                                                  <p>{data && data.ride.rideCost} <span className="aud">AUD</span></p>
                                                                                          </div>
                                                                                          <div className="booking-data-item">
                                                                                                   <h3>Payment status</h3>
@@ -83,4 +84,4 @@ const BookingSuccessful = () => {
   )
 }
 
-export default BookingSuccessful
+export default BookingConfirmation

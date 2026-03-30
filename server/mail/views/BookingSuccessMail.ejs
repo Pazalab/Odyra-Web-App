@@ -1,0 +1,67 @@
+<html>
+    <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Odyra Safaris - Booking Made</title>
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght,YOPQ@100..900,300&display=swap" rel="stylesheet">
+            <style>
+                     /* Email client resets */
+                     .ExternalClass, .ReadMsgBody{
+                            width: 100%;
+                            background-color: #f4f4f4;
+                     }
+                     body, table, td, p, a{
+                          margin: 0;
+                          padding: 0;
+                          border: 0;
+                     }
+                     table{
+                         border-collapse: collapse !important;
+                     }
+                     body{
+                           font-family: "Kumbh Sans", 'Segoe UI', 'Helvetica Neue', Helvetica, Arial,  sans-serif;
+                           background-color: #f4f4f4;
+                           width: 100% !important;
+                           height: 100% !important;
+                     }
+
+                    /* Custom font classes */
+                    .font-primary {
+                        font-family:  "Kumbh Sans", 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                    }
+                      /* Mobile responsiveness */
+                    @media only screen and (max-width: 600px) {
+                            .container {
+                                width: 100% !important;
+                            }
+                            .button {
+                                width: 100% !important;
+                                display: block !important;
+                            }
+                    }
+            </style>
+   </head>
+<body style="margin: 0; padding: 20px; background-color: #f4f4f4; font-family: 'Kumbh Sans', 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+            <div style="display: block;">
+                <p>Hi <%= name %>,</p> <br>
+                <p>Your ride with Odyra Safaris has been successfully booked. We're thrilled to have you on board and are looking forward to getting you to your destination safely and comfortably. </p>
+                 <h4>What happens next?</h4>
+                <p>To secure your slot, we'll send you a payment link <strong>one (1) hour before your scheduled journey</strong>. 
+                Once payment is confirmed, your ride is locked in and ready to go.</p>
+                <div>
+                         <p><strong>Booking Summary</strong></p>
+                          <p>Pickup: <span><%= pickup %></span></p>
+                          <p>Dropoff: <span><%= dropoff %></span></p>
+                          <p>Date & Time: <span><%= date %></span></p>
+                          <p>Ride Cost: <span><%= rideCost %> AUD</span> <span style="font-size: 13px; color: #777;"> (to be paid 1 hour before departure)</span> </p>
+                </div>
+                <br>
+               <p>If you have questions or concerns, our friendly Customer Success Team is always ready to help!</p>
+               <p>Send us an email at support@odyra.com.au</p>
+               <p>Best Wishes</p>
+               <p>The Odyra Safaris Team.</p>
+            </div>
+</body>
+</html>

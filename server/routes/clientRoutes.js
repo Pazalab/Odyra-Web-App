@@ -9,6 +9,7 @@ import {
     LogoutCustomer,
     RegisterCustomer,
     RequestRide,
+    VerifyPaymentLink,
 } from "../controllers/ClientController.js";
 import { customerProtect } from "../middlewares/authMiddleware.js";
 
@@ -23,4 +24,6 @@ router.post("/initiate-payment", InitiateStripePayment);
 router.post("/stripe-webhook", fullfillStripePayment);
 router.get("/check-ride/:rideID", ConfirmRideCreation);
 router.get("/customer-bookings", customerProtect, GetCustomerBookings);
+router.post("/booking/verify-payment-link", VerifyPaymentLink);
+
 export default router;

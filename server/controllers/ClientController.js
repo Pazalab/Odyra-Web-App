@@ -5,7 +5,9 @@ import dotenv from "dotenv"
 import { generateCustomerId, generateRideID } from "../utils/chores.js";
 import { CreateNewRide } from "../services/newBookingService.js";
 import User from "../models/userModel.js";
-import { generateAuthTokenForCustomers } from "../utils/tokens.js";
+import { generateAuthTokenForCustomers, VerifyPaymentToken } from "../utils/tokens.js";
+import { sendBookingSuccessfulMail } from "../mail/actions/BookingSuccessMail.js";
+import { sendBookingConfirmationMail } from "../mail/actions/BookingConfirmationMail.js";
 dotenv.config()
 
 //Register Customer
@@ -102,9 +104,12 @@ export const RequestRide = asyncHandler(async(req, res) => {
       } = req.body;
      
       const rideExists = await Booking.findOne({ rideID: customerRideId });
+
       if(rideExists){
-            res.status(503);
-            throw new Error("Your ride request has already been sent. Please be patient.");
+            return res.status(200).json({
+                 rideID: rideExists.rideID,
+                 message: "Booking already exists"
+            })
       }
 
       try {
@@ -140,12 +145,33 @@ export const RequestRide = asyncHandler(async(req, res) => {
                      throw new Error("Sorry! Your booking was not successful. Please try again later.")
               }
 
+              const payload = {
+                     email: customerEmail,
+                     name: newBooking.customer.name.split(" ")[0],
+                     pickup: newBooking.pickup.address,
+                     dropoff: newBooking.dropoff.address,
+                     rideCost: newBooking.rideCost.totalFare,
+                     date: newBooking.pickup.scheduledTimeofPickup
+              }
+              //send email notification of booking placement
+              sendBookingSuccessfulMail(payload).catch(err => {
+                      console.error("Email sending failed", err)
+              });
               res.json({ rideID: newBooking.rideID })
       } catch (error) {
                console.log(error)
+
+               if (error.code === 11000) {
+                     // Extremely rare with proper ID generation, but handle gracefully
+                     return res.status(409).json({ 
+                            message: "Duplicate booking detected. Please try again.",
+                            retry: true
+                     });
+              }
               res.status(500).json({ message: "An error occured. We are currently resolving it."})
       }
 })
+
 
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -202,7 +228,7 @@ export const InitiateStripePayment = asyncHandler(async(req, res) => {
              },
              mode: "payment",
              cancel_url: "http://localhost:5174/new-booking",
-             success_url: `http://localhost:5174/booking-confirmation?rideID=${customerRideId}`
+             success_url: `/payment-confirmation?rideID=${customerRideId}`
       })
 
       if(!session){
@@ -235,10 +261,11 @@ export const fullfillStripePayment = asyncHandler(async(req, res) => {
                       payment_status,
                       ...session.metadata
               }
-
-              CreateNewRide(booking_payload).catch(err => {
-                     console.log(`Your ride has not been booked`,err)
-              })
+              await Booking.findOneAndUpdate({ rideID: booking_payload.ride_id },
+                     {
+                          "rideCost.paymentStatus": booking_payload.payment_status,
+                     },
+              )
        }
       
 })
@@ -252,6 +279,24 @@ export const ConfirmRideCreation = asyncHandler(async(req, res) => {
                      return res.status(404).json({ message: "Sorry! Your booking was not found"})
               }
 
+              if(booking.rideCost.paymentStatus === "paid"){
+                     await Booking.findOneAndUpdate({ rideID: rideID}, {
+                            rideStatus: "Payment Made"
+                     })
+                    const payload = {
+                            email: booking.customer.email,
+                            name: booking.customer.name.split(" ")[0],
+                            pickup: booking.pickup.address,
+                            dropoff: booking.dropoff.address,
+                            rideCost: booking.rideCost.totalFare,
+                            date: booking.pickup.scheduledTimeofPickup,
+                            bookingId: rideID
+                     }
+                     sendBookingConfirmationMail(payload).catch(err => {
+                            console.error("Payment notification email failed", err)
+                     })
+              }
+
               res.status(200).json({ exists: true, ride: {
                       customer: booking.customer.name.split(" ")[0],
                       pickupAddress: booking.pickup.address,
@@ -261,7 +306,7 @@ export const ConfirmRideCreation = asyncHandler(async(req, res) => {
                       paymentStatus: booking.rideCost.paymentStatus
               }})
       } catch (error) {
-             //console.log(error)
+             console.log(error)
              res.status(500).json({ message: "Internal server error"})
       }
 })
@@ -270,4 +315,106 @@ export const GetCustomerBookings = asyncHandler(async(req, res) => {
        const customerBookings = await Booking.find({ "customer.email": req.user.email })
 
        res.status(200).json({ bookings: customerBookings})
+})
+
+export const VerifyPaymentLink = asyncHandler(async(req, res) => {
+       const { token } =  req.body;
+
+       if(!token){
+             return res.status(400).json({
+                  success: false,
+                   title: "Invalid payment link.",
+                   message: "Please make sure have a valid payment link to proceed."
+             })
+       }
+
+       const verification = VerifyPaymentToken(token);
+
+       if(!verification.success){
+             if(verification.reason === "expired"){
+                  return res.status(410).json({
+                        success: false,
+                        error: "PAYMENT_LINK_EXPIRED",
+                        title: "Payment Link Expired",
+                        message: verification.message,
+                  })
+             }
+
+             return res.status(400).json({
+                  success: false,
+                  error: "INVALID_PAYMENT_LINK",
+                  title: "Invalid Payment Link",
+                  message: verification.message
+             })
+       }
+
+       const redirectHost = process.env.NODE_ENV === "production" ? `https://dev.odyra.com` : `http://localhost:5173`;
+
+       const booking = await Booking.findOne({ rideID: verification.data.rideID});
+
+       if(!booking){
+              return res.status(404).json({
+                     success: false,
+                     error: "BOOKING_NOT_FOUND",
+                     message: "The booking associated with this payment link no longer exists",
+                     title: "Booking Not Found"
+              })
+       }
+
+       if(booking.rideCost.paymentStatus === "Paid" || booking.rideStatus === "Payment Made"){
+              return res.status(409).json({
+                      success: false,
+                      error: "PAYMENT_ALREADY_PROCESSED",
+                      title: 'Payment already processed',
+                      message: 'This payment has already been processed. Your ride is confirmed'
+              })
+       }
+
+       const totalRideCost = Math.round((Number(booking.rideCost.rideFare)+Number(booking.rideCost.waitingFee))*100); //
+
+       const session = await stripe.checkout.sessions.create({
+            customer_email: booking.customer.email,
+             line_items: [{
+                  quantity: 1, 
+                  price_data: {
+                         currency: "aud",
+                         unit_amount: totalRideCost,
+                         product_data: {
+                               name: `${booking.rideType} booking: ${booking.pickup.address} to ${booking.dropoff.address}`,
+                               description: `Customer: ${booking.customer.name} | Duration: ${booking.estimatedRideDuration}`
+                         }
+                  }
+             }],
+             client_reference_id: booking.rideID,
+             metadata: {
+                   ride_id: booking.rideID,
+                   ride_type: booking.rideType,
+                   drop_off: booking.dropoff.address,
+                   pickup: booking.pickup.address,
+                   duration: booking.estimatedRideDuration,
+                   ride_cost: Math.round(Number(booking.rideCost.rideFare)*100),
+                   waiting_fee: Math.round(Number(booking.rideCost.waitingFee)*100),
+                   full_ride_cost: (totalRideCost/100),
+                   c_name: booking.customer.name,
+                   c_email: booking.customer.email,
+                   c_phone: booking.customer.phone,
+                   pickup_time_date: booking.pickup.scheduledTimeofPickup,
+                   passengers: booking.passengers,
+                   bags: booking.luggageCount
+             },
+             mode: "payment",
+             cancel_url: `${redirectHost}/new-booking`,
+             success_url: `${redirectHost}/payment-confirmation?rideID=${booking.rideID}`
+      })
+
+       if(!session){
+               return res.status(500).json({
+                      success: "false",
+                      error: "PAYMENT_FAILURE",
+                      title: "Payment Failed.",
+                      message: "Your payment has failed. Please try again later."
+               })
+       }
+
+       res.status(201).json({ url: session.url })
 })

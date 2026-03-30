@@ -142,7 +142,7 @@ const AdminSummary = () => {
                                                      <div className="driver-block-col">
                                                                 <img src={adminInfo && adminInfo.image} className="box-profile" alt="" />
                                                                 <div className="driver-block-col-texts">
-                                                                         <h4>Albert Okundi</h4>
+                                                                         <h4>{adminInfo && adminInfo.name}</h4>
                                                                          <p>+254 7123 45678</p>
                                                                 </div>
                                                      </div>

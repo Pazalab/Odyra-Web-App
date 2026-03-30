@@ -16,6 +16,7 @@ import ProtectedRoutes from './utils/ProtectedRoutes';
 import AdminBookings from './pages/serverside/AdminBookings';
 import SingleAdminBooking from './pages/serverside/SingleAdminBooking';
 import InitiatePayment from './pages/clientside/booking/InitiatePayment';
+import BookingConfirmation from './pages/clientside/booking/BookingConfirmation';
 
 function App() {
   const location = useLocation();
@@ -32,6 +33,7 @@ function App() {
                <Route path="/auth/signup" element={<Signup />} />
                <Route path='/auth/stage' element={<Stage />} />
                <Route path='/booking-confirmation' element={<BookingSuccessful />} />
+               <Route path="/payment-confirmation" element={<BookingConfirmation />} />
                <Route path='/booking/initiate-payment/:id' element={<InitiatePayment />} />
                
                <Route element={<CustomerRoutes />}>

@@ -5,6 +5,7 @@ import {
     LoginUser, 
     LogoutUser, 
     RegisterUser, 
+    ResendPaymentLink, 
     SendPaymentLink, 
     UpdateBookingStatus,
     
@@ -20,6 +21,6 @@ router.get("/all-bookings", protect, GetAllBookings);
 router.get("/all-customers", protect, GetAllCustomers);
 router.patch("/booking/update-status", protect, UpdateBookingStatus)
 router.post("/booking/send-payment-link", protect, SendPaymentLink);
-
+router.post("/booking/resend-payment-link", protect, ResendPaymentLink); 
 
 export default router; 

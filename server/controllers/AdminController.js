@@ -3,6 +3,7 @@ import User from "../models/userModel.js";
 import { generateAuthTokenForAdmin, generatePaymentToken } from "../utils/tokens.js";
 import Booking from "../models/bookings.js";
 import { sendPaymentLinkMail } from "../mail/actions/sendPaymentLinkMail.js"
+import { ResendPaymentLinkMail } from "../mail/actions/resendPaymentLinkMail.js";
 
 //Register user
 export const RegisterUser = asyncHandler(async(req, res) => {
@@ -127,7 +128,7 @@ export const SendPaymentLink = asyncHandler(async(req, res) => {
        try {
                   const token = generatePaymentToken(existingBooking);
 
-                  const paymentLink = `${process.env.CLIENT_URL}/payment/${token}`
+                     const paymentLink = `${process.env.NODE_ENV === 'production' ? `https://dev.odyra.com`: `${process.env.CLIENT_URL}`}/booking/initiate-payment/${token}`
 
                   const userData = {
                         name: existingBooking.customer.name,
@@ -154,7 +155,51 @@ export const SendPaymentLink = asyncHandler(async(req, res) => {
                         })
                   }
        } catch (error) {
-            res.status(500).json({ message: 'Internal server error: booking status update failed'})
+            res.status(500).json({ message: 'Internal server error: sending payment link failed'})
+       }
+})
+
+//Resend out the payment link
+
+export const ResendPaymentLink = asyncHandler(async(req, res) => {
+       const { bookingID } = req.body;
+
+      const existingBooking = await Booking.findOne({ rideID: bookingID});
+
+       if(!existingBooking){
+            res.status(404);
+            throw new Error("Booking not found.")
        }
 
+      try {
+            const token = generatePaymentToken(existingBooking);
+
+            const paymentLink = `${process.env.NODE_ENV === 'production' ? `https://dev.odyra.com`: `${process.env.CLIENT_URL}`}/booking/initiate-payment/${token}`
+
+            const userData = {
+                  name: existingBooking.customer.name,
+                  email: existingBooking.customer.email,
+                  paymentLink
+            }
+
+            const emailResult = await ResendPaymentLinkMail(userData);
+
+            if(emailResult.success){
+                  const updatedBooking = await Booking.findOneAndUpdate({ rideID: bookingID }, {
+                         "paymentLink.expiresAt" : new Date(Date.now() + 15 * 60 * 1000)
+                  }, { new: true});
+
+                  res.status(201).json({
+                        message: "Payment link resent successfully.",
+                        data: updatedBooking
+                  })
+            }else{
+                  res.status(500).json({
+                        message: "Payment link couldn't be resent."
+                  })
+            }
+
+      } catch (error) {
+            res.status(500).json({ message: 'Internal server error: resending payment link failed'})
+      }
 })

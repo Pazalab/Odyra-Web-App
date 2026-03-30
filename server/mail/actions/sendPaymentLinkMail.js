@@ -22,21 +22,20 @@ export const sendPaymentLinkMail = async(userData) => {
                         from: `Odyra Safaris <${process.env.EMAIL}>`,
                         to: `${email}`,
                         name: "Odyra Safaris",
-                        subject: "Ride request confirmation - Payment Link",
+                        subject: "Payment Link for Ride Confirmation",
                         html: html
                 }
 
                 //send mail
-             const info =  await mailTransport.sendMail(mailOptions);
+                await mailTransport.sendMail(mailOptions);
 
-             return {
-                   success: true,
-                   
-             }
+                 return {
+                      success: true,
+                 }
        } catch (error) {
             return {
                   success: false,
-                 error: error.message
+                  error: error.message
             }
        }
 }
