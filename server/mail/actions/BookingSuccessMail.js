@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
-import { mailTransport } from "../../config/mailconfig.js";
 import ejs from "ejs";
 import fs from "fs";
+import { mailMsg } from "../../config/mailgunConfig.js";
 
 dotenv.config();
 
@@ -37,11 +37,9 @@ export const sendBookingSuccessfulMail = async(userData) => {
         }
 
         //send mail
-        await mailTransport.sendMail(mailOptions);
+        await mailMsg.messages.create(process.env.MAILGUN_DOMAIN, mailOptions)
 
-            return {
-                success: true,
-            }
+        return { success: true,}
        } catch (error) {
             return {
                   success: false,
