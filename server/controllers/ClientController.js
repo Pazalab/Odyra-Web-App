@@ -348,7 +348,7 @@ export const VerifyPaymentLink = asyncHandler(async(req, res) => {
              })
        }
 
-       const redirectHost = process.env.NODE_ENV === "production" ? `https://dev.odyra.com` : `http://localhost:5173`;
+       const redirectHost = process.env.NODE_ENV === "production" ? `${process.env.PROD_URL}` : `http://localhost:5173`;
 
        const booking = await Booking.findOne({ rideID: verification.data.rideID});
 

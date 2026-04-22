@@ -77,7 +77,8 @@ input[type=number] {
      margin: auto;
 }
 
-.error{
+.error,
+.required{
      font-size: 13px;
      color: red;
 }

@@ -17,6 +17,7 @@ import AdminBookings from './pages/serverside/AdminBookings';
 import SingleAdminBooking from './pages/serverside/SingleAdminBooking';
 import InitiatePayment from './pages/clientside/booking/InitiatePayment';
 import BookingConfirmation from './pages/clientside/booking/BookingConfirmation';
+import AdminSettings from './pages/serverside/AdminSettings';
 
 function App() {
   const location = useLocation();
@@ -46,6 +47,7 @@ function App() {
                         <Route path='/admin/:id/dashboard' element={<AdminDashboard />} />
                         <Route path='/admin/:id/bookings' element={<AdminBookings />} />
                         <Route path='/admin/:id/booking/:book_id' element={<SingleAdminBooking />} />
+                        <Route path="/admin/:id/settings" element={<AdminSettings />} />
                </Route>
     </Routes>
   )

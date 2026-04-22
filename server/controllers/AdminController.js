@@ -128,7 +128,7 @@ export const SendPaymentLink = asyncHandler(async(req, res) => {
        try {
                   const token = generatePaymentToken(existingBooking);
 
-                  const paymentLink = `${process.env.NODE_ENV === 'production' ? `https://dev.odyra.com`: `${process.env.CLIENT_URL}`}/booking/initiate-payment/${token}`
+                  const paymentLink = `${process.env.NODE_ENV === 'production' ? `${process.env.PROD_URL}`: `${process.env.CLIENT_URL}`}/booking/initiate-payment/${token}`
 
                   const userData = {
                         name: existingBooking.customer.name,
@@ -174,7 +174,7 @@ export const ResendPaymentLink = asyncHandler(async(req, res) => {
       try {
             const token = generatePaymentToken(existingBooking);
 
-            const paymentLink = `${process.env.NODE_ENV === 'production' ? `https://dev.odyra.com`: `${process.env.CLIENT_URL}`}/booking/initiate-payment/${token}`
+            const paymentLink = `${process.env.NODE_ENV === 'production' ? `${process.env.PROD_URL}`: `${process.env.CLIENT_URL}`}/booking/initiate-payment/${token}`
 
             const userData = {
                   name: existingBooking.customer.name,
