@@ -72,6 +72,44 @@ export const LogoutUser = asyncHandler(async(req, res) => {
        res.status(200).json({ message: "You have logged out of your account."})
 })
 
+//Get Admin Profile
+export const GetAdminProfile = asyncHandler(async(req, res) => {
+       const user = await User.findById(req.user._id).select("-password");
+
+       if(user){
+            res.status(200).json({ profile: user})
+       }else{
+            res.status(500).json({ message: "We could not retrieve your profile at this time. Please try again later."})
+       }
+})
+
+//Update Admin Profile
+export const UpdateAdminProfile = asyncHandler(async(req, res) => {
+       const { name, username, bio, availability } = JSON.parse(req.body.data)
+       let profileURL = req.user.profilePicture;
+
+       if(req.file){
+            profileURL = `https://cdn.odyra.com.au/${req.file.key}`;
+       }
+
+       try {
+           const updatedProfile = await User.findByIdAndUpdate(req.user._id, {
+                  name: name,
+                  profilePicture: profileURL,
+                  username: username,
+                  bio: bio,
+                  availabeForRides: Boolean(availability)
+            }, { new: true, select: "-password" })
+
+
+            if(updatedProfile){
+                    res.status(201).json({profile: updatedProfile, message: "Profile updated successfully"})
+            }
+       } catch (error) {
+            res.status(500).json({ message: "Error occured while updating your profile"})
+       }
+})
+
 //Get all bookings
 export const GetAllBookings = asyncHandler(async(req, res) => {
       try {

@@ -12,6 +12,7 @@ import { webhookSort } from "./middlewares/webhookMiddleware.js";
 const app = express();
 
 app.use(webhookSort);
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //initialize env variables

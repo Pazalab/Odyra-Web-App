@@ -1,8 +1,13 @@
 import { MdOutlineAddPhotoAlternate } from "react-icons/md"
 import { useImagePayloadProcessor } from "../../../../hooks/imageUpload"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { PiCheck } from "react-icons/pi";
 import { IoTrashOutline } from "react-icons/io5";
+import { useUpdateProfileSettingsMutation } from "../../../../redux/slices/admin/adminApiSlice";
+import { useForm } from "react-hook-form"
+import ActionLoader from "../../common/spinners/ActionLoader";
+import { setDashboardNotification } from "../../../../redux/slices/util/utilActionsSlice";
+import { setAdminCredentials } from "../../../../redux/slices/admin/adminActionsSlice";
 
 const ProfileSettingsTab = () => {
   const { adminInfo } = useSelector(state => state.admin)
@@ -21,11 +26,31 @@ const ProfileSettingsTab = () => {
             return adminInfo.image
         }
  }
+
+ const { register, handleSubmit, formState: { errors}} = useForm();
+const [ UpdateProfileSettings, { isLoading }] = useUpdateProfileSettingsMutation();
+const dispatch = useDispatch();
+
+const SubmitProfileSettings = async (data) => {
+     const formData = new FormData();
+
+    formData.append("data", JSON.stringify(data));
+    formData.append("profilePic", fileList[0])
+
+    try {
+        const res = await UpdateProfileSettings(formData).unwrap();
+        dispatch(setAdminCredentials({...res.profile}))
+        dispatch(setDashboardNotification({ status: true, message: res.message, type: "success"}))
+    } catch (error) {
+         console.log(error)
+    }
+}
+
   return (
     <div className="settings-tab-wrap">
             <h3>Personal Information</h3>
 
-            <form>
+            <form onSubmit={handleSubmit(SubmitProfileSettings)}>
                      <h4>Profile Picture</h4>
                      <div className="picture-upload">
                              <div className="picture-upload-col">
@@ -53,17 +78,19 @@ const ProfileSettingsTab = () => {
                      <div className="profile-information">
                             <div className="input-row">
                                     <label htmlFor="fullname">Full Name <span className="required">*</span></label>
-                                    <input type="text" className="form-control" placeholder="Fullname"/>
+                                    <input type="text" {...register("name", { required: "Please enter your full name"})} className="form-control" placeholder="Fullname"/>
+                                    { errors.name && <span className="error">{errors.name.message}</span>}
                             </div>
 
                             <div className="input-row">
                                     <label htmlFor="fullname">Username <span className="required">*</span></label>
-                                    <input type="text" className="form-control" placeholder="@username"/>
+                                    <input type="text" {...register("username", { required: "Please enter your username"})}  className="form-control" placeholder="@username"/>
+                                     { errors.username && <span className="error">{errors.username.message}</span>}
                             </div>
 
                              <div className="input-row">
                                     <label htmlFor="fullname">Bio</label>
-                                    <textarea className="textarea-control" placeholder="Driver's bio description"></textarea>
+                                    <textarea className="textarea-control" { ...register("bio")} placeholder="Driver's bio description"></textarea>
                              </div>
 
                              <div className="input-row adjust">
@@ -73,7 +100,7 @@ const ProfileSettingsTab = () => {
                                                     <span>Are you currently available for service</span>
                                             </div>
                                             <div className="option-action">
-                                                    <input type="checkbox"  />
+                                                    <input type="checkbox" {...register("availability")}  />
                                                     <span className="no-choice">No</span>
                                                     <span className="yes-choice">Yes</span>
                                                     <span className="ball"></span>
@@ -83,7 +110,7 @@ const ProfileSettingsTab = () => {
                      </div>
 
                      <div className="form-submit-btn">
-                               <button type="submit">Save Changes</button>
+                               <button type="submit">{ isLoading ? <ActionLoader /> : "Save Changes" }</button>
                      </div>
             </form>
             

@@ -140,11 +140,12 @@
      display: flex;
      align-items: center;
      flex-wrap: wrap;
+     gap: 20px;
 }
 
 .picture-upload-col{
      position: relative;
-     cursor: pointer;;
+     cursor: pointer;
 }
 
 .picture-upload img{
@@ -172,15 +173,18 @@
       display: none;
       background: rgba(0, 0, 0, 0.3);
 }
-.picture-upload:hover .upload-overlay{
+
+.picture-upload-col:hover .upload-overlay{
      display: flex;
      align-items: center;
      justify-content: center;
 }
+
 .upload-overlay span{
      color: white;
      font-size: 18px;
 }
+
 .upload-overlay input{
       cursor: pointer;
       position: absolute;

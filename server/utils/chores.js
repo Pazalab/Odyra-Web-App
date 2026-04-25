@@ -1,3 +1,7 @@
+import multer from "multer";
+import multerS3 from "multer-s3"
+import { s3Client } from "../config/s3Config.js";
+
 export const generateRideID = () => {
        const prefix = "ODYRA";
 
@@ -21,3 +25,17 @@ export const generateCustomerId = () => {
   }
   return result;
 };
+
+
+export const upload_pic= multer({
+      storage: multerS3({
+           s3: s3Client,
+          bucket: process.env.CLOUDFLARE_R2_BUCKET,
+          contentType: multerS3.AUTO_CONTENT_TYPE,
+          key: function(req, file, cb) {
+               const uniqueSuffix = Math.round(Math.random() * 1E9);
+               const filename = `profile-pictures/${uniqueSuffix}${file.originalname}`;
+               cb(null, filename)
+          }
+      })
+})

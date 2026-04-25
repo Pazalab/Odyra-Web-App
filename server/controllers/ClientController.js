@@ -50,6 +50,7 @@ export const LoginCustomer = asyncHandler(async(req, res) => {
               res.status(401);
               throw new Error("Invalid account credentials");
        }
+       
        if(customer.role === "Admin"){
               res.status(401);
               throw new Error("Invalid customer account")

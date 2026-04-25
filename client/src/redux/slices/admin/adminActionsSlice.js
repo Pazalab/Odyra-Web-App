@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
      adminInfo: localStorage.getItem("AdminInfo") ? JSON.parse(localStorage.getItem("AdminInfo")) : null,
+     profile: localStorage.getItem("Profile") ? JSON.parse(localStorage.getItem("Profile")) : null,
      bookings: [],
      customers: [],
      isSidebarActive: false
@@ -32,6 +33,14 @@ const adminActionSlice = createSlice({
               },
               closeMobileSidebar: (state) => {
                       state.isSidebarActive = false;
+              },
+              setAdminProfile: (state, action) => {
+                     state.profile = action.payload;
+                     localStorage.setItem("Profile", JSON.stringify(action.payload))
+              },
+              clearAdminProfile: (state) => {
+                     state.profile = null;
+                     localStorage.removeItem("Profile")
               }
        }
 })

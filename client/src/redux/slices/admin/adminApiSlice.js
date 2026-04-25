@@ -62,6 +62,16 @@ export const adminApiSlice = apiSlice.injectEndpoints({
                    })
              }),
 
+            //Update Settings
+            updateProfileSettings: builder.mutation({
+                  query: (payload) => ({
+                        url: "/admin/settings/update-profile-settings",
+                        method: "PUT",
+                        body: payload
+                  }),
+                  invalidatesTags: ["Profile"]
+            }),
+
        })
 })
 
@@ -72,5 +82,6 @@ export const {
      useGetAllCustomersQuery,
      useUpdateBookingStatusMutation,
      useSendPaymentLinkMutation,
-     useResendPaymentLinkMutation
+     useResendPaymentLinkMutation,
+     useUpdateProfileSettingsMutation
 } = adminApiSlice;
