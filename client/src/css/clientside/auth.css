@@ -342,6 +342,15 @@
       -ms-border-radius: 70px;
       -o-border-radius: 70px;
 }
+
+.auth-stage{
+      display: flex;
+      height: 100vh;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+}
+
 @media(max-width: 768px){
       .auth-form-body{
            width: 100%;

@@ -4,7 +4,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import { useLogoutAdminMutation } from "../../../redux/slices/admin/adminApiSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { clearAdminCredentials, openMobileSidebar } from "../../../redux/slices/admin/adminActionsSlice";
+import { clearAdminCredentials, clearEverything, openMobileSidebar } from "../../../redux/slices/admin/adminActionsSlice";
 import { IoCloseOutline } from "react-icons/io5";
 import { useCallback, useEffect, useRef, useState } from "react";
 import logo from "../../../assets/logo.png"
@@ -14,7 +14,7 @@ const Topbar = () => {
     const [ logoutUser ] = useLogoutAdminMutation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { adminInfo } = useSelector(state => state.admin)
+    const { adminInfo, profile } = useSelector(state => state.admin)
     const popRef = useRef();
     const [ popStatus, setPopStatus ] = useState(false);
 
@@ -23,6 +23,7 @@ const Topbar = () => {
                  await logoutUser().unwrap();
                 navigate("/admin/auth/login")
                 dispatch(clearAdminCredentials());
+                dispatch(clearEverything());
           } catch (error) {
                 console.log(error)
           }
@@ -68,18 +69,18 @@ const Topbar = () => {
                          <div className="profile-block">
                                    <div className="profile-block-item" onClick={() => setPopStatus(true)}>
                                              <div className="profile-image">
-                                                     <img src={adminInfo && adminInfo.image} alt="" />
+                                                     <img src={ profile && profile.profilePicture } alt="" />
                                              </div>
-                                             <h4>{adminInfo && adminInfo.name.split(" ")[0]}<span><IoIosArrowDown /></span></h4>
+                                             <h4>{ profile && profile.name.split(" ")[0]}<span><IoIosArrowDown /></span></h4>
                                    </div>
                                    <div ref={popRef} className={ popStatus ? "profile-block-pop active" : "profile-block-pop" }>
                                               <span className="close-pop" onClick={() => setPopStatus(false)}><IoCloseOutline /></span>
                                              <div className="profile-pop-image">
-                                                      <img src={adminInfo && adminInfo.image} alt="" />
+                                                      <img src={ profile && profile.profilePicture } alt="" />
                                              </div>
                                              <div className="profile-pop-texts">
-                                                     <h3>{adminInfo && adminInfo.name}</h3>
-                                                     <p>{adminInfo && adminInfo.email}</p>
+                                                     <h3>{ profile && profile.name}</h3>
+                                                     <p>{ profile && profile.email}</p>
                                              </div>
                                              <ul>
                                                      <li><Link to={"/"}>Profile</Link></li>

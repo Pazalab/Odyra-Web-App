@@ -2,7 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
       clientInfo: localStorage.getItem("ClientInfo") ? JSON.parse(localStorage.getItem("ClientInfo")) : null,
-      profile: localStorage.getItem("ClientProfile") ? JSON.parse(localStorage.getItem("ClientProfile")) : null
+      profile: localStorage.getItem("ClientProfile") ? JSON.parse(localStorage.getItem("ClientProfile")) : null,
+      settings: null
 }
 
 const clientActionSlice = createSlice({
@@ -31,6 +32,9 @@ const clientActionSlice = createSlice({
            },
            clearProfileBookings: (state) => {
                 state.profile.bookings = null;
+           },
+           setGeneralSettings: (state, action) => {
+                state.settings = action.payload
            }
 
      }
@@ -43,6 +47,7 @@ export const {
       clearCustomerProfile,
       addBookingsToProfile,
       clearProfileBookings,
+      setGeneralSettings
 } = clientActionSlice.actions;
 
 export default clientActionSlice.reducer;

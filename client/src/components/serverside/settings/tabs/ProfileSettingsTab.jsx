@@ -7,27 +7,35 @@ import { useUpdateProfileSettingsMutation } from "../../../../redux/slices/admin
 import { useForm } from "react-hook-form"
 import ActionLoader from "../../common/spinners/ActionLoader";
 import { setDashboardNotification } from "../../../../redux/slices/util/utilActionsSlice";
-import { setAdminCredentials } from "../../../../redux/slices/admin/adminActionsSlice";
+import { setAdminProfile } from "../../../../redux/slices/admin/adminActionsSlice";
 
 const ProfileSettingsTab = () => {
-  const { adminInfo } = useSelector(state => state.admin)
+  const { profile } = useSelector(state => state.admin)
  const { 
     fileList,
     previewUrl,
     clearSelectedImage,
     uploadStatus,
+    setUploadStatus,
     handleFileChange,
     fileError
   } = useImagePayloadProcessor();
 
  const getImageSource = () => {
         if(previewUrl) return previewUrl;
-        if(adminInfo.image && adminInfo.image !== ""){
-            return adminInfo.image
+        if(profile.profilePicture && profile.profilePicture !== ""){
+            return profile.profilePicture;
         }
  }
 
- const { register, handleSubmit, formState: { errors}} = useForm();
+ const { register, handleSubmit, formState: { errors}} = useForm({
+        defaultValues: {
+                name: profile?.name || "",
+                username: profile?.username || "",
+                bio: profile?.bio || "",
+                availability: profile?.availableForRides ?? false
+        }
+ });
 const [ UpdateProfileSettings, { isLoading }] = useUpdateProfileSettingsMutation();
 const dispatch = useDispatch();
 
@@ -39,12 +47,14 @@ const SubmitProfileSettings = async (data) => {
 
     try {
         const res = await UpdateProfileSettings(formData).unwrap();
-        dispatch(setAdminCredentials({...res.profile}))
+        dispatch(setAdminProfile({...res.profile}));
+        setUploadStatus(false);
         dispatch(setDashboardNotification({ status: true, message: res.message, type: "success"}))
     } catch (error) {
-         console.log(error)
+         dispatch(setDashboardNotification({ status: true, message: error.data.message, type: "error"}))
     }
 }
+
 
   return (
     <div className="settings-tab-wrap">
@@ -100,7 +110,7 @@ const SubmitProfileSettings = async (data) => {
                                                     <span>Are you currently available for service</span>
                                             </div>
                                             <div className="option-action">
-                                                    <input type="checkbox" {...register("availability")}  />
+                                                    <input type="checkbox" {...register("availability")} defaultChecked={profile?.availableForRides || false}  />
                                                     <span className="no-choice">No</span>
                                                     <span className="yes-choice">Yes</span>
                                                     <span className="ball"></span>

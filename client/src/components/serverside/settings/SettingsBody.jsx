@@ -2,6 +2,10 @@ import { useState } from "react"
 import { IoIosArrowDown } from "react-icons/io";
 import ProfileSettingsTab from "./tabs/ProfileSettingsTab";
 import PricingSettingsTab from "./tabs/PricingSettingsTab";
+import { useGetPlatformSettingsQuery } from "../../../redux/slices/admin/adminApiSlice";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { setAdminPlatformSettings } from "../../../redux/slices/admin/adminActionsSlice";
 
 const settingTabs = [
     { id: 0, name: "Profile"},
@@ -13,11 +17,19 @@ const settingTabs = [
 const SettingsBody = () => {
   const [ tab, setTab ] = useState("Profile");
   const [ tabDropdown, setTabDropdown ] = useState(false);
+  const { data } = useGetPlatformSettingsQuery({ refetchOnMountOrArgChange: true})
+  const dispatch = useDispatch();
 
   const handleTabDropdown = (val) => {
          setTab(val);
          setTabDropdown(false);
   }
+
+  useEffect(() => {
+       if(data){
+           dispatch(setAdminPlatformSettings({...data.settings}))
+       }
+  }, [data, dispatch])
   return (
     <div className="dashboard-settings">
               <div className="dash-settings-wrapper">

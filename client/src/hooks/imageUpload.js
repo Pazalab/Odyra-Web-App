@@ -69,6 +69,7 @@ export const useImagePayloadProcessor = () => {
      return {
           fileList,
           uploadStatus,
+          setUploadStatus,
           previewUrl,
           handleFileChange,
           clearSelectedImage,

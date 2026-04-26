@@ -5,7 +5,8 @@ const initialState = {
      profile: localStorage.getItem("Profile") ? JSON.parse(localStorage.getItem("Profile")) : null,
      bookings: [],
      customers: [],
-     isSidebarActive: false
+     isSidebarActive: false,
+     platformSettings: null
 }
 
 const adminActionSlice = createSlice({
@@ -18,7 +19,7 @@ const adminActionSlice = createSlice({
               },
               clearAdminCredentials: (state) => {
                      state.adminInfo = null;
-                     localStorage.removeItem("AdminInfo")
+                     localStorage.clear();
               },
               setRideBookings: (state, action) => {
                      state.bookings = action.payload;
@@ -38,20 +39,32 @@ const adminActionSlice = createSlice({
                      state.profile = action.payload;
                      localStorage.setItem("Profile", JSON.stringify(action.payload))
               },
-              clearAdminProfile: (state) => {
+              setAdminPlatformSettings: (state, action) => {
+                     state.platformSettings = action.payload;
+              },
+
+              clearEverything: (state) => {
+                     state.bookings = []
+                     state.customers = []
+                     localStorage.clear();
+                     state.platformSettings = null;
                      state.profile = null;
-                     localStorage.removeItem("Profile")
               }
        }
 })
 
 export const {
       setAdminCredentials,
+      setAdminProfile,
+      clearAdminProfile,
       clearAdminCredentials,
       setRideBookings,
       setAllCustomers,
       openMobileSidebar,
-      closeMobileSidebar
+      closeMobileSidebar,
+      setAdminPlatformSettings,
+      clearAdminPlatformSettings,
+      clearEverything,
 } = adminActionSlice.actions;
 
 export default adminActionSlice.reducer;

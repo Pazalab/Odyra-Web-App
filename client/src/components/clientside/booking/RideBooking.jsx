@@ -26,7 +26,7 @@ const RideBooking = () => {
     const [ dropoffPoint, setDropoffPoint ] = useState("");
     const [ paymentChoiceErr, setPaymentChoiceErr ] = useState("")
     const { register, handleSubmit, formState: { errors }, setValue} = useForm();
-    const { profile } = useSelector(state => state.client);
+    const { profile, settings } = useSelector(state => state.client);
     const { pathname } = useLocation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -38,6 +38,8 @@ const RideBooking = () => {
 
     const rideID = useMemo(() => generateRideID(), [])
 
+    const costPerKm = settings && Number(settings.pricingSettings.perKilometerRate);
+
     const handleBookingSubmit = async(data) => {
            if(payment === ""){
                 setPaymentChoiceErr("Please select a payment option");
@@ -48,9 +50,9 @@ const RideBooking = () => {
                  customerRideId: rideID,
                  pickupAddress: chosenLeg ? chosenLeg.start_address : "",
                  dropoffAddress: chosenLeg ? chosenLeg.end_address : "",
-                 waitingCharge: chosenLeg && waitingCharge ? Math.round((Number(chosenLeg.distance.text.split(" ")[0]) * 1.85) * 0.2) : 0,
+                 waitingCharge: chosenLeg && waitingCharge ? Math.round((Number(chosenLeg.distance.text.split(" ")[0]) * costPerKm) * 0.2) : 0,
                  rideDuration: chosenLeg ? chosenLeg.duration.text : "",
-                 rideCost: chosenLeg ? Math.round(Number(chosenLeg.distance.text.split(" ")[0]) * 1.85) : 0,
+                 rideCost: chosenLeg ? Math.round(Number(chosenLeg.distance.text.split(" ")[0]) * costPerKm) : 0,
                  ...data,
                  paymentMethod: payment,
 
@@ -247,11 +249,11 @@ const RideBooking = () => {
                                                            <h3>Cost</h3>
                                                            <div className="ride-cost-block">
                                                                     <p>Ride</p>
-                                                                    <h4>{ chosenLeg ? `${Math.round(Number(chosenLeg.distance.text.split(" ")[0]) * 1.85)}` : 0 } AUD</h4>
+                                                                    <h4>{ chosenLeg ? `${Math.round(Number(chosenLeg.distance.text.split(" ")[0]) * costPerKm)}` : 0 } AUD</h4>
                                                            </div>
                                                            <div className="ride-cost-block">
                                                                      <p>Wait time</p>
-                                                                      <h4>{waitingCharge && chosenLeg ? `${Math.round((Number(chosenLeg.distance.text.split(" ")[0]) * 1.85) * 0.2)}` : 0} AUD</h4>
+                                                                      <h4>{waitingCharge && chosenLeg ? `${Math.round((Number(chosenLeg.distance.text.split(" ")[0]) * costPerKm) * 0.2)}` : 0} AUD</h4>
                                                            </div>
                                                 </div>
                                                 <h4>
@@ -263,11 +265,11 @@ const RideBooking = () => {
                                                           <h5>
                                                                  {chosenLeg && waitingCharge ? 
                                                                         Math.round(
-                                                                        Math.round(Number(chosenLeg.distance.text.split(" ")[0]) * 1.85) + 
-                                                                        Math.round((Number(chosenLeg.distance.text.split(" ")[0]) * 1.85) * 0.2)
+                                                                        Math.round(Number(chosenLeg.distance.text.split(" ")[0]) * costPerKm) + 
+                                                                        Math.round((Number(chosenLeg.distance.text.split(" ")[0]) * costPerKm) * 0.2)
                                                                         ) :
                                                                         chosenLeg ? 
-                                                                        Math.round(Number(chosenLeg.distance.text.split(" ")[0]) * 1.85) : 
+                                                                        Math.round(Number(chosenLeg.distance.text.split(" ")[0]) * costPerKm) : 
                                                                         "0"
                                                                 } AUD</h5>
                                                 </div>

@@ -22,7 +22,7 @@ const AdminLogin = () => {
        try {
             const res = await loginUser(data).unwrap();
             dispatch(setAdminCredentials({...res}));
-            navigate(`/admin/${res.id}/dashboard`)
+            navigate(`/admin/auth/stage`)
        } catch (error) {
             alert("Error occured");
             console.log(error)

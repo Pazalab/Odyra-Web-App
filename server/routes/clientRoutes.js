@@ -12,6 +12,7 @@ import {
     VerifyPaymentLink,
 } from "../controllers/ClientController.js";
 import { customerProtect } from "../middlewares/authMiddleware.js";
+import { GetPlatformSettings } from "../controllers/AdminController.js";
 
 const router = express.Router();
 
@@ -25,5 +26,6 @@ router.post("/stripe-webhook", fullfillStripePayment);
 router.get("/check-ride/:rideID", ConfirmRideCreation);
 router.get("/customer-bookings", customerProtect, GetCustomerBookings);
 router.post("/booking/verify-payment-link", VerifyPaymentLink);
+router.get("/settings", GetPlatformSettings);
 
 export default router;

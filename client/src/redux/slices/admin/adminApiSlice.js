@@ -9,6 +9,13 @@ export const adminApiSlice = apiSlice.injectEndpoints({
                          body: payload
                    })
               }),
+              getAdminProfile : builder.query({
+                    query: (id) => ({
+                          url: `/admin/profile/${id}`,
+                          method: "GET"
+                    }),
+                    providesTags: ["Profile"]
+              }),
               logoutAdmin: builder.mutation({
                    query: () => ({
                         url: "admin/logout",
@@ -72,16 +79,37 @@ export const adminApiSlice = apiSlice.injectEndpoints({
                   invalidatesTags: ["Profile"]
             }),
 
+            //Update Pricing Settings
+            updatePricingSettings: builder.mutation({
+                   query: (payload) => ({
+                        url: "/admin/settings/update-pricing-settings",
+                        method: "PUT",
+                        body: payload
+                   }),
+                   invalidatesTags: ["Settings"]
+            }),
+
+            getPlatformSettings: builder.query({
+                   query: () => ({
+                          url: "/admin/settings",
+                          method: "GET"
+                   }),
+                   providesTags: ["Settings"]
+            }),
+
        })
 })
 
 export const {
      useLoginAdminMutation,
+     useGetAdminProfileQuery,
      useLogoutAdminMutation,
      useGetAllBookingsQuery,
      useGetAllCustomersQuery,
      useUpdateBookingStatusMutation,
      useSendPaymentLinkMutation,
      useResendPaymentLinkMutation,
-     useUpdateProfileSettingsMutation
+     useUpdateProfileSettingsMutation,
+     useUpdatePricingSettingsMutation,
+     useGetPlatformSettingsQuery
 } = adminApiSlice;

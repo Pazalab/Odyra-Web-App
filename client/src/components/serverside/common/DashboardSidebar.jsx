@@ -9,12 +9,12 @@ import { LuCircleHelp } from "react-icons/lu";
 import { PiPowerBold } from "react-icons/pi";
 import { useDispatch, useSelector } from "react-redux";
 import { useLogoutAdminMutation } from "../../../redux/slices/admin/adminApiSlice";
-import { clearAdminCredentials, closeMobileSidebar } from "../../../redux/slices/admin/adminActionsSlice";
+import { clearAdminCredentials, clearEverything, closeMobileSidebar } from "../../../redux/slices/admin/adminActionsSlice";
 import { FiChevronLeft } from "react-icons/fi";
 
 const DashboardSidebar = () => {
    const [ logout ] = useLogoutAdminMutation();
-   const { adminInfo, isSidebarActive } = useSelector(state => state.admin);
+   const { adminInfo, isSidebarActive, profile } = useSelector(state => state.admin);
    const dispatch = useDispatch();
    const navigate = useNavigate();
 
@@ -22,6 +22,7 @@ const DashboardSidebar = () => {
           try {
                  await logout().unwrap();
                 dispatch(clearAdminCredentials());
+                dispatch(clearEverything());
                 navigate("/admin/auth/login")
           } catch (error) {
                 console.log(error)
@@ -31,10 +32,13 @@ const DashboardSidebar = () => {
    const handleCloseMobileSidebar = () => {
           dispatch(closeMobileSidebar())
    }
+
+   const identifier = (profile?.username  && profile?.username.trim() !== "") ? profile.username : adminInfo.id;
+
   return (
     <div className={`${ isSidebarActive ? "dashboard-sidebar mobile-active" : "dashboard-sidebar"}`}>
             <div className="dashboard-logo">
-                    <Link to={`/admin/${adminInfo.id}/dashboard`} >
+                    <Link to={`/admin/${identifier}/dashboard`} >
                             <img src={logo} alt="" />
                     </Link>
                     <div className="mobile-close-btn" onClick={handleCloseMobileSidebar}>
@@ -43,11 +47,11 @@ const DashboardSidebar = () => {
             </div>
             <div className="dashboard-nav">
                      <ul>
-                              <li><NavLink to={`/admin/${adminInfo.id}/dashboard`}><span><RxDashboard /></span> Dashboard</NavLink></li>
-                              <li><NavLink to={`/admin/${adminInfo.id}/bookings`}><span><BsJournalBookmark /></span> Bookings</NavLink></li>
-                              <li><NavLink to={`/admin/${adminInfo.id}/analytics`}><span><MdOutlineAnalytics  /></span> Analytics</NavLink></li>
-                              <li><NavLink to={`/admin/${adminInfo.id}/transactions`}><span><AiOutlineBank /></span> Transactions</NavLink></li>
-                              <li><NavLink to={`/admin/${adminInfo.id}/settings`}><span><IoSettingsOutline /></span> Settings</NavLink></li>
+                              <li><NavLink to={`/admin/${identifier}/dashboard`}><span><RxDashboard /></span> Dashboard</NavLink></li>
+                              <li><NavLink to={`/admin/${identifier}/bookings`}><span><BsJournalBookmark /></span> Bookings</NavLink></li>
+                              <li><NavLink to={`/admin/${identifier}/analytics`}><span><MdOutlineAnalytics  /></span> Analytics</NavLink></li>
+                              <li><NavLink to={`/admin/${identifier}/transactions`}><span><AiOutlineBank /></span> Transactions</NavLink></li>
+                              <li><NavLink to={`/admin/${identifier}/settings`}><span><IoSettingsOutline /></span> Settings</NavLink></li>
                      </ul>
 
                      <div className="dashboard-bottom">

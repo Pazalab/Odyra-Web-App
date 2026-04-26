@@ -326,6 +326,7 @@
 .profile-block-pop{
       position: absolute;
       width: 250px;
+      border: 1px solid rgba(226, 226, 226, 0.315);
       background: white;
       right: 0;
       z-index: 99;

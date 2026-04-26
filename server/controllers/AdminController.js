@@ -4,6 +4,8 @@ import { generateAuthTokenForAdmin, generatePaymentToken } from "../utils/tokens
 import Booking from "../models/bookings.js";
 import { sendPaymentLinkMail } from "../mail/actions/sendPaymentLinkMail.js"
 import { ResendPaymentLinkMail } from "../mail/actions/resendPaymentLinkMail.js";
+import mongoose from "mongoose";
+import Settings from "../models/settingsModel.js";
 
 //Register user
 export const RegisterUser = asyncHandler(async(req, res) => {
@@ -74,7 +76,10 @@ export const LogoutUser = asyncHandler(async(req, res) => {
 
 //Get Admin Profile
 export const GetAdminProfile = asyncHandler(async(req, res) => {
-       const user = await User.findById(req.user._id).select("-password");
+       const { id } = req.params;
+       const objectId = new mongoose.Types.ObjectId(id)
+       
+       const user = await User.findById(objectId).select("-password");
 
        if(user){
             res.status(200).json({ profile: user})
@@ -98,7 +103,7 @@ export const UpdateAdminProfile = asyncHandler(async(req, res) => {
                   profilePicture: profileURL,
                   username: username,
                   bio: bio,
-                  availabeForRides: Boolean(availability)
+                  availableForRides: Boolean(availability)
             }, { new: true, select: "-password" })
 
 
@@ -240,4 +245,43 @@ export const ResendPaymentLink = asyncHandler(async(req, res) => {
       } catch (error) {
             res.status(500).json({ message: 'Internal server error: resending payment link failed'})
       }
+})
+
+
+//Update Pricing Settings
+export const UpdatePricingSettings = asyncHandler(async(req, res) => {
+       const { baseFare, perHourRate, perKilometreRate, luggageThreshold, luggageCost, cancellationFee, waitingFee }  = req.body;
+
+       try {
+            const updatedPricing = await Settings.findOneAndUpdate(
+                  { _id: "platform_settings"},
+                  { $set: {
+                        'pricingSettings.baseFare': baseFare,
+                        'pricingSettings.perHourRate': perHourRate,
+                        'pricingSettings.perKilometerRate': perKilometreRate,
+                        'pricingSettings.luggageThreshold': luggageThreshold,
+                        'pricingSettings.luggageCost': luggageCost,
+                        'pricingSettings.cancellationFee': cancellationFee,
+                        'pricingSettings.waitingFee': waitingFee,
+                  }},
+                  { upsert: true, new: true, runValidators: true }
+            )
+
+            if(updatedPricing){
+                   res.status(201).json({ settings: updatedPricing, message: "Pricing settings updated successfully"})
+            }
+       } catch (error) {
+            res.status(500).json({ message: "Sorry. Your pricing settings cannot be updated at this time"})
+       }
+})
+
+//Get Platform settings
+export const GetPlatformSettings = asyncHandler(async(req, res) => {
+       const settings = await Settings.find({})
+
+       if(settings){
+             res.status(200).json({ settings: settings[0] })
+       }else{
+             res.status(500).json({ message: "Sorry we could not fetch your platform settings at this time"})
+       }
 })

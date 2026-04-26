@@ -18,6 +18,7 @@ import SingleAdminBooking from './pages/serverside/SingleAdminBooking';
 import InitiatePayment from './pages/clientside/booking/InitiatePayment';
 import BookingConfirmation from './pages/clientside/booking/BookingConfirmation';
 import AdminSettings from './pages/serverside/AdminSettings';
+import AuthStage from './pages/clientside/AuthStage';
 
 function App() {
   const location = useLocation();
@@ -31,6 +32,7 @@ function App() {
                <Route path='/new-booking' element={<NewBooking />} />
                <Route path='/auth/login' element={<Login />} />
                <Route path='/admin/auth/login' element={<AdminLogin />} />
+               <Route path="/admin/auth/stage" element={<AuthStage />} />
                <Route path="/auth/signup" element={<Signup />} />
                <Route path='/auth/stage' element={<Stage />} />
                <Route path='/booking-confirmation' element={<BookingSuccessful />} />
