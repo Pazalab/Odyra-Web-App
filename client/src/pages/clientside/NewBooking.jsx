@@ -9,6 +9,7 @@ import { setGeneralSettings } from "../../redux/slices/client/clientActionsSlice
 const NewBooking = () => {
   const { data } = useGetPlatformSettingsQuery({ refetchOnMountOrArgChange: true})
   const dispatch = useDispatch();
+  
   useEffect(() => {
         if(data){
              dispatch(setGeneralSettings({...data.settings}))

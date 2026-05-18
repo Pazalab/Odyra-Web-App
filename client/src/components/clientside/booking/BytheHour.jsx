@@ -287,15 +287,14 @@ const BytheHour = () => {
 export default BytheHour
 
 
-
-const Directions = ({ pickup, dropoff, setLeg}) => {
+const Directions = ({ pickup, dropoff, stopover, setLeg}) => {
     const map = useMap();
     const routesLibrary = useMapsLibrary("routes");
     const [ directionsService, setDirectionsService ] = useState();
     const [ directionsRenderer, setDirectionsRenderer ] = useState();
     const [ route, setRoute] = useState();
     
-    const leg = route && route[0].legs[0];
+    //const leg = route && route[0].legs[0];
 
     useEffect(() => {
             if(!routesLibrary || !map) return;
@@ -307,26 +306,58 @@ const Directions = ({ pickup, dropoff, setLeg}) => {
     useEffect(() => {
             if(!directionsService || !directionsRenderer) return;
 
-            if(pickup !== "" && dropoff !== ""){
-                directionsService.route({
-                        origin: pickup,
-                        destination: dropoff,
-                        travelMode: "DRIVING",
-                }).then(result => {
-                        directionsRenderer.setDirections(result);
-                        setRoute(result.routes)
-                })
-            }
-    }, [ directionsRenderer, directionsService, dropoff, pickup])
+           if(pickup !== "" && dropoff !== ""){
+                const request = {
+                         origin: pickup,
+                         destination: dropoff,
+                         travelMode: "DRIVING"
+                }
+
+                if(stopover && stopover !== ""){
+                     request.waypoints = [
+                        { location: stopover, stopover: true }
+                     ]
+                }
+                directionsService.route(request)
+                    .then(result => {
+                           directionsRenderer.setDirections(result);
+                           setRoute(result.routes[0])
+                    }).catch(error => console.log("Directions request failed: ", error))
+           }
+
+    }, [ directionsRenderer, directionsService, stopover, dropoff, pickup])
 
    useEffect(() => {
-         if(!leg){
-                return;;
-        }else{
-                setLeg(leg)
-        }
-   }, [setLeg, leg])
+        if (!route || !route.legs) return;
 
+         const legsArray = route.legs;
+
+        const totalDistanceMeters = route.legs.reduce((sum, leg) => sum + leg.distance.value, 0);
+        const totalDurationSeconds = route.legs.reduce((sum, leg) => sum + leg.duration.value, 0);
+
+        const formattedDistance = `${(totalDistanceMeters / 1000).toFixed(1)} km`
+        const formattedDuration = totalDurationSeconds >= 3600
+            ? `${Math.floor(totalDurationSeconds / 3600)} hours ${Math.round((totalDurationSeconds % 3600) / 60)} mins`
+            : `${Math.round(totalDurationSeconds / 60)} mins`;
+
+        const startAddress = legsArray[0].start_address;
+
+        const stopoverAddress = legsArray.length > 1 ? legsArray[0].end_address : null;
+
+        const endAddress = legsArray[legsArray.length - 1].end_address;
+
+        const combinedLeg = {
+            startAddress,
+            stopoverAddress,
+            endAddress,
+            distance: { text: formattedDistance, },
+            duration: { text: formattedDuration, },
+
+        }
+        setLeg(combinedLeg)
+   }, [setLeg, route])
+
+ 
     return null;
 }
 
@@ -376,7 +407,6 @@ return (
       )
 }
 
-
 const CombinedPickDrop = ({setPickupPoint, setDropoffPoint}) => {
         const map = useMap();
         const placesLibrary = useMapsLibrary("places");
@@ -390,10 +420,10 @@ const CombinedPickDrop = ({setPickupPoint, setDropoffPoint}) => {
            <> 
                { placesService ? <>
                         <div className="booking-form-row">
-                                <PlacesWrapBox title={"Pick up address"} selectPoint={setPickupPoint} />
+                                <PlacesWrapBox title={"Pick up"} selectPoint={setPickupPoint} />
                         </div>
                         <div className="booking-form-row">
-                                <PlacesWrapBox title={"Drop off address"} selectPoint={setDropoffPoint}  /> 
+                                <PlacesWrapBox title={"Drop off"} selectPoint={setDropoffPoint}  /> 
                         </div>
                </> : ""}
 

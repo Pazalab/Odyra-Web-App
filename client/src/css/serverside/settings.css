@@ -465,7 +465,11 @@
 .input-grid-row .input-row{
      margin-top: 0;
 }
-
+.input-grid-row-3{
+     display: grid;
+     grid-template-columns: 1fr 1fr 1fr;
+     gap: 20px;
+}
 
 
 
@@ -523,7 +527,8 @@
      .dash-settings-tabs ul.tabs{
           display: none;
      }
-     .input-grid-row{
+     .input-grid-row,
+     .input-grid-row-3{
            grid-template-columns: 1fr;
      }
      .settings-tab-wrap{

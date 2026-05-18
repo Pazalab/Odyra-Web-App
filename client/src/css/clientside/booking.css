@@ -686,6 +686,9 @@
      background: var(--main-color);
      color: white;
 }
+.stop-over-wrap{
+      margin-top: 10px;
+}
 
 
 @media(max-width: 1090px){

@@ -250,7 +250,18 @@ export const ResendPaymentLink = asyncHandler(async(req, res) => {
 
 //Update Pricing Settings
 export const UpdatePricingSettings = asyncHandler(async(req, res) => {
-       const { baseFare, perHourRate, perKilometreRate, luggageThreshold, luggageCost, cancellationFee, waitingFee }  = req.body;
+       const { 
+            baseFare,
+            perHourRate, 
+            tenKilometreRate,
+            twentyKilometreRate,
+            beyondTwentyKilometreRate,
+            luggageThreshold, 
+            luggageCost, 
+            cancellationFee, 
+            waitingFee 
+            
+      }  = req.body;
 
        try {
             const updatedPricing = await Settings.findOneAndUpdate(
@@ -258,7 +269,9 @@ export const UpdatePricingSettings = asyncHandler(async(req, res) => {
                   { $set: {
                         'pricingSettings.baseFare': baseFare,
                         'pricingSettings.perHourRate': perHourRate,
-                        'pricingSettings.perKilometerRate': perKilometreRate,
+                        'pricingSettings.perKilometerRate.tenKilometreRate': tenKilometreRate,
+                         'pricingSettings.perKilometerRate.twentyKilometreRate': twentyKilometreRate,
+                          'pricingSettings.perKilometerRate.beyondTwentyKilometreRate': beyondTwentyKilometreRate,
                         'pricingSettings.luggageThreshold': luggageThreshold,
                         'pricingSettings.luggageCost': luggageCost,
                         'pricingSettings.cancellationFee': cancellationFee,
@@ -271,6 +284,7 @@ export const UpdatePricingSettings = asyncHandler(async(req, res) => {
                    res.status(201).json({ settings: updatedPricing, message: "Pricing settings updated successfully"})
             }
        } catch (error) {
+            console.log(error)
             res.status(500).json({ message: "Sorry. Your pricing settings cannot be updated at this time"})
        }
 })

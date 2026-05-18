@@ -53,6 +53,12 @@ const BookingConfirmation = () => {
                                                                                                   <h3>Dropoff address</h3>
                                                                                                   <p>{data && data.ride.dropOff}</p>
                                                                                          </div>
+                                                                                         { data && data.ride.stopOverAddress && data.ride.stopOverAddress !== "" && (
+                                                                                                <div className="booking-data-item">
+                                                                                                        <h3>Stopover Address</h3>
+                                                                                                        <p>{data.ride.stopOverAddress }</p>
+                                                                                                </div>
+                                                                                         )}
                                                                                          <div className="booking-data-item">
                                                                                                   <h3>Estimated ride duration</h3>
                                                                                                   <p>{data && data.ride.duration}</p>

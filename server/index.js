@@ -11,6 +11,12 @@ import { webhookSort } from "./middlewares/webhookMiddleware.js";
 //initialize express app
 const app = express();
 
+//set up cors
+app.use(cors({
+       credentials: true,
+       origin: ["http://localhost:5173", "http://localhost:5174", "https://dev.odyra.com.au/"]
+}))
+
 app.use(webhookSort);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -23,11 +29,6 @@ const port = process.env.PORT || 4000;
 //set up cookies
 app.use(cookieParser());
 
-// //set up cors
-app.use(cors({
-       credentials: true,
-       origin: true
-}))
 
 //Routes
 app.use("/api/v1/client", ClientRoutes);

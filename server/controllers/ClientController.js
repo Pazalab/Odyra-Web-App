@@ -92,6 +92,7 @@ export const RequestRide = asyncHandler(async(req, res) => {
             rideType, 
             pickupAddress, 
             dropoffAddress, 
+            stopOverAddress,
             customerName, 
             customerEmail, 
             rideDuration, 
@@ -103,7 +104,7 @@ export const RequestRide = asyncHandler(async(req, res) => {
             customerPhone,
             customerRideId,
       } = req.body;
-     
+
       const rideExists = await Booking.findOne({ rideID: customerRideId });
 
       if(rideExists){
@@ -131,6 +132,9 @@ export const RequestRide = asyncHandler(async(req, res) => {
                      dropoff: {
                             address: dropoffAddress
                      },
+                    stopOver: {
+                           address: stopOverAddress,
+                     },
                      estimatedRideDuration: rideDuration,
                      passengers: passengersNumber,
                      luggageCount: bagsNumber,
@@ -151,6 +155,7 @@ export const RequestRide = asyncHandler(async(req, res) => {
                      name: newBooking.customer.name.split(" ")[0],
                      pickup: newBooking.pickup.address,
                      dropoff: newBooking.dropoff.address,
+                     stopOverAddress: newBooking.stopOver.address,
                      rideCost: newBooking.rideCost.totalFare,
                      date: newBooking.pickup.scheduledTimeofPickup
               }
@@ -289,6 +294,7 @@ export const ConfirmRideCreation = asyncHandler(async(req, res) => {
                             name: booking.customer.name.split(" ")[0],
                             pickup: booking.pickup.address,
                             dropoff: booking.dropoff.address,
+                            stopOverAddress: booking.stopOver.address,
                             rideCost: booking.rideCost.totalFare,
                             date: booking.pickup.scheduledTimeofPickup,
                             bookingId: rideID
@@ -301,6 +307,7 @@ export const ConfirmRideCreation = asyncHandler(async(req, res) => {
               res.status(200).json({ exists: true, ride: {
                       customer: booking.customer.name.split(" ")[0],
                       pickupAddress: booking.pickup.address,
+                      stopOverAddress: booking.stopOver.address,
                       dropOff: booking.dropoff.address,
                       duration: booking.estimatedRideDuration,
                       rideCost: booking.rideCost.totalFare,

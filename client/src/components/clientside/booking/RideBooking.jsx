@@ -24,6 +24,8 @@ const RideBooking = () => {
     const [ payment, setPayment ] = useState("");
     const [ pickupPoint, setPickupPoint ] = useState("");
     const [ dropoffPoint, setDropoffPoint ] = useState("");
+    const [ stopoverPoint, setStopoverPoint ] = useState("");
+    const [ stopoverStatus, setStopoverStatus ] = useState(false);
     const [ paymentChoiceErr, setPaymentChoiceErr ] = useState("")
     const { register, handleSubmit, formState: { errors }, setValue} = useForm();
     const { profile, settings } = useSelector(state => state.client);
@@ -33,12 +35,23 @@ const RideBooking = () => {
 
     const position = { lat: -31.9514, lng: 115.8617 }
     const [ chosenLeg, setChosenLeg ] = useState();
+
     //const [ InitiateStripe, { isLoading }] = useInitiatePaymentMutation();
     const [ RequestBooking, { isLoading }] = useCreateNewBookingMutation();
 
     const rideID = useMemo(() => generateRideID(), [])
 
-    const costPerKm = settings && Number(settings.pricingSettings.perKilometerRate);
+    const costPerTenKm = settings && Number(settings.pricingSettings.perKilometerRate.tenKilometreRate);
+    const costPerTwentyKm = settings && Number(settings.pricingSettings.perKilometerRate.twentyKilometreRate);
+    const costBeyondTwentyKm = settings && Number(settings.pricingSettings.perKilometerRate.beyondTwentyKilometreRate);
+
+    const totalDistance = chosenLeg ? Number(chosenLeg.distance.text.split(" ")[0]) : 0;
+
+    const calculatedDistanceCost = totalDistance <= 10 ? (totalDistance * costPerTenKm) : 
+                                totalDistance > 10 && totalDistance <= 20 ? (totalDistance * costPerTwentyKm) :
+                                (totalDistance * costBeyondTwentyKm);
+   
+    
 
     const handleBookingSubmit = async(data) => {
            if(payment === ""){
@@ -48,14 +61,14 @@ const RideBooking = () => {
            const formData = {
                  rideType: "Point to Point",
                  customerRideId: rideID,
-                 pickupAddress: chosenLeg ? chosenLeg.start_address : "",
-                 dropoffAddress: chosenLeg ? chosenLeg.end_address : "",
-                 waitingCharge: chosenLeg && waitingCharge ? Math.round((Number(chosenLeg.distance.text.split(" ")[0]) * costPerKm) * 0.2) : 0,
+                 pickupAddress: chosenLeg ? chosenLeg.startAddress : "",
+                 dropoffAddress: chosenLeg ? chosenLeg.endAddress : "",
+                 stopOverAddress: chosenLeg ? chosenLeg.stopoverAddress  : "",
+                 waitingCharge: chosenLeg && waitingCharge ? Math.round(calculatedDistanceCost * 0.2) : 0,
                  rideDuration: chosenLeg ? chosenLeg.duration.text : "",
-                 rideCost: chosenLeg ? Math.round(Number(chosenLeg.distance.text.split(" ")[0]) * costPerKm) : 0,
+                 rideCost: chosenLeg ? Math.round(calculatedDistanceCost) : 0,
                  ...data,
                  paymentMethod: payment,
-
            }
 
            try {
@@ -82,6 +95,11 @@ const RideBooking = () => {
         navigate("/auth/login", {
                 state: { from: pathname}
         })
+   }
+
+   const handleStopoverChange = () => {
+        setStopoverStatus(!stopoverStatus);
+        setStopoverPoint("")
    }
   return (
       <form onSubmit={handleSubmit(handleBookingSubmit)}>
@@ -142,6 +160,24 @@ const RideBooking = () => {
                                                             { waitingCharge &&
                                                                     <div className="waiting-calc-row">
                                                                             <p>To ensure smooth scheduling for all travelers, a 20% waiting charge will apply if the waiting time exceeds 30 minutes from the scheduled pickup time.</p>
+                                                                    </div>
+                                                                }
+                                                    </div>
+
+                                                    <div className="booking-form-row">
+                                                            <div className="waiting-input">
+                                                                        <h4>Would you like to add a stopover during this ride?</h4>
+
+                                                                        <div className="option-action">
+                                                                                <input type="checkbox" onChange={handleStopoverChange}   />
+                                                                                <span className="no-choice">No</span>
+                                                                                <span className="yes-choice">Yes</span>
+                                                                                <span className="ball"></span>
+                                                                        </div>
+                                                            </div>
+                                                            { stopoverStatus &&
+                                                                    <div className="stop-over-wrap">
+                                                                            <PlacesWrapBox title={"Stopover (Optional)"} selectPoint={setStopoverPoint} />
                                                                     </div>
                                                                 }
                                                     </div>
@@ -224,15 +260,21 @@ const RideBooking = () => {
                                                          mapId={import.meta.env.VITE_GOOGLE_MAP_ID}
                                                          
                                                      >
-                                                          <Directions setLeg={setChosenLeg} pickup={pickupPoint} dropoff={dropoffPoint} />
+                                                          <Directions setLeg={setChosenLeg} pickup={pickupPoint} stopover={stopoverPoint} dropoff={dropoffPoint} />
                                                  </Map>
                                         </div>
                                         <div className="booking-details">
                                               <div className="destination-row">
                                                         <h4>From</h4>
-                                                        <p>{chosenLeg ? chosenLeg.start_address : "N/A"}</p>
+                                                        <p>{chosenLeg ? chosenLeg.startAddress : "N/A"}</p>
+                                                         { stopoverStatus && (
+                                                                <>
+                                                                       <h4 className="adjust">Stopover</h4>
+                                                                       <p>{chosenLeg.stopoverAddress ? chosenLeg.stopoverAddress : "N/A"}</p>
+                                                                </>
+                                                         )}
                                                         <h4 className="adjust">To</h4>
-                                                        <p>{chosenLeg ? chosenLeg.end_address : "N/A"}</p>
+                                                        <p>{chosenLeg ? chosenLeg.endAddress : "N/A"}</p>
                                                         <div className="duration-distance">
                                                                 <div className="block">
                                                                         <h4>Distance</h4>
@@ -249,11 +291,11 @@ const RideBooking = () => {
                                                            <h3>Cost</h3>
                                                            <div className="ride-cost-block">
                                                                     <p>Ride</p>
-                                                                    <h4>{ chosenLeg ? `${Math.round(Number(chosenLeg.distance.text.split(" ")[0]) * costPerKm)}` : 0 } AUD</h4>
+                                                                    <h4>{ Math.round(calculatedDistanceCost )} AUD</h4>
                                                            </div>
                                                            <div className="ride-cost-block">
                                                                      <p>Wait time</p>
-                                                                      <h4>{waitingCharge && chosenLeg ? `${Math.round((Number(chosenLeg.distance.text.split(" ")[0]) * costPerKm) * 0.2)}` : 0} AUD</h4>
+                                                                      <h4>{waitingCharge && chosenLeg ? `${Math.round(calculatedDistanceCost * 0.2)}` : 0} AUD</h4>
                                                            </div>
                                                 </div>
                                                 <h4>
@@ -264,12 +306,9 @@ const RideBooking = () => {
                                                            
                                                           <h5>
                                                                  {chosenLeg && waitingCharge ? 
-                                                                        Math.round(
-                                                                        Math.round(Number(chosenLeg.distance.text.split(" ")[0]) * costPerKm) + 
-                                                                        Math.round((Number(chosenLeg.distance.text.split(" ")[0]) * costPerKm) * 0.2)
-                                                                        ) :
+                                                                        Math.round(calculatedDistanceCost + (calculatedDistanceCost * 0.2)) :
                                                                         chosenLeg ? 
-                                                                        Math.round(Number(chosenLeg.distance.text.split(" ")[0]) * costPerKm) : 
+                                                                        Math.round(calculatedDistanceCost) : 
                                                                         "0"
                                                                 } AUD</h5>
                                                 </div>
@@ -288,14 +327,14 @@ const RideBooking = () => {
 export default RideBooking;
 
 
-const Directions = ({ pickup, dropoff, setLeg}) => {
+const Directions = ({ pickup, dropoff, stopover, setLeg}) => {
     const map = useMap();
     const routesLibrary = useMapsLibrary("routes");
     const [ directionsService, setDirectionsService ] = useState();
     const [ directionsRenderer, setDirectionsRenderer ] = useState();
     const [ route, setRoute] = useState();
     
-    const leg = route && route[0].legs[0];
+    //const leg = route && route[0].legs[0];
 
     useEffect(() => {
             if(!routesLibrary || !map) return;
@@ -307,26 +346,56 @@ const Directions = ({ pickup, dropoff, setLeg}) => {
     useEffect(() => {
             if(!directionsService || !directionsRenderer) return;
 
-            if(pickup !== "" && dropoff !== ""){
-                directionsService.route({
-                        origin: pickup,
-                        destination: dropoff,
-                        travelMode: "DRIVING",
-                }).then(result => {
-                        directionsRenderer.setDirections(result);
-                        setRoute(result.routes)
-                })
-            }
+           if(pickup !== "" && dropoff !== ""){
+                const request = {
+                         origin: pickup,
+                         destination: dropoff,
+                         travelMode: "DRIVING"
+                }
 
-    }, [ directionsRenderer, directionsService, dropoff, pickup])
+                if(stopover && stopover !== ""){
+                     request.waypoints = [
+                        { location: stopover, stopover: true }
+                     ]
+                }
+                directionsService.route(request)
+                    .then(result => {
+                           directionsRenderer.setDirections(result);
+                           setRoute(result.routes[0])
+                    }).catch(error => console.log("Directions request failed: ", error))
+           }
+
+    }, [ directionsRenderer, directionsService, stopover, dropoff, pickup])
 
    useEffect(() => {
-         if(!leg){
-                return;;
-        }else{
-                setLeg(leg)
+        if (!route || !route.legs) return;
+
+         const legsArray = route.legs;
+
+        const totalDistanceMeters = route.legs.reduce((sum, leg) => sum + leg.distance.value, 0);
+        const totalDurationSeconds = route.legs.reduce((sum, leg) => sum + leg.duration.value, 0);
+
+        const formattedDistance = `${(totalDistanceMeters / 1000).toFixed(1)} km`
+        const formattedDuration = totalDurationSeconds >= 3600
+            ? `${Math.floor(totalDurationSeconds / 3600)} hours ${Math.round((totalDurationSeconds % 3600) / 60)} mins`
+            : `${Math.round(totalDurationSeconds / 60)} mins`;
+
+        const startAddress = legsArray[0].start_address;
+
+        const stopoverAddress = legsArray.length > 1 ? legsArray[0].end_address : null;
+
+        const endAddress = legsArray[legsArray.length - 1].end_address;
+
+        const combinedLeg = {
+            startAddress,
+            stopoverAddress,
+            endAddress,
+            distance: { text: formattedDistance, },
+            duration: { text: formattedDuration, },
+
         }
-   }, [setLeg, leg])
+        setLeg(combinedLeg)
+   }, [setLeg, route])
 
  
     return null;

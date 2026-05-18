@@ -14,7 +14,10 @@ const PricingSettingsTab = () => {
                 luggageThreshold: platformSettings?.pricingSettings.luggageThreshold || 0,
                 perHourRate: platformSettings?.pricingSettings.perHourRate || 0,
                 perKilometreRate: platformSettings?.pricingSettings.perKilometerRate || 0,
-                waitingFee: platformSettings?.pricingSettings.waitingFee || 0
+                waitingFee: platformSettings?.pricingSettings.waitingFee || 0,
+                tenKilometreRate: platformSettings?.pricingSettings.perKilometerRate.tenKilometreRate || 0,
+                twentyKilometreRate: platformSettings?.pricingSettings.perKilometerRate.twentyKilometreRate || 0,
+                beyondTwentyKilometreRate: platformSettings?.pricingSettings.perKilometerRate.beyondTwentyKilometreRate || 0
        }
   })
   const dispatch = useDispatch();
@@ -48,12 +51,27 @@ const PricingSettingsTab = () => {
                             </div>
                              <div className="input-row">
                                     <label htmlFor="fullname">Per Kilometre Rate($)<span className="required">*</span></label>
-                                    <input type="text" {...register("perKilometreRate", { required: "Please enter your rate per kilometre"})} className="form-control" placeholder="1.85"/>
-                                    { errors.perKilometreRate && <span className="error">{errors.perKilometreRate.message}</span>}
+                            </div>
+                            <div className="input-grid-row-3">
+                                     <div className="input-row">
+                                            <label htmlFor="0-10kms">From 0 - 10 Kilometres Rate <span className="required">*</span></label>
+                                            <input type="text" {...register("tenKilometreRate", { required: "Enter your rate for the first 10 kilometres"})} className="form-control" placeholder="1.85"/>
+                                            { errors.tenKilometreRate && <span className="error">{errors.tenKilometreRate.message}</span>}
+                                     </div>
+                                      <div className="input-row">
+                                            <label htmlFor="0-10kms">From 0 - 10 Kilometres Rate <span className="required">*</span></label>
+                                            <input type="text" {...register("twentyKilometreRate", { required: "Enter your rate for the first 20 kilometres"})} className="form-control" placeholder="1.85"/>
+                                            { errors.twentyKilometreRate && <span className="error">{errors.twentyKilometreRate.message}</span>}
+                                     </div>
+                                      <div className="input-row">
+                                            <label htmlFor="0-10kms">From 0 - 10 Kilometres Rate <span className="required">*</span></label>
+                                            <input type="text" {...register("beyondTwentyKilometreRate", { required: "Enter your rate for beyond 20 kilometres"})} className="form-control" placeholder="1.85"/>
+                                            { errors.beyondTwentyKilometreRate && <span className="error">{errors.beyondTwentyKilometreRate.message}</span>}
+                                     </div>
                             </div>
                              <div className="input-row">
                                     <label htmlFor="fullname">Waiting Fee($)<span className="required">*</span></label>
-                                    <input type="text" {...register("waitingFee", { required: "Please enter your waiting feee"})} className="form-control" placeholder="1.85"/>
+                                    <input type="text" {...register("waitingFee", { required: "Please enter your waiting fee"})} className="form-control" placeholder="1.85"/>
                                     { errors.waitingFee && <span className="error">{errors.waitingFee.message}</span>}
                             </div>
                             <span className="luggage-title">Luggage</span>
