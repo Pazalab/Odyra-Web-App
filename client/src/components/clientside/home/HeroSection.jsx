@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
 import hero1 from "../../../assets/hero1.jpg"
-import hero2 from "../../../assets/hero3.jpg"
+import hero2 from "../../../assets/hero4.jpg"
 import { useSelector } from "react-redux"
 const HeroSection = () => {
   const { profile } = useSelector(state => state.client);

@@ -126,6 +126,50 @@
      font-size: 16px;
      line-height: 1.5;
      color: rgb(80, 80, 80);
+     margin-bottom: 6px;;
+}
+
+.service-moja-texts a{
+      font-size: 15px;
+      font-weight: 550;
+      color: var(--main-color);
+      display: flex;
+      gap: 4px;
+      align-items: center;
+}
+.service-moja-texts a span{
+     display: flex;
+     margin-top: 2px;
+}
+.service-moja-texts a:hover{
+     font-weight: 650;
+}
+
+.btn-wrapper{
+     display: flex;
+     justify-content: center;
+     margin-top: 50px;
+}
+.btn-wrapper .link-btn{
+     padding: 0 30px;
+     height: 50px;
+     background-color: var(--main-color);
+     color: white;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     font-size: 15px;
+     gap: 4px;
+     font-weight: 500;
+     border-radius: 5px;
+     -webkit-border-radius: 5px;
+     -moz-border-radius: 5px;
+     -ms-border-radius: 5px;
+     -o-border-radius: 5px;
+}
+.link-btn span{
+     display: flex;
+     margin-top: 2px;
 }
 
 .about-section{
@@ -287,9 +331,9 @@
 
 .call-to-action{
      padding: 120px 0px;
-     background: linear-gradient(to right, rgb(250, 249, 248), rgb(250, 249, 248),  rgba(250, 249, 248, 0.2), transparent), url("../../assets/cta.jpg") no-repeat;
+     background: linear-gradient(to right, rgb(250, 249, 248), rgb(250, 249, 248, 0.85),  rgba(250, 249, 248, 0.2), transparent), url("../../assets/cta2.jpg") no-repeat;
      background-size: cover;
-     background-position: center;
+     background-position: 50%;
 }
 
 .call-to-action-texts{

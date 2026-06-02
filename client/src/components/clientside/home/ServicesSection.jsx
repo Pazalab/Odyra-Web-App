@@ -1,7 +1,9 @@
-import airportTransfer from "../../../assets/airport_transfer.jpg"
-import fifo from "../../../assets/fifo.jpg"
-import wineTasting from "../../../assets/tours2.jpg"
-import corporate from "../../../assets/corporate_event.jpg"
+import airportTransfer from "../../../assets/airport_transfer2.jpg"
+import fifo from "../../../assets/fifo2.jpeg"
+import wineTasting from "../../../assets/wine-tasting2.jpeg"
+import corporate from "../../../assets/corporate-event2.jpg"
+import { Link } from "react-router-dom"
+import { HiOutlineArrowRight } from "react-icons/hi";
 
 const ServicesSection = () => {
   return (
@@ -22,6 +24,7 @@ const ServicesSection = () => {
                               <div className="service-moja-texts">
                                        <h3>Airport Transfers</h3>
                                        <p>Enjoy smooth, on-time airport rides designed for comfort and peace of mind.</p>
+                                       <Link to={"/service/airport-transfers"}>Explore More <span><HiOutlineArrowRight /></span></Link>
                               </div>
                      </div>
                       <div className="service-moja">
@@ -30,6 +33,7 @@ const ServicesSection = () => {
                               <div className="service-moja-texts">
                                        <h3>FIFO Airport Pick-Up & Drop-Off</h3>
                                        <p>Reliable, timely rides for fly-in fly-out travelers who value efficiency and comfort.</p>
+                                       <Link to={"/service/fifo"}>Explore More <span><HiOutlineArrowRight /></span></Link>
                               </div>
                      </div>
 
@@ -39,6 +43,7 @@ const ServicesSection = () => {
                               <div className="service-moja-texts">
                                        <h3>Wine Tasting & Scenery Tours</h3>
                                        <p>Relax and explore Australia's finest vineyards and landscapes in comfort and style.</p>
+                                       <Link to={"/service/wine-tasting-and-scenery-tours"}>Explore More <span><HiOutlineArrowRight /></span></Link>
                               </div>
                      </div>
 
@@ -48,9 +53,14 @@ const ServicesSection = () => {
                               <div className="service-moja-texts">
                                        <h3>Corporate Events</h3>
                                        <p>Professional, punctual transport solutions tailored for meetings, teams, and events.</p>
+                                       <Link to={"/service/corporate-events"}>Explore More <span><HiOutlineArrowRight /></span></Link>
                               </div>
                      </div>
           </div>
+
+            <div className="btn-wrapper">
+                    <Link to={"/services"} className="link-btn">Explore All Services <span><HiOutlineArrowRight /></span></Link>
+            </div>
     </div>
   )
 }

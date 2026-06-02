@@ -103,8 +103,9 @@ export const RequestRide = asyncHandler(async(req, res) => {
             bagsNumber,
             customerPhone,
             customerRideId,
+            flightNumber,
       } = req.body;
-
+ 
       const rideExists = await Booking.findOne({ rideID: customerRideId });
 
       if(rideExists){
@@ -135,6 +136,7 @@ export const RequestRide = asyncHandler(async(req, res) => {
                     stopOver: {
                            address: stopOverAddress,
                      },
+                     flightNumber: flightNumber,
                      estimatedRideDuration: rideDuration,
                      passengers: passengersNumber,
                      luggageCount: bagsNumber,

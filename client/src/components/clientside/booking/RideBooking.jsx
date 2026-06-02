@@ -258,7 +258,6 @@ const RideBooking = () => {
                                                         defaultZoom={9}
                                                          zoomControl={true}
                                                          mapId={import.meta.env.VITE_GOOGLE_MAP_ID}
-                                                         
                                                      >
                                                           <Directions setLeg={setChosenLeg} pickup={pickupPoint} stopover={stopoverPoint} dropoff={dropoffPoint} />
                                                  </Map>
@@ -270,7 +269,7 @@ const RideBooking = () => {
                                                          { stopoverStatus && (
                                                                 <>
                                                                        <h4 className="adjust">Stopover</h4>
-                                                                       <p>{chosenLeg.stopoverAddress ? chosenLeg.stopoverAddress : "N/A"}</p>
+                                                                       <p>{chosenLeg? chosenLeg.stopoverAddress : "N/A"}</p>
                                                                 </>
                                                          )}
                                                         <h4 className="adjust">To</h4>

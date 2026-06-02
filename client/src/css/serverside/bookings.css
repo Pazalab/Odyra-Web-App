@@ -654,6 +654,14 @@
      -ms-border-radius: 36px;
      -o-border-radius: 36px;
 }
+.ride-extras{
+     display: grid;
+     grid-template-columns: 1fr 1fr;
+     gap: 20px;
+}
+.ride-extra-block h5{
+     font-size: 15px;
+}
 .extra-info-block h5{
      font-size: 11px;
      font-weight: 500;

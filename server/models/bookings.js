@@ -31,6 +31,7 @@ const bookingsSchema = mongoose.Schema({
        stopOver: {
            address: { type: String }
        },
+       flightNumber: { type: String },
        estimatedRideDuration: { type: String, required: true },
        passengers: { type: String, required: true },
        luggageCount: { type: String, required: true },

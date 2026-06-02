@@ -4,16 +4,17 @@ import { useForm } from "react-hook-form";
 import BtnSpinner from "../common/BtnSpinner";
 import { PiMapPin } from "react-icons/pi";
 import { LiaUserClockSolid } from "react-icons/lia";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BsFillLuggageFill } from "react-icons/bs";
 import { IoPeopleOutline } from "react-icons/io5";
 import visa from "../../../assets/visa.png"
 import mastercard from "../../../assets/mastercard.png"
-import { useInitiatePaymentMutation } from "../../../redux/slices/client/clientApiSlice";
+import { useCreateNewBookingMutation } from "../../../redux/slices/client/clientApiSlice";
 import { TfiTimer } from "react-icons/tfi";
 import { useSelector, useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { setGeneralNotification } from "../../../redux/slices/util/utilActionsSlice";
+import { generateRideID } from "../../../utils/chores";
 
 const BytheHour = () => {
    const [ waitingCharge, setWaitingCharge ] = useState(false);
@@ -22,12 +23,14 @@ const BytheHour = () => {
      const { register, handleSubmit, formState: { errors }, watch, setValue } = useForm();
      const [ payment, setPayment ] = useState("");
      const [ paymentChoiceErr, setPaymentChoiceErr ] = useState("")
+     const [ stopoverPoint, setStopoverPoint ] = useState("");
+     const [ stopoverStatus, setStopoverStatus ] = useState(false);
          
     const position = { lat: -31.9514, lng: 115.8617 }
     const [ chosenLeg, setChosenLeg ] = useState();
     const selectedHours = watch("durationHours");
 
-    const { profile } = useSelector(state => state.client);
+    const { profile, settings } = useSelector(state => state.client);
     const { pathname } = useLocation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -49,7 +52,19 @@ const BytheHour = () => {
         })
    }
 
- const [ InitiateStripe, { isLoading }] = useInitiatePaymentMutation();
+const handleStopoverChange = () => {
+    setStopoverStatus(!stopoverStatus);
+    setStopoverPoint("")
+}
+
+ const [ RequestBooking, { isLoading }] = useCreateNewBookingMutation();
+
+ const rideID = useMemo(() => generateRideID(), [])
+
+ const costPerHour = settings && Number(settings.pricingSettings.perHourRate);
+
+ const calculatedDistanceCost = selectedHours * costPerHour;
+
  const handleBytheHourBooking = async(data) => {
           if(payment === ""){
            setPaymentChoiceErr("Please select a payment option to continue");
@@ -57,19 +72,19 @@ const BytheHour = () => {
       }
       const formData = {
              rideType: "By the Hour",
-             pickupAddress: chosenLeg ? chosenLeg.start_address : "",
-             dropoffAddress: chosenLeg ? chosenLeg.end_address : "",
-             waitingCharge: selectedHours && waitingCharge ? Math.round((Number(chosenLeg.distance.text.split(" ")[0]) * 30) * 0.2) : 0,
+             customerRideId: rideID,
+             pickupAddress: chosenLeg ? chosenLeg.startAddress : "",
+             dropoffAddress: chosenLeg ? chosenLeg.endAddress : "",
+             waitingCharge: selectedHours && waitingCharge ? Math.round(calculatedDistanceCost * 0.2) : 0,
              rideDuration: selectedHours ? `${selectedHours} hours` : "",
-             rideCost: selectedHours ? Math.round((Number(chosenLeg.distance.text.split(" ")[0]) * 30) * 0.2) : 0,
+             rideCost: selectedHours ? Math.round(calculatedDistanceCost) : 0,
              ...data,
              paymentMethod: payment
       }
 
        try {
-           const res = await InitiateStripe(formData).unwrap();
-
-           window.location.href = res.url;
+            const res = await RequestBooking(formData).unwrap();
+            navigate(`/booking-confirmation?rideID=${res.rideID}`)
        } catch (error) {
              dispatch(setGeneralNotification({ status: true, message: error.data.message, type: "error"}))
        }
@@ -156,6 +171,25 @@ const BytheHour = () => {
                                                                     </div>
                                                                 }
                                                 </div>
+
+                                                
+                                                    <div className="booking-form-row">
+                                                            <div className="waiting-input">
+                                                                        <h4>Would you like to add a stopover during this ride?</h4>
+
+                                                                        <div className="option-action">
+                                                                                <input type="checkbox" onChange={handleStopoverChange}   />
+                                                                                <span className="no-choice">No</span>
+                                                                                <span className="yes-choice">Yes</span>
+                                                                                <span className="ball"></span>
+                                                                        </div>
+                                                            </div>
+                                                            { stopoverStatus &&
+                                                                    <div className="stop-over-wrap">
+                                                                            <PlacesWrapBox title={"Stopover (Optional)"} selectPoint={setStopoverPoint} />
+                                                                    </div>
+                                                                }
+                                                    </div>
                                         </div>
                                         <div className="payments-wrap">
                                               <div className="wrap-head">
@@ -222,15 +256,21 @@ const BytheHour = () => {
                                                             mapId={import.meta.env.VITE_GOOGLE_MAP_ID}
                                                             
                                                         >
-                                                            <Directions setLeg={setChosenLeg} pickup={pickupPoint} dropoff={dropoffPoint} />
+                                                            <Directions setLeg={setChosenLeg} pickup={pickupPoint} stopover={stopoverPoint} dropoff={dropoffPoint} />
                                                     </Map>
                                           </div>
                                           <div className="booking-details">
                                                 <div className="destination-row">
                                                           <h4>From</h4>
-                                                          <p>{chosenLeg ? chosenLeg.start_address : "N/A"}</p>
+                                                          <p>{chosenLeg ? chosenLeg.startAddress : "N/A"}</p>
+                                                          { stopoverStatus && (
+                                                                <>
+                                                                       <h4 className="adjust">Stopover</h4>
+                                                                       <p>{chosenLeg? chosenLeg.stopoverAddress : "N/A"}</p>
+                                                                </>
+                                                          )}
                                                           <h4 className="adjust">To</h4>
-                                                          <p>{chosenLeg ? chosenLeg.end_address : "N/A"}</p>
+                                                          <p>{chosenLeg ? chosenLeg.endAddress : "N/A"}</p>
                                                           <div className="duration-distance">
                                                                   <div className="block">
                                                                           <h4>Distance</h4>
@@ -248,27 +288,24 @@ const BytheHour = () => {
                                                               <h3>Cost</h3>
                                                               <div className="ride-cost-block">
                                                                       <p>Ride</p>
-                                                                      <h4>{ chosenLeg ? `${Math.round(Number(chosenLeg.distance.text.split(" ")[0]) * 1.85)}` : 0 } AUD</h4>
+                                                                      <h4>{ chosenLeg ? Math.round(calculatedDistanceCost): 0 } AUD</h4>
                                                               </div>
                                                               <div className="ride-cost-block">
                                                                         <p>Wait time</p>
-                                                                        <h4>{waitingCharge && chosenLeg ? `${Math.round((Number(chosenLeg.distance.text.split(" ")[0]) * 1.85) * 0.2)}` : 0} AUD</h4>
+                                                                        <h4>{waitingCharge && chosenLeg ? Math.round(calculatedDistanceCost * 0.2) : 0} AUD</h4>
                                                               </div>
                                                   </div>
                                                   <h4>
   
                                                   </h4>
                                                   <div className="total-row">
-                                                              <h4>Total</h4>
+                                                          <h4>Total</h4>
                                                               
-                                                                 <h5>
-                                                                        {chosenLeg && waitingCharge ? 
-                                                                                Math.round(
-                                                                                Math.round(Number(chosenLeg.distance.text.split(" ")[0]) * 1.85) + 
-                                                                                Math.round((Number(chosenLeg.distance.text.split(" ")[0]) * 1.85) * 0.2)
-                                                                                ) :
+                                                          <h5>
+                                                                 {chosenLeg && waitingCharge ? 
+                                                                        Math.round(calculatedDistanceCost + (calculatedDistanceCost * 0.2)) :
                                                                         chosenLeg ? 
-                                                                        Math.round(Number(chosenLeg.distance.text.split(" ")[0]) * 1.85) : 
+                                                                        Math.round(calculatedDistanceCost) : 
                                                                         "0"
                                                                 } AUD</h5>
                                                   </div>

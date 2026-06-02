@@ -19,6 +19,10 @@ import InitiatePayment from './pages/clientside/booking/InitiatePayment';
 import BookingConfirmation from './pages/clientside/booking/BookingConfirmation';
 import AdminSettings from './pages/serverside/AdminSettings';
 import AuthStage from './pages/clientside/AuthStage';
+import Services from './pages/clientside/Services';
+import About from './pages/clientside/About';
+import Contact from './pages/clientside/Contact';
+import SingleService from './pages/clientside/SingleService';
 
 function App() {
   const location = useLocation();
@@ -38,6 +42,10 @@ function App() {
                <Route path='/booking-confirmation' element={<BookingSuccessful />} />
                <Route path="/payment-confirmation" element={<BookingConfirmation />} />
                <Route path='/booking/initiate-payment/:id' element={<InitiatePayment />} />
+               <Route path="/services" element={<Services />} />
+               <Route path="/service/:name" element={<SingleService />} />
+               <Route path="/about" element={<About />} />
+               <Route path="/contact" element={<Contact />} />
                
                <Route element={<CustomerRoutes />}>
                          <Route path='/customer/account' element={<CustomerAccount />} />

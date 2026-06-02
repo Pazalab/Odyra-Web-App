@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react"
-import about1 from "../../../assets/about1.jpg"
+import about1 from "../../../assets/about5.jpg"
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
@@ -7,7 +7,7 @@ import safety from "../../../assets/public-safety.png"
 import booking from "../../../assets/online-booking.png"
 import reliable from "../../../assets/fifo.png"
 import { Link } from "react-router-dom"
-import about2 from "../../../assets/about2.jpg"
+import about2 from "../../../assets/about4.jpg"
 
 const AboutSection = () => {
     const bannerRef = useRef();

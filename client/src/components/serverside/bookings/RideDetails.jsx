@@ -22,6 +22,20 @@ const RideDetails = ({ data }) => {
                                         <p><span>Customer dropped off at: </span> N/A</p>
                                 </div>
                        </div>
+                       <div className="ride-extras">
+                                { data.stopOver.address && (
+                                        <div className="ride-extra-block">
+                                                 <h5>Stop Over Address</h5>
+                                                 <p>{data.stopOver.address}</p>
+                                        </div>
+                                )}
+                                { data.flightNumber && (
+                                         <div className="ride-extra-block">
+                                                  <h5>Flight Number</h5>
+                                                  <p>{data.flightNumber}</p>
+                                         </div>
+                                )}
+                       </div>
                        <div className="extra-info">
                                 <div className="extra-info-block">
                                           <span><IoPeopleOutline /></span>
