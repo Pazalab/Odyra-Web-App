@@ -7,7 +7,7 @@ import safety from "../../../assets/public-safety.png"
 import booking from "../../../assets/online-booking.png"
 import reliable from "../../../assets/fifo.png"
 import { Link } from "react-router-dom"
-import about2 from "../../../assets/about4.jpg"
+import about2 from "../../../assets/about2.jpg"
 
 const AboutSection = () => {
     const bannerRef = useRef();
@@ -67,10 +67,10 @@ const AboutSection = () => {
 
                                    <div className="about-body-row">
                                             <div className="about-body-texts">
-                                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa, modi atque maxime ab sint minima reiciendis at harum accusantium aperiam dolorum voluptas delectus nobis, laborum tempora in eligendi asperiores unde doloremque. Eum totam voluptas maiores exercitationem quidem molestiae voluptate, iure eos quam, optio doloribus dolor expedita inventore cum iste alias, architecto animi temporibus eaque magnam doloremque. Illo atque alias quia veniam, suscipit quas eveniet nam obcaecati mollitia in tempore placeat ad corrupti! </p>
-                                                        <p>Quam, repellat odio vitae maxime quaerat consequatur sed eos numquam provident voluptate tempore minima vel ratione, animi cumque non officiis, tempora voluptates. Beatae ducimus blanditiis maiores dicta, aperiam eius repellendus consectetur laboriosam! </p>
+                                                        <p>At Odyra Safaris, we believe that getting from point A to point B should be effortless, predictable, and even enjoyable. Yet too many ride hailing experiences are plagued by long waits, unpredictable pricing, and a frustrating lack of accountability.  That is why we started Odyra, to fundamentally improve how ride hailing is done. By stripping away the inefficiencies and putting customer experience at the very center of everything we do, we have built a service that prioritizes your time, your comfort, and your peace of mind.</p>
+                                                        <p>From the moment you request a ride to the moment you step out, every touchpoint is designed to be seamless. Our technology ensures fast dispatching, transparent pricing, and real time coordination, while our human first approach means your needs are always heard and respected. Whether you are heading to the airport, a corporate event, a wine tour, or a remote site, Odyra Safaris delivers a ride that simply works, no guesswork, no hassle. We are driven by a simple mission: make rides easier for everyone, one trip at a time.</p>
 
-                                                        <Link to={"/"}>Learn more</Link>
+                                                        <Link to={"/about"}>Learn more</Link>
                                             </div>
                                             <div className="about-body-image">
                                                      <img src={about2} alt="" />

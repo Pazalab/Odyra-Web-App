@@ -1,4 +1,4 @@
-import airportTransfer from "../../../assets/airport_transfer2.jpg"
+import airportTransfer from "../../../assets/about1.jpg"
 import fifo from "../../../assets/fifo2.jpeg"
 import wineTasting from "../../../assets/wine-tasting2.jpeg"
 import corporate from "../../../assets/corporate-event2.jpg"
