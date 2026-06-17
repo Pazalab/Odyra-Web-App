@@ -18,18 +18,20 @@ const Footer = () => {
                                                   <div className="footer-col">
                                                             <h3>Company</h3>
                                                             <ul>
-                                                                    <li><Link to={"/"}>About us</Link></li>
-                                                                    <li><Link to={"/"}>Sign up for a ride</Link></li>
-                                                                    <li><Link to={"/"}>Contact us</Link></li>
+                                                                    <li><Link to={"/about"}>About us</Link></li>
+                                                                    <li><Link to={"/auth/signup"}>Sign up for a ride</Link></li>
+                                                                    <li><Link to={"/contact"}>Contact us</Link></li>
                                                             </ul>
                                                   </div>
                                                   <div className="footer-col">
                                                            <h3>Services</h3>
                                                            <ul>
-                                                                    <li><Link to={"/"}>Airport transfers</Link></li>
-                                                                    <li><Link to={"/"}>FIFO</Link></li>
-                                                                    <li><Link to={"/"}>Wine tasting & scenery tours</Link></li>
-                                                                    <li><Link to={"/"}>Corporate Events</Link></li>
+                                                                    <li><Link to={"/service/airport-transfers"}>Airport transfers</Link></li>
+                                                                    <li><Link to={"/service/fifo-airport-pickup-and-drop-off"}>FIFO</Link></li>
+                                                                    <li><Link to={"/service/corporate-events"}>Corporate Events</Link></li>
+                                                                    <li><Link to={"/service/wine-tasting-and-scenery-tours"}>Wine Tasting & Scenery Tours</Link></li>
+                                                                    <li><Link to={"/service/cruise-transfers"}>Cruise Transfers</Link></li>
+                                                                    <li><Link to={"/service/cabin-crew-transfers"}>Cabin Crew Transfers</Link></li>
                                                             </ul>
                                                   </div>
                                         </div>

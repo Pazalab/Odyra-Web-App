@@ -61,7 +61,7 @@ const AboutSection = () => {
                            <div className="inner-row">
                                    <div className="about-intro">
                                               <h3>About Us</h3>
-                                              <h2>Odyra Safaris is a trusted car-hailing and airport transfer company in Australia</h2>
+                                              <h2>Odyra Safaris is a trusted car-hailing and airport transfer company</h2>
                                               <p>Experience smooth, dependable travel with a team that puts your comfort first. From the moment you’re picked up to the moment you arrive, every ride is designed for ease, safety, and peace of mind.</p>
                                    </div>
 

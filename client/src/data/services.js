@@ -6,7 +6,7 @@ export const services = [
         intro_desc: "At Odyra Safaris, we understand that every journey begins and ends with a reliable transfer. Whether you're arriving after a long flight, traveling for business, heading out on vacation, or returning home, our Airport Transfer service is designed to provide a seamless, comfortable, and stress-free travel experience from the moment you land until you reach your destination.",
         link: "/service/airport-transfers",
         url_param: "airport-transfers",
-        image: "/services/airport_transfer2.jpg",
+        image: "/services/about1.jpg",
         image2: "/services/airport_transfer3.avif",
         description: ["Navigating busy airports, managing luggage, arranging transportation, and dealing with unfamiliar routes can be overwhelming, especially after hours of travel. Our professional airport transfer service removes these challenges by offering dependable, pre-arranged transportation tailored to your schedule and travel needs. With experienced drivers, comfortable vehicles, and a commitment to punctuality, we ensure that your journey continues smoothly beyond the airport terminal."],
         reasons: [
