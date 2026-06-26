@@ -1,5 +1,5 @@
 import service1 from "../../../assets/services1.jpeg"
-import service2 from "../../../assets/services2.jpeg"
+import service2 from "../../../assets/services3.jpg"
 
 const ServiceHero = () => {
   return (

@@ -15,7 +15,7 @@ const ContactDetails = () => {
 
                                                <h4><span><BsEnvelopeAt /></span> info@odrya.com.au</h4>
 
-                                               <h4><span><HiOutlinePhone /></span> +61431106503</h4>
+                                               <h4><span><HiOutlinePhone /></span> +61 4944 38812</h4>
 
                                                <h4><span><SlLocationPin /></span> Winton Rd, Joondalup WA 6027, Australia</h4>
                                    </div>

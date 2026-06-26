@@ -7,7 +7,7 @@ export const services = [
         link: "/service/airport-transfers",
         url_param: "airport-transfers",
         image: "/services/about1.jpg",
-        image2: "/services/airport_transfer3.avif",
+        image2: "/services/airport_transfer4.jpg",
         description: ["Navigating busy airports, managing luggage, arranging transportation, and dealing with unfamiliar routes can be overwhelming, especially after hours of travel. Our professional airport transfer service removes these challenges by offering dependable, pre-arranged transportation tailored to your schedule and travel needs. With experienced drivers, comfortable vehicles, and a commitment to punctuality, we ensure that your journey continues smoothly beyond the airport terminal."],
         reasons: [
               {
@@ -95,7 +95,7 @@ export const services = [
         intro_desc: "We understand that successful corporate events require seamless coordination, professionalism, and punctuality. Our Corporate Events Transportation service is designed to provide reliable travel solutions for executives, employees, clients, and guests attending conferences, meetings, seminars, exhibitions, team-building activities, and company functions. With a focus on comfort, efficiency, and exceptional service, we help organizations create a positive experience from the moment attendees begin their journey.",
         link: "/service/corporate-events",
         url_param: "corporate-events",
-        image: "/services/corporate-event2.jpg",
+        image: "/services/corporate-event1.jpg",
         image2: "/services/corporate-event3.jpg",
         description: ["At Odyra Safaris, we believe every successful event begins with seamless coordination and dependable transport. With established operations in Perth, Western Australia, we bring efficiency, comfort, and professionalism to every journey. Whether you are hosting a conference, gala, or private function, our event transport service is designed to ensure your guests arrive on time and in style — every time."],
         reasons: [
