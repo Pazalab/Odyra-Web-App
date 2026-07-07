@@ -1,23 +1,65 @@
-import airportTransfer from "../../../assets/about1.jpg"
-import fifo from "../../../assets/fifo2.jpeg"
-import wineTasting from "../../../assets/wine-tasting2.jpeg"
-import corporate from "../../../assets/corporate-event1.jpg"
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay } from "swiper/modules"
+import "swiper/css";
+import 'swiper/css/autoplay'; 
 import { Link } from "react-router-dom"
 import { HiOutlineArrowRight } from "react-icons/hi";
+import { useState } from "react";
+import { services } from "../../../data/services";
 
 const ServicesSection = () => {
+  // eslint-disable-next-line no-unused-vars
+  const [ swiperRef, setSwiperRef ] = useState(null);
+
   return (
     <div className="services-section">
            <div className="inner-row">
                     <div className="services-section-content">
                                  <div className="services-intro">
                                              <h3>Ride with Odyra Safaris</h3>
-                                             <h2>Comfort when you ride, reliability when it counts, and convenience all the way.</h2>
+                                             <h2>Rides Built on Comfort, Reliability, and Convenience</h2>
                                              <p>With Odyra Safaris, every ride is built around you — timely pickups, friendly drivers, and clean, comfortable cars that make travel feel effortless. Wherever you’re headed, we’ll get you there with care.</p>
                                  </div>
                     </div>
            </div>
-           <div className="services-row">
+            <div className="services-row-slider">
+                    <Swiper
+                          slidesPerView={1}      
+                          spaceBetween={20}
+                          autoplay={{
+                            delay: 5000,
+                            disableOnInteraction: false,
+                          }}
+                          loop={true}
+                          onSwiper={(swiper) => setSwiperRef(swiper)}
+                          modules={[Autoplay]}
+                          breakpoints={{
+                                 1090: {
+                                        slidesPerView: 4
+                                 },
+                                 768: {
+                                        slidesPerView: 3,
+                                 },
+                                 530: {
+                                        slidesPerView: 2
+                                 }
+                          }}
+                    >
+                             { services.map(service => (
+                                    <SwiperSlide key={service.id} className="service-slider-item">
+                                            <div  className="service-moja">
+                                                    <img src={service.image} alt="" />
+                                                    <div className="service-moja-texts">
+                                                            <h3>{service.title}</h3>
+                                                            {/* <p>{service.subtitle}</p> */}
+                                                            <Link to={service.link}>Explore More <span><HiOutlineArrowRight /></span></Link>
+                                                    </div>
+                                            </div>
+                                    </SwiperSlide>
+                             ))}
+                    </Swiper>
+            </div>
+           {/* <div className="services-row">
                      <div className="service-moja">
                               <img src={airportTransfer} alt="" />
 
@@ -56,11 +98,11 @@ const ServicesSection = () => {
                                        <Link to={"/service/corporate-events"}>Explore More <span><HiOutlineArrowRight /></span></Link>
                               </div>
                      </div>
-          </div>
+          </div> */}
 
-            <div className="btn-wrapper">
+            {/* <div className="btn-wrapper">
                     <Link to={"/services"} className="link-btn">Explore All Services <span><HiOutlineArrowRight /></span></Link>
-            </div>
+            </div> */}
     </div>
   )
 }

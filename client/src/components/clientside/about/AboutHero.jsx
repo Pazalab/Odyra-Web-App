@@ -5,7 +5,7 @@ const AboutHero = () => {
              <div className="inner-row">
                        <div className="about-hero-content">
                                   <h3>Who We Are</h3>
-                                  <h2>Redefining ride‑hailing, one journey at a time.</h2>
+                                  <h2>Redefining the Way you Travel.</h2>
 
                                   <div className="about-hero-image">
                                             <img src={hero} alt="" />

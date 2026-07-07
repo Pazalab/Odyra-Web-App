@@ -7,14 +7,15 @@ import { LiaUserClockSolid } from "react-icons/lia";
 import { useEffect, useMemo, useState } from "react";
 import { BsFillLuggageFill } from "react-icons/bs";
 import { IoPeopleOutline } from "react-icons/io5";
-import visa from "../../../assets/visa.png"
-import mastercard from "../../../assets/mastercard.png"
 import { useCreateNewBookingMutation } from "../../../redux/slices/client/clientApiSlice";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setGeneralNotification } from "../../../redux/slices/util/utilActionsSlice";
 import { generateRideID } from "../../../utils/chores";
 import { PiClipboardText } from "react-icons/pi";
+import { packages } from "../../../data/dummy_data";
+import { RiCircleLine } from "react-icons/ri";
+import { PiCheckCircleFill } from "react-icons/pi";
 
 const AirportTransfer = () => {
 const [ waitingCharge, setWaitingCharge ] = useState(false);
@@ -24,8 +25,8 @@ const [ stopoverPoint, setStopoverPoint ] = useState("");
 const [ stopoverStatus, setStopoverStatus ] = useState(false);
 const { register, handleSubmit, formState: { errors }, setValue} = useForm();
 const [ transferOption, setTransferOption ] = useState("To")
-const [ payment, setPayment ] = useState("");
-const [ paymentChoiceErr, setPaymentChoiceErr ] = useState("")
+const [ packageOption, setPackageOption ] = useState("odyra-premium");
+
 const navigate = useNavigate();
 const dispatch = useDispatch();
 const { profile, settings } = useSelector(state => state.client);
@@ -39,11 +40,6 @@ const { pathname} = useLocation();
         setPickupPoint("");
         setDropoffPoint("")
   }
-
-  const handlePaymentChoiceChange = (val) => {
-      setPaymentChoiceErr("");
-      setPayment(val)
-}
 
    const prefillLoggedInUser = () => {
          setValue("customerName", profile.name);
@@ -74,10 +70,6 @@ const calculatedDistanceCost = totalDistance <= 10 ? (totalDistance * costPerTen
    
 
 const handleAirportTransferBooking = async(data) => {
-      if(payment === ""){
-           setPaymentChoiceErr("Please select a payment option to continue");
-           return;
-      }
       const formData = {
              rideType: "Airport Transfer",
              customerRideId: rideID,
@@ -87,8 +79,10 @@ const handleAirportTransferBooking = async(data) => {
              waitingCharge: chosenLeg && waitingCharge ? Math.round(calculatedDistanceCost * 0.2) : 0,
              rideDuration: chosenLeg ? chosenLeg.duration.text : "",
              rideCost: chosenLeg ? Math.round(calculatedDistanceCost) : 0,
+             ridePackage: packageOption,
+             platinumCost: packageOption === "odyra-platinum" ? Math.round(calculatedDistanceCost * 0.25) : 0,
              ...data,
-             paymentMethod: payment
+             paymentMethod: "Card"
       }
      try {
         const res = await RequestBooking(formData).unwrap();
@@ -139,29 +133,74 @@ const handleAirportTransferBooking = async(data) => {
                                                                 </div>
                                                                 { errors.pickupDateTime && <span className="error">{errors.pickupDateTime.message}</span>}
                                                    </div>
+                                                    <div className="booking-form-row">
+                                                              <h4 className="form-title">Choose ride package:</h4>
+                                                               { packages.map(pg => (
+                                                                     <div key={pg.id} onClick={() => setPackageOption(pg.key)} className={ pg.key === packageOption ? "package-block active" : "package-block"}>
+                                                                                <div className="package-block-texts">
+                                                                                        <h5>{pg.name}</h5>
+                                                                                        <p>{pg.description}</p>
+                                                                                </div>
+                                                                                <div className="package-actions">
+                                                                                         { pg.key === packageOption ? 
+                                                                                             <span><PiCheckCircleFill /></span>
+                                                                                           :
+                                                                                              <span><RiCircleLine /></span>
+                                                                                           }
+                                                                                </div>
+                                                                     </div>
+                                                               ))}
+                                                    </div>
 
-                                                   <div className="booking-form-row split">
-                                                          <div className="booking-form-row-column">
-                                                                    <div className="booking-input">
-                                                                          <span><IoPeopleOutline /></span>
-                                                                          <div className="input-row">
-                                                                                  <label htmlFor="passangers">Passengers</label>
-                                                                                  <input {...register("passengersNumber", { required: "Please enter no. of passengers "})} type="number" placeholder="No. of passengers" className="input-row-control" />
-                                                                          </div>
-                                                                  </div>
-                                                                  { errors.passengersNumber && <span className="error">{errors.passengersNumber.message}</span>}
-                                                          </div>
-                                                          <div className="booking-form-row-column">
-                                                                  <div className="booking-input">
-                                                                          <span><BsFillLuggageFill  /></span>
-                                                                          <div className="input-row">
-                                                                                  <label htmlFor="pickup">Bags/Luggage</label>
-                                                                                  <input {...register("bagsNumber", { required: "Please enter no. of bags"})} type="number" placeholder="No. of bags" className="input-row-control" />
-                                                                          </div>
-                                                                  </div>
-                                                                  { errors.bagsNumber && <span className="error">{errors.bagsNumber.message}</span>}
-                                                          </div>
-                                              </div>
+                                                    <div className="booking-form-row split">
+                                                               <div className="booking-form-row-column">
+                                                                          <div className="booking-select">
+                                                                                <label htmlFor="passengers">No. of Passengers</label>
+                                                                                { packageOption === "odyra-premium" ? 
+                                                                                        <select {...register("passengersNumber", { required: "Please enter no. of passengers "})}>
+                                                                                                <option value="1">1 passenger</option>
+                                                                                                <option value="2">2 passengers</option>
+                                                                                                <option value="3">3 passengers</option>
+                                                                                                <option value="4">4 passengers</option>
+                                                                                        </select>
+                                                                                        :
+                                                                                        <select {...register("passengersNumber", { required: "Please enter no. of passengers "})}>
+                                                                                                <option value="1">1 passenger</option>
+                                                                                                <option value="2">2 passengers</option>
+                                                                                                <option value="3">3 passengers</option>
+                                                                                                <option value="4">4 passengers</option>
+                                                                                                 <option value="5">5 passengers</option>
+                                                                                                  <option value="6">6 passengers</option>
+                                                                                        </select>
+                                                                               }
+                                                                        </div>
+                                                                        { errors.passengersNumber && <span className="error">{errors.passengersNumber.message}</span>}
+                                                               </div>
+                                                               <div className="booking-form-row-column">
+                                                                      <div className="booking-select">
+                                                                               <label htmlFor="passengers">No. of Bags</label>
+                                                                              { packageOption === "odyra-premium" ? 
+                                                                                        <select {...register("bagsNumber", { required: "Please enter no. of bags"})}>
+                                                                                                <option value="1">1 luggage</option>
+                                                                                        </select>
+                                                                                        :
+                                                                                        <select {...register("bagsNumber", { required: "Please enter no. of bags"})}>
+                                                                                                <option value="1">1 luggage</option>
+                                                                                                <option value="2">2 luggages</option>
+                                                                                                <option value="3">3 luggages</option>
+                                                                                                <option value="4">4 luggages</option>
+                                                                                                 <option value="5">5 luggages</option>
+                                                                                                  <option value="6">6 luggages</option>
+                                                                                                <option value="7">7 luggages</option>
+                                                                                                <option value="8">8 luggages</option>
+                                                                                                <option value="9">9 luggages</option>
+                                                                                                 <option value="10">10 luggages</option>
+                                                                                        </select>
+                                                                               }
+                                                                      </div>
+                                                                        { errors.bagsNumber && <span className="error">{errors.bagsNumber.message}</span>}
+                                                               </div>
+                                                    </div>
 
                                              { 
                                                  transferOption === "To" ?
@@ -232,22 +271,6 @@ const handleAirportTransferBooking = async(data) => {
                                                         }
                                                 </div>                            
                                            </div>
-                                          <div className="payments-wrap">
-                                                  <div className="wrap-head">
-                                                              <h3>Payment details</h3>
-                                                  </div>
-                                                    <h4>Choose payment method:</h4>
-                                                    <div className="payment-blocks">
-                                                                <div className={ payment === "Card" ? "payment-block active" : "payment-block"} onClick={() => handlePaymentChoiceChange("Card")}>
-                                                                        <div className="images-block">
-                                                                                <img src={visa} alt="" />
-                                                                                <img src={mastercard} alt="" />
-                                                                        </div>
-                                                                </div>
-                                                          
-                                                    </div>
-                                                    { paymentChoiceErr && <span className="error">{paymentChoiceErr}</span>}
-                                          </div>
                                          <div className="customer-wrap">
                                                 <div className="wrap-head">
                                                         <h3>Personal Details</h3>
@@ -332,6 +355,12 @@ const handleAirportTransferBooking = async(data) => {
                                                                           <p>Wait time</p>
                                                                           <h4>{waitingCharge && chosenLeg ? `${Math.round(calculatedDistanceCost * 0.2)}` : 0} AUD</h4>
                                                                 </div>
+                                                                 { packageOption === "odyra-platinum" && (
+                                                                        <div className="ride-cost-block">
+                                                                                <p>Platinum Extra Cost</p>
+                                                                                <h4>{ chosenLeg ? `${ Math.round(calculatedDistanceCost * 0.25)}` : 0 } AUD</h4>
+                                                                        </div>
+                                                                  )}
                                                     </div>
                                                     <h4>
     
@@ -339,13 +368,23 @@ const handleAirportTransferBooking = async(data) => {
                                                     <div className="total-row">
                                                                 <h4>Total</h4>
                                                                 
+                                                          { packageOption === "odyra-platinum" ? (
                                                                  <h5>
+                                                                 {chosenLeg && waitingCharge ? 
+                                                                        Math.round(calculatedDistanceCost + (calculatedDistanceCost * 0.2)+(calculatedDistanceCost * 0.25)) :
+                                                                        chosenLeg ? 
+                                                                        Math.round(calculatedDistanceCost+ Math.round(calculatedDistanceCost * 0.25)) : 
+                                                                        "0"
+                                                                } AUD</h5>
+                                                          ): (
+                                                                <h5>
                                                                  {chosenLeg && waitingCharge ? 
                                                                         Math.round(calculatedDistanceCost + (calculatedDistanceCost * 0.2)) :
                                                                         chosenLeg ? 
                                                                         Math.round(calculatedDistanceCost) : 
                                                                         "0"
                                                                 } AUD</h5>
+                                                          )}
                                                     </div>
     
                                                     <div className="booking-form-btn">

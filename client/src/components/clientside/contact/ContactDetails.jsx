@@ -13,7 +13,7 @@ const ContactDetails = () => {
                                              <h3><span><IoHelpCircleSharp /></span> Help & Support</h3>
                                              <p>Our support team is here to help you every step of the way. Reach out anytime and trust that your questions will always be handled with clarity, professionalism, and prompt care.</p>
 
-                                               <h4><span><BsEnvelopeAt /></span> info@odrya.com.au</h4>
+                                               <h4><span><BsEnvelopeAt /></span> info@odyra.com.au</h4>
 
                                                <h4><span><HiOutlinePhone /></span> +61 4944 38812</h4>
 

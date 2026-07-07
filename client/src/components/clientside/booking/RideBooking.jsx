@@ -3,9 +3,10 @@ import { LiaUserClockSolid } from "react-icons/lia";
 import { useEffect, useState } from "react";
 import { BsFillLuggageFill } from "react-icons/bs";
 import { IoPeopleOutline } from "react-icons/io5";
-// import { GiTakeMyMoney } from "react-icons/gi";
-import visa from "../../../assets/visa.png"
-import mastercard from "../../../assets/mastercard.png"
+import { RiCircleLine } from "react-icons/ri";
+import { PiCheckCircleFill } from "react-icons/pi";
+// import visa from "../../../assets/visa.png"
+// import mastercard from "../../../assets/mastercard.png"
 // import gpay from "../../../assets/google-pay.png"
 // import paypal from "../../../assets/paypal.png"
 import { APIProvider, Map, useMapsLibrary, useMap }  from "@vis.gl/react-google-maps";
@@ -18,15 +19,16 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { setGeneralNotification } from "../../../redux/slices/util/utilActionsSlice";
 import { generateRideID } from "../../../utils/chores";
 import { useMemo } from "react";
+import { packages } from "../../../data/dummy_data";
 
 const RideBooking = () => {
     const [ waitingCharge, setWaitingCharge ] = useState(false);
-    const [ payment, setPayment ] = useState("");
     const [ pickupPoint, setPickupPoint ] = useState("");
     const [ dropoffPoint, setDropoffPoint ] = useState("");
     const [ stopoverPoint, setStopoverPoint ] = useState("");
     const [ stopoverStatus, setStopoverStatus ] = useState(false);
-    const [ paymentChoiceErr, setPaymentChoiceErr ] = useState("")
+//     const [ paymentChoiceErr, setPaymentChoiceErr ] = useState("");
+    const [ packageOption, setPackageOption ] = useState("odyra-premium");
     const { register, handleSubmit, formState: { errors }, setValue} = useForm();
     const { profile, settings } = useSelector(state => state.client);
     const { pathname } = useLocation();
@@ -51,13 +53,7 @@ const RideBooking = () => {
                                 totalDistance > 10 && totalDistance <= 20 ? (totalDistance * costPerTwentyKm) :
                                 (totalDistance * costBeyondTwentyKm);
    
-    
-
     const handleBookingSubmit = async(data) => {
-           if(payment === ""){
-                setPaymentChoiceErr("Please select a payment option");
-                return;
-           }
            const formData = {
                  rideType: "Point to Point",
                  customerRideId: rideID,
@@ -67,8 +63,10 @@ const RideBooking = () => {
                  waitingCharge: chosenLeg && waitingCharge ? Math.round(calculatedDistanceCost * 0.2) : 0,
                  rideDuration: chosenLeg ? chosenLeg.duration.text : "",
                  rideCost: chosenLeg ? Math.round(calculatedDistanceCost) : 0,
+                 ridePackage: packageOption,
+                 platinumCost: packageOption === "odyra-platinum" ? Math.round(calculatedDistanceCost * 0.25) : 0,
                  ...data,
-                 paymentMethod: payment,
+                 paymentMethod: "Card",
            }
 
            try {
@@ -78,11 +76,6 @@ const RideBooking = () => {
            } catch (error) {
                  dispatch(setGeneralNotification({ status: true, message: error.data.message, type: 'error'}))
            }
-    }
-
-    const handlePaymentChoiceChange = (val) => {
-          setPaymentChoiceErr("");
-          setPayment(val)
     }
 
    const prefillLoggedInUser = () => {
@@ -124,25 +117,70 @@ const RideBooking = () => {
                                                                 </div>
                                                                 { errors.pickupDateTime && <span className="error">{errors.pickupDateTime.message}</span>}
                                                     </div>
+                                                    <div className="booking-form-row">
+                                                              <h4 className="form-title">Choose ride package:</h4>
+                                                               { packages.map(pg => (
+                                                                     <div key={pg.id} onClick={() => setPackageOption(pg.key)} className={ pg.key === packageOption ? "package-block active" : "package-block"}>
+                                                                                <div className="package-block-texts">
+                                                                                        <h5>{pg.name}</h5>
+                                                                                        <p>{pg.description}</p>
+                                                                                </div>
+                                                                                <div className="package-actions">
+                                                                                         { pg.key === packageOption ? 
+                                                                                             <span><PiCheckCircleFill /></span>
+                                                                                           :
+                                                                                              <span><RiCircleLine /></span>
+                                                                                           }
+                                                                                </div>
+                                                                     </div>
+                                                               ))}
+                                                    </div>
                                                     <div className="booking-form-row split">
                                                                <div className="booking-form-row-column">
-                                                                          <div className="booking-input">
-                                                                                <span><IoPeopleOutline /></span>
-                                                                                <div className="input-row">
-                                                                                        <label htmlFor="passangers">Passengers</label>
-                                                                                        <input {...register("passengersNumber", { required: "Please enter no. of passengers "})} type="number" placeholder="No. of passengers" className="input-row-control" />
-                                                                                </div>
+                                                                          <div className="booking-select">
+                                                                                <label htmlFor="passengers">No. of Passengers</label>
+                                                                                { packageOption === "odyra-premium" ? 
+                                                                                        <select {...register("passengersNumber", { required: "Please enter no. of passengers "})}>
+                                                                                                <option value="1">1 passenger</option>
+                                                                                                <option value="2">2 passengers</option>
+                                                                                                <option value="3">3 passengers</option>
+                                                                                                <option value="4">4 passengers</option>
+                                                                                        </select>
+                                                                                        :
+                                                                                        <select {...register("passengersNumber", { required: "Please enter no. of passengers "})}>
+                                                                                                <option value="1">1 passenger</option>
+                                                                                                <option value="2">2 passengers</option>
+                                                                                                <option value="3">3 passengers</option>
+                                                                                                <option value="4">4 passengers</option>
+                                                                                                 <option value="5">5 passengers</option>
+                                                                                                  <option value="6">6 passengers</option>
+                                                                                        </select>
+                                                                               }
                                                                         </div>
                                                                         { errors.passengersNumber && <span className="error">{errors.passengersNumber.message}</span>}
                                                                </div>
                                                                <div className="booking-form-row-column">
-                                                                        <div className="booking-input">
-                                                                                <span><BsFillLuggageFill  /></span>
-                                                                                <div className="input-row">
-                                                                                        <label htmlFor="pickup">Bags/Luggage</label>
-                                                                                        <input {...register("bagsNumber", { required: "Please enter no. of bags"})} type="number" placeholder="No. of bags" className="input-row-control" />
-                                                                                </div>
-                                                                        </div>
+                                                                      <div className="booking-select">
+                                                                               <label htmlFor="passengers">No. of Bags</label>
+                                                                              { packageOption === "odyra-premium" ? 
+                                                                                        <select {...register("bagsNumber", { required: "Please enter no. of bags"})}>
+                                                                                                <option value="1">1 luggage</option>
+                                                                                        </select>
+                                                                                        :
+                                                                                        <select {...register("bagsNumber", { required: "Please enter no. of bags"})}>
+                                                                                                <option value="1">1 luggage</option>
+                                                                                                <option value="2">2 luggages</option>
+                                                                                                <option value="3">3 luggages</option>
+                                                                                                <option value="4">4 luggages</option>
+                                                                                                 <option value="5">5 luggages</option>
+                                                                                                  <option value="6">6 luggages</option>
+                                                                                                <option value="7">7 luggages</option>
+                                                                                                <option value="8">8 luggages</option>
+                                                                                                <option value="9">9 luggages</option>
+                                                                                                 <option value="10">10 luggages</option>
+                                                                                        </select>
+                                                                               }
+                                                                      </div>
                                                                         { errors.bagsNumber && <span className="error">{errors.bagsNumber.message}</span>}
                                                                </div>
                                                     </div>
@@ -159,7 +197,7 @@ const RideBooking = () => {
                                                             </div>
                                                             { waitingCharge &&
                                                                     <div className="waiting-calc-row">
-                                                                            <p>To ensure smooth scheduling for all travelers, a 20% waiting charge will apply if the waiting time exceeds 30 minutes from the scheduled pickup time.</p>
+                                                                            <p>To ensure smooth scheduling for all travelers, a 20% waiting charge will apply to the total cost.</p>
                                                                     </div>
                                                                 }
                                                     </div>
@@ -183,23 +221,23 @@ const RideBooking = () => {
                                                     </div>
                                         </div>
 
-                                        <div className="payments-wrap">
+                                        {/* <div className="payments-wrap">
                                                 <div className="wrap-head">
                                                             <h3>Payment details</h3>
                                                 </div>
                                                 <h4>Choose payment method:</h4>
                                                 <div className="payment-blocks">
-                                                            {/* <div className={ payment === "Cash" ? "payment-block active" : "payment-block"} onClick={() => handlePaymentChoiceChange("Cash")}>
+                                                            <div className={ payment === "Cash" ? "payment-block active" : "payment-block"} onClick={() => handlePaymentChoiceChange("Cash")}>
                                                                     <span><GiTakeMyMoney /></span>
                                                                     <h5>Cash</h5>
-                                                            </div> */}
+                                                            </div>
                                                             <div className={ payment === "Card" ? "payment-block active" : "payment-block"} onClick={() => handlePaymentChoiceChange("Card")}>
                                                                     <div className="images-block">
                                                                             <img src={visa} alt="" />
                                                                             <img src={mastercard} alt="" />
                                                                     </div>
                                                             </div>
-                                                            {/* <div className={ payment === "Google Pay" ? "payment-block active" : "payment-block"} onClick={() => handlePaymentChoiceChange("Google Pay")}>
+                                                            <div className={ payment === "Google Pay" ? "payment-block active" : "payment-block"} onClick={() => handlePaymentChoiceChange("Google Pay")}>
                                                                     <div className="images-block">
                                                                                 <img src={gpay} alt="" />
                                                                     </div>
@@ -208,10 +246,10 @@ const RideBooking = () => {
                                                                     <div className="images-block">
                                                                                 <img src={paypal} alt="" />
                                                                     </div>
-                                                            </div> */}
+                                                            </div>
                                                 </div>
                                                 { paymentChoiceErr && <span className="error">{paymentChoiceErr}</span>}
-                                        </div>
+                                        </div> */}
 
                                         <div className="customer-wrap">
                                                 <div className="wrap-head">
@@ -296,6 +334,12 @@ const RideBooking = () => {
                                                                      <p>Wait time</p>
                                                                       <h4>{waitingCharge && chosenLeg ? `${Math.round(calculatedDistanceCost * 0.2)}` : 0} AUD</h4>
                                                            </div>
+                                                           { packageOption === "odyra-platinum" && (
+                                                                 <div className="ride-cost-block">
+                                                                        <p>Platinum Extra Cost</p>
+                                                                        <h4>{ chosenLeg ? `${ Math.round(calculatedDistanceCost * 0.25)}` : 0 } AUD</h4>
+                                                                </div>
+                                                           )}
                                                 </div>
                                                 <h4>
 
@@ -303,13 +347,23 @@ const RideBooking = () => {
                                                 <div className="total-row">
                                                            <h4>Total</h4>
                                                            
-                                                          <h5>
+                                                          { packageOption === "odyra-platinum" ? (
+                                                                 <h5>
+                                                                 {chosenLeg && waitingCharge ? 
+                                                                        Math.round(calculatedDistanceCost + (calculatedDistanceCost * 0.2)+(calculatedDistanceCost * 0.25)) :
+                                                                        chosenLeg ? 
+                                                                        Math.round(calculatedDistanceCost+ Math.round(calculatedDistanceCost * 0.25)) : 
+                                                                        "0"
+                                                                } AUD</h5>
+                                                          ): (
+                                                                <h5>
                                                                  {chosenLeg && waitingCharge ? 
                                                                         Math.round(calculatedDistanceCost + (calculatedDistanceCost * 0.2)) :
                                                                         chosenLeg ? 
                                                                         Math.round(calculatedDistanceCost) : 
                                                                         "0"
                                                                 } AUD</h5>
+                                                          )}
                                                 </div>
 
                                                 <div className="booking-form-btn">

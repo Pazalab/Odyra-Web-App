@@ -73,7 +73,7 @@ input[type=number] {
 }
 
 .inner-row{
-     width: 1275px;
+     width: 90%;
      margin: auto;
 }
 
@@ -83,10 +83,51 @@ input[type=number] {
      color: red;
 }
 /*  Client side styles */
+
+.landing{
+      width: 99.6%;
+      margin-inline: auto;
+      margin-top: 4px;
+      border-radius: 8px;
+      height: 100dvh;
+      background: linear-gradient(to right ,rgba(0, 0,0,0.75), rgba(0,0,0,0.4), transparent, transparent), url("./assets/hero-2.jpg");
+      -webkit-border-radius: 8px;
+      -moz-border-radius: 8px;
+      -ms-border-radius: 8px;
+      -o-border-radius: 8px;
+      background-position: top;
+      background-size: cover;
+}
+
 header{
      background: white;
      padding: 8px 0;
      border-bottom: 1px solid rgb(250, 243, 237);
+}
+.header-v2{
+     margin-top: 10px;
+}
+
+.header-extra{
+     display: flex;
+     gap: 10px;
+     justify-content: end;
+     padding-bottom: 8px;
+     padding-right: 20px;
+}
+
+.header-extra span{
+     font-size: 14px;
+     color: whitesmoke;
+}
+.header-extra a{
+     font-size: 14px;
+     color: white;
+     font-weight: 500;
+}
+.header-extra a:hover{
+     font-weight: 600;
+     color: #efd7ca;
 }
 .logo{
      width: 140px;
@@ -101,20 +142,36 @@ header{
      justify-content: space-between;
      align-items: center;
 }
+.header-content-block{
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     background-color: rgb(255, 255, 255);
+     padding: 11px 20px;
+     border-radius: 8px;
+     -webkit-border-radius: 8px;
+     -moz-border-radius: 8px;
+     -ms-border-radius: 8px;
+     -o-border-radius: 8px;
+}
 
-.header-content nav ul{
+.header-content nav ul,
+.header-content-block nav ul{
      display: flex;
      gap: 30px;
 }
 .header-content nav ul li a,
+.header-content-block nav ul li a,
 .sidebar-nav ul li a{
      color: rgb(50, 50, 50);
      font-size: 15px;
      position: relative;
      padding-bottom: 8px;
-}
+     font-weight: 500;
+} 
 .header-content nav ul li a::after,
-.sidebar-nav ul li a::after{
+.sidebar-nav ul li a::after,
+.header-content-block nav ul li a::after{
     content: "";
     position: absolute;
     background: var(--main-color);
@@ -136,6 +193,8 @@ header{
 
 .header-content nav ul li a:hover::after,
 .header-content nav ul li a.active::after,
+.header-content-block nav ul li a:hover::after,
+.header-content-block nav ul li a.active::after,
 .sidebar-nav ul li a:hover::after,
 .sidebar-nav ul li a.active::after{
       width: 100%;
@@ -143,6 +202,8 @@ header{
 
 .header-content nav ul li a:hover,
 .header-content nav ul li a.active,
+.header-content-block nav ul li a:hover,
+.header-content-block nav ul li a.active,
 .sidebar-nav ul li a:hover,
 .sidebar-nav ul li a.active{
       color: var(--main-color);
@@ -450,45 +511,68 @@ header{
 }
 
 .footer-content{
-     padding: 80px 0;
+     padding: 40px 0 80px 0;
      display: flex;
      justify-content: space-between;
+     width: 100%;
 }
-
+.footer-column{
+      width: 80%;
+      border: 1px solid;
+}
 .footer-content-grid{
+     width: 100%;
      display: grid;
-     grid-template-columns: 1fr 1fr;
+     grid-template-columns: 2fr 1fr 1fr 1fr;
      margin-top: 30px;
-     width: 600px;
+     gap: 30px;
+}
+.footer-content p{
+     font-size: 16px;
+     line-height: 1.5;
+     margin-top: 10px;
+     color: rgb(50, 50, 50);
+     width: 85%;
 }
 
-.footer-col h3{
+.footer-content h3{
       text-transform: uppercase;
-      font-weight: 500;
+      font-weight: 640;
       font-size: 16px;
-      color:rgb(102, 102, 102);
-      margin-bottom: 10px;
+      color:rgb(59, 59, 59);
+      margin-bottom: 20px;
+
 }
 
 .footer-col ul{
      display: flex;
      flex-direction: column;
-     gap: 10px;;
+     gap: 20px;;
 }
 .footer-col ul li a{
-     font-size: 15px;
+     font-size: 16px;
      color: rgb(50, 50, 50);
+     font-weight: 450;
+     transition: all 0.5s ease;
+     -webkit-transition: all 0.5s ease;
+     -moz-transition: all 0.5s ease;
+     -ms-transition: all 0.5s ease;
+     -o-transition: all 0.5s ease;
 }
-
+.footer-col ul li a:hover{
+     color: var(--main-color);
+     font-weight: 500;
+}
 .footer-socials ul{
       display: flex;
       gap: 20px;
 }
 
 .footer-socials ul li a{
-     color: rgb(50, 50, 50);
+     color: rgb(255, 255, 255);
      width: 40px;
      height: 40px;
+     background: var(--main-color);
      border-radius: 45px;
      -webkit-border-radius: 45px;
      -moz-border-radius: 45px;
@@ -662,17 +746,27 @@ header{
 
 
 @media(max-width: 1090px){
+     .landing{
+          background: linear-gradient(to right ,rgba(0, 0,0,0.5), rgba(0,0,0,0.4)), url("./assets/hero-2.jpg"); 
+          background-size: cover;
+          background-position: center;
+     }
      .menu-btn{
             display: flex;
      }
       .sidebar-section{
             display: block;
       }
-     .header-content nav ul{
+     .header-content nav ul,
+     .header-content-block nav ul{
            display: none;
      }
     .footer-content-grid{
          width: 100%;
+         grid-template-columns: 1fr 1fr;
+    }
+    .footer-content p{
+          width: 100%;
     }
      .copyright{
            flex-direction: column;
@@ -699,10 +793,12 @@ header{
        .copyright ul{
             justify-content: center;
        }
+       .footer-content-grid{
+             grid-template-columns: 1fr;
+       }
 }
 @media(max-width: 540px){
       .footer-content-grid{
-            grid-template-columns: 1fr;
             gap: 20px
       }
 }

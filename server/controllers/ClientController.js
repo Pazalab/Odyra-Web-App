@@ -104,6 +104,8 @@ export const RequestRide = asyncHandler(async(req, res) => {
             customerPhone,
             customerRideId,
             flightNumber,
+            ridePackage,
+            platinumCost
       } = req.body;
  
       const rideExists = await Booking.findOne({ rideID: customerRideId });
@@ -140,10 +142,12 @@ export const RequestRide = asyncHandler(async(req, res) => {
                      estimatedRideDuration: rideDuration,
                      passengers: passengersNumber,
                      luggageCount: bagsNumber,
+                     ridePackage: ridePackage,
                      rideCost: {
                             rideFare: Number(rideCost),
                             waitingFee: Number(waitingCharge),
-                            totalFare: (Number(rideCost)+Number(waitingCharge)),
+                            platinumExtraCost: Number(platinumCost),
+                            totalFare: (Number(rideCost)+Number(waitingCharge)+Number(platinumCost)),
                      }
               })
 

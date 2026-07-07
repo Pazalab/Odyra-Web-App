@@ -106,7 +106,7 @@
      font-size: 18px;
 }
 .values-intro h2{
-       font-size: 65px;
+       font-size: 60px;
        margin: 10px 0;
 }
 
@@ -118,14 +118,14 @@
 
 
 .values-row{
-     margin-top: 50px;
+     margin-top: 40px;
      display: grid;
      grid-template-columns: repeat(3, 1fr);
      gap: 20px;
 }
 
 .value-moja{
-    background: white;
+    background: rgba(234, 232, 230, 0.26);
     padding: 40px 30px;
     border-radius: 20px;
     -webkit-border-radius: 20px;

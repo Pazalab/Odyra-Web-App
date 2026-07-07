@@ -4,25 +4,25 @@ import { useForm } from "react-hook-form";
 import BtnSpinner from "../common/BtnSpinner";
 import { PiMapPin } from "react-icons/pi";
 import { LiaUserClockSolid } from "react-icons/lia";
+import { RiCircleLine } from "react-icons/ri";
+import { PiCheckCircleFill } from "react-icons/pi";
 import { useEffect, useMemo, useState } from "react";
 import { BsFillLuggageFill } from "react-icons/bs";
 import { IoPeopleOutline } from "react-icons/io5";
-import visa from "../../../assets/visa.png"
-import mastercard from "../../../assets/mastercard.png"
 import { useCreateNewBookingMutation } from "../../../redux/slices/client/clientApiSlice";
 import { TfiTimer } from "react-icons/tfi";
 import { useSelector, useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { setGeneralNotification } from "../../../redux/slices/util/utilActionsSlice";
 import { generateRideID } from "../../../utils/chores";
+import { packages } from "../../../data/dummy_data";
 
 const BytheHour = () => {
    const [ waitingCharge, setWaitingCharge ] = useState(false);
      const [ pickupPoint, setPickupPoint ] = useState("");
      const [ dropoffPoint, setDropoffPoint ] = useState("");
      const { register, handleSubmit, formState: { errors }, watch, setValue } = useForm();
-     const [ payment, setPayment ] = useState("");
-     const [ paymentChoiceErr, setPaymentChoiceErr ] = useState("")
+     const [ packageOption, setPackageOption ] = useState("odyra-premium");
      const [ stopoverPoint, setStopoverPoint ] = useState("");
      const [ stopoverStatus, setStopoverStatus ] = useState(false);
          
@@ -34,11 +34,6 @@ const BytheHour = () => {
     const { pathname } = useLocation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-
- const handlePaymentChoiceChange = (val) => {
-      setPaymentChoiceErr("");
-      setPayment(val)
- }
 
     const prefillLoggedInUser = () => {
          setValue("customerName", profile.name);
@@ -66,10 +61,6 @@ const handleStopoverChange = () => {
  const calculatedDistanceCost = selectedHours * costPerHour;
 
  const handleBytheHourBooking = async(data) => {
-          if(payment === ""){
-           setPaymentChoiceErr("Please select a payment option to continue");
-           return;
-      }
       const formData = {
              rideType: "By the Hour",
              customerRideId: rideID,
@@ -78,8 +69,10 @@ const handleStopoverChange = () => {
              waitingCharge: selectedHours && waitingCharge ? Math.round(calculatedDistanceCost * 0.2) : 0,
              rideDuration: selectedHours ? `${selectedHours} hours` : "",
              rideCost: selectedHours ? Math.round(calculatedDistanceCost) : 0,
+              ridePackage: packageOption,
+             platinumCost: packageOption === "odyra-platinum" ? Math.round(calculatedDistanceCost * 0.25) : 0,
              ...data,
-             paymentMethod: payment
+             paymentMethod: "Card"
       }
 
        try {
@@ -132,28 +125,75 @@ const handleStopoverChange = () => {
                                                                 </div>
                                                                 { errors.durationHours && <span className="error">{errors.durationHours.message}</span>}
                                                     </div>
-                                                    <div className="booking-form-row split">
-                                                              <div className="booking-form-row-column">
-                                                                          <div className="booking-input">
-                                                                                <span><IoPeopleOutline /></span>
-                                                                                <div className="input-row">
-                                                                                        <label htmlFor="passangers">Passengers</label>
-                                                                                        <input {...register("passengersNumber", { required: "Please enter no. of passengers "})} type="number" placeholder="No. of passengers" className="input-row-control" />
+                                                     <div className="booking-form-row">
+                                                              <h4 className="form-title">Choose ride package:</h4>
+                                                               { packages.map(pg => (
+                                                                     <div key={pg.id} onClick={() => setPackageOption(pg.key)} className={ pg.key === packageOption ? "package-block active" : "package-block"}>
+                                                                                <div className="package-block-texts">
+                                                                                        <h5>{pg.name}</h5>
+                                                                                        <p>{pg.description}</p>
                                                                                 </div>
+                                                                                <div className="package-actions">
+                                                                                         { pg.key === packageOption ? 
+                                                                                             <span><PiCheckCircleFill /></span>
+                                                                                           :
+                                                                                              <span><RiCircleLine /></span>
+                                                                                           }
+                                                                                </div>
+                                                                     </div>
+                                                               ))}
+                                                    </div>
+
+                                                    <div className="booking-form-row split">
+                                                               <div className="booking-form-row-column">
+                                                                          <div className="booking-select">
+                                                                                <label htmlFor="passengers">No. of Passengers</label>
+                                                                                { packageOption === "odyra-premium" ? 
+                                                                                        <select {...register("passengersNumber", { required: "Please enter no. of passengers "})}>
+                                                                                                <option value="1">1 passenger</option>
+                                                                                                <option value="2">2 passengers</option>
+                                                                                                <option value="3">3 passengers</option>
+                                                                                                <option value="4">4 passengers</option>
+                                                                                        </select>
+                                                                                        :
+                                                                                        <select {...register("passengersNumber", { required: "Please enter no. of passengers "})}>
+                                                                                                <option value="1">1 passenger</option>
+                                                                                                <option value="2">2 passengers</option>
+                                                                                                <option value="3">3 passengers</option>
+                                                                                                <option value="4">4 passengers</option>
+                                                                                                 <option value="5">5 passengers</option>
+                                                                                                  <option value="6">6 passengers</option>
+                                                                                        </select>
+                                                                               }
                                                                         </div>
                                                                         { errors.passengersNumber && <span className="error">{errors.passengersNumber.message}</span>}
-                                                              </div>
-                                                              <div className="booking-form-row-column">
-                                                                        <div className="booking-input">
-                                                                                <span><BsFillLuggageFill  /></span>
-                                                                                <div className="input-row">
-                                                                                        <label htmlFor="pickup">Bags/Luggage</label>
-                                                                                        <input {...register("bagsNumber", { required: "Please enter no. of bags"})} type="number" placeholder="No. of bags" className="input-row-control" />
-                                                                                </div>
-                                                                        </div>
+                                                               </div>
+                                                               <div className="booking-form-row-column">
+                                                                      <div className="booking-select">
+                                                                               <label htmlFor="passengers">No. of Bags</label>
+                                                                              { packageOption === "odyra-premium" ? 
+                                                                                        <select {...register("bagsNumber", { required: "Please enter no. of bags"})}>
+                                                                                                <option value="1">1 luggage</option>
+                                                                                        </select>
+                                                                                        :
+                                                                                        <select {...register("bagsNumber", { required: "Please enter no. of bags"})}>
+                                                                                                <option value="1">1 luggage</option>
+                                                                                                <option value="2">2 luggages</option>
+                                                                                                <option value="3">3 luggages</option>
+                                                                                                <option value="4">4 luggages</option>
+                                                                                                 <option value="5">5 luggages</option>
+                                                                                                  <option value="6">6 luggages</option>
+                                                                                                <option value="7">7 luggages</option>
+                                                                                                <option value="8">8 luggages</option>
+                                                                                                <option value="9">9 luggages</option>
+                                                                                                 <option value="10">10 luggages</option>
+                                                                                        </select>
+                                                                               }
+                                                                      </div>
                                                                         { errors.bagsNumber && <span className="error">{errors.bagsNumber.message}</span>}
-                                                              </div>
+                                                               </div>
                                                     </div>
+
                                                     <div className="booking-form-row">
                                                             <div className="waiting-input">
                                                                         <h4>Would you like the driver to wait for you for more than 30 mins?</h4>
@@ -191,22 +231,6 @@ const handleStopoverChange = () => {
                                                                 }
                                                     </div>
                                         </div>
-                                        <div className="payments-wrap">
-                                              <div className="wrap-head">
-                                                          <h3>Payment details</h3>
-                                              </div>
-                                                <h4>Choose payment method:</h4>
-                                                <div className="payment-blocks">
-                                                            <div className={ payment === "Card" ? "payment-block active" : "payment-block"} onClick={() => handlePaymentChoiceChange("Card")}>
-                                                                    <div className="images-block">
-                                                                            <img src={visa} alt="" />
-                                                                            <img src={mastercard} alt="" />
-                                                                    </div>
-                                                            </div>
-                                                      
-                                                </div>
-                                                { paymentChoiceErr && <span className="error">{paymentChoiceErr}</span>}
-                                      </div>
 
                                       <div className="customer-wrap">
                                                 <div className="wrap-head">
@@ -294,6 +318,12 @@ const handleStopoverChange = () => {
                                                                         <p>Wait time</p>
                                                                         <h4>{waitingCharge && chosenLeg ? Math.round(calculatedDistanceCost * 0.2) : 0} AUD</h4>
                                                               </div>
+                                                              { packageOption === "odyra-platinum" && (
+                                                                        <div className="ride-cost-block">
+                                                                                <p>Platinum Extra Cost</p>
+                                                                                <h4>{ chosenLeg ? `${ Math.round(calculatedDistanceCost * 0.25)}` : 0 } AUD</h4>
+                                                                        </div>
+                                                                  )}
                                                   </div>
                                                   <h4>
   
@@ -301,13 +331,23 @@ const handleStopoverChange = () => {
                                                   <div className="total-row">
                                                           <h4>Total</h4>
                                                               
-                                                          <h5>
+                                                          { packageOption === "odyra-platinum" ? (
+                                                                 <h5>
+                                                                 {chosenLeg && waitingCharge ? 
+                                                                        Math.round(calculatedDistanceCost + (calculatedDistanceCost * 0.2)+(calculatedDistanceCost * 0.25)) :
+                                                                        chosenLeg ? 
+                                                                        Math.round(calculatedDistanceCost+ Math.round(calculatedDistanceCost * 0.25)) : 
+                                                                        "0"
+                                                                } AUD</h5>
+                                                          ): (
+                                                                <h5>
                                                                  {chosenLeg && waitingCharge ? 
                                                                         Math.round(calculatedDistanceCost + (calculatedDistanceCost * 0.2)) :
                                                                         chosenLeg ? 
                                                                         Math.round(calculatedDistanceCost) : 
                                                                         "0"
                                                                 } AUD</h5>
+                                                          )}
                                                   </div>
   
                                                   <div className="booking-form-btn">

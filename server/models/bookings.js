@@ -35,9 +35,11 @@ const bookingsSchema = mongoose.Schema({
        estimatedRideDuration: { type: String, required: true },
        passengers: { type: String, required: true },
        luggageCount: { type: String, required: true },
+       ridePackage: { type: String },
        rideCost: {
               rideFare: Number,
               taxes: Number,
+              platinumExtraCost: Number,
               waitingFee: Number,
               discounts: Number,
               totalFare: Number,

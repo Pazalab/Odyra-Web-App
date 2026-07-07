@@ -27,7 +27,7 @@ const Header = () => {
               }
         } catch (error) { 
              //  console.log(error)
-               dispatch(setGeneralNotification({ status: true, message: "Failed to lgout", type: "error"}))
+               dispatch(setGeneralNotification({ status: true, message: error.data.message, type: "error"}))
         }
    }
   return (

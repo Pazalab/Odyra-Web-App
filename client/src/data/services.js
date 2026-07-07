@@ -49,9 +49,9 @@ export const services = [
         subtitle: "Reliable, timely rides for fly-in fly-out travelers who value efficiency and comfort.",
         intro_desc: "At Odyra Safaris, our FIFO (Fly In, Fly Out) Airport Pickup and Drop-off service is designed to provide travelers with a dependable, efficient, and professionally managed airport transportation experience. Operating within established airport procedures and pickup systems, we ensure smooth passenger transfers while minimizing delays and unnecessary waiting times. Whether you're arriving for business, leisure, or a special occasion, our team is committed to providing safe, comfortable, and punctual transportation to and from the airport.",
         link: "/service/fifo-airport-pickup-and-drop-off",
-        url_param: "fifo-airport-pickup-and-drop-off",
-        image: "/services/fifo2.jpeg",
-        image2: "/services/fifo3.jpeg",
+        url_param: "fifo-airport-pickup-and-drop-off", 
+        image: "/services/fifo3.jpeg",
+        image2: "/services/fifo4.jpeg",
         description: [""],
         reasons: [
               {
@@ -87,7 +87,45 @@ export const services = [
         ],
         extra: "By combining professional drivers, reliable scheduling, comfortable vehicles, and a thorough understanding of airport operations, Odyra Safaris delivers a FIFO airport transportation service that travelers can trust. Whether arriving or departing, our goal is to provide a seamless, stress-free experience that ensures every journey begins and ends on the right note."
     },
-
+  {
+        id: 14,
+        title: "Cabin Crew Transfers",
+        subtitle: "Ensuring cabin crew members travel safely, comfortably, and on schedule between airports, hotels, and crew accommodations at any time of  the day.",
+        intro_desc: "At Odyra Safaris, we understand the unique demands and time-sensitive nature of the aviation industry. Our Cabin Crew Transfers service is specifically designed to provide airline crew members with safe, punctual, and dependable transportation between airports, hotels, crew accommodations, and other designated locations. Whether arriving after a long-haul flight, preparing for an early morning departure, or transferring between assignments, our professional transportation solutions ensure cabin crew travel comfortably and arrive on schedule.",
+        link: "/service/cabin-crew-transfers",
+        url_param: "cabin-crew-transfers",
+        image: "/services/cabin-crew.avif",
+        image2: "/services/cabin-crew2.jpeg",
+        description: [""],
+        reasons: [
+              {
+                   id: 0,
+                   title: "Tailored for Cabin Crew Operations",
+                   description: "Flight schedules often operate outside traditional business hours, requiring transportation services that are flexible, responsive, and available around the clock. Our cabin crew transfer solutions are designed to accommodate changing rosters, delayed flights, and operational requirements, ensuring crew members reach their destinations efficiently and without unnecessary stress."
+              },
+              {
+                 id: 1,
+                 title: "Punctual and Dependable Service",
+                 description: "In aviation, timing is everything. Our experienced drivers and dedicated coordination team prioritize punctuality, carefully planning routes and monitoring traffic conditions to ensure timely arrivals and departures. With Odyra Safaris, airlines and crew members can rely on a transportation partner that understands the importance of operational efficiency."
+              },
+              {
+                id: 2, 
+                title: "Comfortable Travel Between Assignments",
+                description: "Cabin crew members often travel after long working hours and demanding schedules. Our fleet of modern, well-maintained vehicles provides a comfortable and relaxing environment, allowing crew members to rest and recharge while traveling between airports, hotels, and accommodation facilities."
+              },
+              {
+                id: 3,
+                title: "Professional Drivers and Exceptional Service",
+                description: "Our drivers are trained to deliver a high standard of professionalism, discretion, and customer care. Familiar with airport procedures, hotel locations, and airline transportation requirements, they ensure every journey is smooth, efficient, and aligned with the expectations of aviation professionals."
+              },
+              {
+                 id: 4,
+                 title: "Flexible Solutions for Airlines and Crew",
+                 description: "Whether supporting individual crew transfers, entire flight crews, or ongoing airline transportation contracts, Odyra Safaris offers scalable solutions tailored to operational needs. We work closely with airlines, aviation service providers, and accommodation partners to deliver reliable transportation that supports seamless crew movement."
+              },
+        ],
+        extra: "Odyra Safaris combines industry understanding, professional service, and operational reliability to deliver transportation solutions tailored specifically for cabin crew and airline personnel. With 24/7 availability, punctual service, comfortable vehicles, and experienced drivers, we help aviation professionals travel with confidence while supporting the efficiency of airline operations every step of the way."
+    },
  {
         id: 2,
         title: "Corporate Events",
@@ -132,6 +170,45 @@ export const services = [
         ],
         extra: "Odyra Safaris combines professionalism, reliability, and meticulous planning to deliver transportation services that support the success of your corporate events. From executive transfers and conference transportation to large-scale event logistics, we provide tailored travel solutions that ensure your guests, employees, and clients arrive comfortably, safely, and on time."
     },
+    {
+        id: 12,
+        title: "Cruise Transfers",
+        subtitle: "Providing Timely, Comfortable, and Hassle-Free Transportation Between Cruise Terminals, Airports, Hotels, and Private Residences for a Seamless Travel Experience.",
+        intro_desc: "At Odyra Safaris, our Cruise Transfers service is designed to provide passengers with a smooth, reliable, and stress-free connection between their cruise terminal and their chosen destination. Whether you are beginning an exciting voyage or returning from a memorable sea adventure, we ensure timely pickups, comfortable travel, and professional service that takes the hassle out of getting to and from the port. From hotels and airports to private residences, our transfers are tailored to make your cruise experience as effortless and enjoyable as possible.",
+        link: "/service/cruise-transfers",
+        url_param: "cruise-transfers",
+        image: "/services/cruise-transfer.jpg",
+        image2: "/services/cruise-transfer2.jpg",
+        description: [""],
+        reasons: [
+              {
+                   id: 0,
+                   title: "Timely and Reliable Port Transfers",
+                   description: "Cruise schedules require precision, and our service is built around punctuality and efficiency. We carefully plan and coordinate each transfer to ensure passengers arrive at the terminal well ahead of departure times and are promptly collected upon return, eliminating unnecessary waiting or travel stress."
+              },
+              {
+                 id: 1,
+                 title: "Comfortable Travel for Every Passenger",
+                 description: "Our modern, well-maintained vehicles provide a comfortable environment for individuals, families, and groups traveling with luggage and cruise essentials. Whether you're traveling light or with extended baggage, we ensure ample space, cleanliness, and a relaxing ride before or after your journey at sea."
+              },
+              {
+                id: 2, 
+                title: "Professional Drivers and Smooth Coordination",
+                description: "Our experienced drivers are familiar with cruise terminal procedures, traffic patterns, and boarding requirements, allowing them to navigate port areas efficiently. With a strong focus on professionalism and customer care, they assist with luggage handling and ensure every transfer runs smoothly from start to finish.."
+              },
+              {
+                id: 3,
+                title: "Ideal for Vacationers, Families, and Groups",
+                description: "Whether you're embarking on a luxury cruise, a family holiday, or a group expedition, our cruise transfer service is designed to accommodate all travel needs. We provide coordinated group transportation options that keep everyone together, ensuring a convenient and enjoyable start or end to your cruise experience."
+              },
+              {
+                 id: 4,
+                 title: "Safety, Comfort, and Peace of Mind",
+                 description: "At Odyra Safaris, safety and reliability are at the core of every journey we provide. Our vehicles are regularly inspected, and our drivers are trained to uphold the highest standards of road safety and service excellence, giving passengers complete peace of mind throughout their transfer."
+              },
+        ],
+        extra: "With a commitment to punctuality, comfort, and professional service, Odyra Safaris ensures that every cruise transfer is seamless and worry-free. From port coordination and luggage assistance to reliable scheduling and comfortable travel, we provide a trusted transportation solution that allows you to focus on enjoying your cruise experience from beginning to end."
+    },
  {
         id: 3,
         title: "Wine Tasting & Scenery Tours",
@@ -139,8 +216,8 @@ export const services = [
         intro_desc: "At Odyra Safaris, we believe that the journey is just as important as the destination. Our Wine Tasting & Scenery Tours are designed to provide guests with a relaxing and memorable experience that combines breathtaking landscapes, exceptional wines, and comfortable transportation. Whether you're planning a romantic getaway, a celebration with friends, a corporate outing, or simply looking to explore the beauty of the region, our professionally guided transportation service allows you to immerse yourself in the experience while we handle the logistics.",
         link: "/service/wine-tasting-and-scenery-tours",
         url_param: "wine-tasting-and-scenery-tours",
-        image: "/services/wine-tasting2.jpeg",
-        image2: "/services/wine-tasting3.jpeg",
+        image: "/services/wine-tasting8.jpeg",
+        image2: "/services/wine-tasting2.jpeg",
         description: ["Discover some of the region's most celebrated wineries and vineyards through carefully planned tours that showcase local wine culture and craftsmanship. From boutique estates to established vineyards, guests have the opportunity to enjoy wine tastings, learn about the winemaking process, and experience the unique character of each destination in a relaxed and enjoyable setting."],
         reasons: [
               {
@@ -205,82 +282,6 @@ export const services = [
         ]
     },
 
-     {
-        id: 12,
-        title: "Cruise Transfers",
-        subtitle: "Providing Timely, Comfortable, and Hassle-Free Transportation Between Cruise Terminals, Airports, Hotels, and Private Residences for a Seamless Travel Experience.",
-        intro_desc: "At Odyra Safaris, our Cruise Transfers service is designed to provide passengers with a smooth, reliable, and stress-free connection between their cruise terminal and their chosen destination. Whether you are beginning an exciting voyage or returning from a memorable sea adventure, we ensure timely pickups, comfortable travel, and professional service that takes the hassle out of getting to and from the port. From hotels and airports to private residences, our transfers are tailored to make your cruise experience as effortless and enjoyable as possible.",
-        link: "/service/cruise-transfers",
-        url_param: "cruise-transfers",
-        image: "/services/cruise-transfer.jpg",
-        image2: "/services/cruise-transfer2.jpg",
-        description: [""],
-        reasons: [
-              {
-                   id: 0,
-                   title: "Timely and Reliable Port Transfers",
-                   description: "Cruise schedules require precision, and our service is built around punctuality and efficiency. We carefully plan and coordinate each transfer to ensure passengers arrive at the terminal well ahead of departure times and are promptly collected upon return, eliminating unnecessary waiting or travel stress."
-              },
-              {
-                 id: 1,
-                 title: "Comfortable Travel for Every Passenger",
-                 description: "Our modern, well-maintained vehicles provide a comfortable environment for individuals, families, and groups traveling with luggage and cruise essentials. Whether you're traveling light or with extended baggage, we ensure ample space, cleanliness, and a relaxing ride before or after your journey at sea."
-              },
-              {
-                id: 2, 
-                title: "Professional Drivers and Smooth Coordination",
-                description: "Our experienced drivers are familiar with cruise terminal procedures, traffic patterns, and boarding requirements, allowing them to navigate port areas efficiently. With a strong focus on professionalism and customer care, they assist with luggage handling and ensure every transfer runs smoothly from start to finish.."
-              },
-              {
-                id: 3,
-                title: "Ideal for Vacationers, Families, and Groups",
-                description: "Whether you're embarking on a luxury cruise, a family holiday, or a group expedition, our cruise transfer service is designed to accommodate all travel needs. We provide coordinated group transportation options that keep everyone together, ensuring a convenient and enjoyable start or end to your cruise experience."
-              },
-              {
-                 id: 4,
-                 title: "Safety, Comfort, and Peace of Mind",
-                 description: "At Odyra Safaris, safety and reliability are at the core of every journey we provide. Our vehicles are regularly inspected, and our drivers are trained to uphold the highest standards of road safety and service excellence, giving passengers complete peace of mind throughout their transfer."
-              },
-        ],
-        extra: "With a commitment to punctuality, comfort, and professional service, Odyra Safaris ensures that every cruise transfer is seamless and worry-free. From port coordination and luggage assistance to reliable scheduling and comfortable travel, we provide a trusted transportation solution that allows you to focus on enjoying your cruise experience from beginning to end."
-    },
-     {
-        id: 14,
-        title: "Cabine Crew Transfers",
-        subtitle: "Ensuring Cabin Crew Members Travel Safely, Comfortably, and On Schedule Between Airports, Hotels, and Crew Accommodations at Any Time of Day.",
-        intro_desc: "At Odyra Safaris, we understand the unique demands and time-sensitive nature of the aviation industry. Our Cabin Crew Transfers service is specifically designed to provide airline crew members with safe, punctual, and dependable transportation between airports, hotels, crew accommodations, and other designated locations. Whether arriving after a long-haul flight, preparing for an early morning departure, or transferring between assignments, our professional transportation solutions ensure cabin crew travel comfortably and arrive on schedule.",
-        link: "/service/cabin-crew-transfers",
-        url_param: "cabin-crew-transfers",
-        image: "/services/cabin-crew.avif",
-        image2: "/services/cabin-crew2.jpeg",
-        description: [""],
-        reasons: [
-              {
-                   id: 0,
-                   title: "Tailored for Cabin Crew Operations",
-                   description: "Flight schedules often operate outside traditional business hours, requiring transportation services that are flexible, responsive, and available around the clock. Our cabin crew transfer solutions are designed to accommodate changing rosters, delayed flights, and operational requirements, ensuring crew members reach their destinations efficiently and without unnecessary stress."
-              },
-              {
-                 id: 1,
-                 title: "Punctual and Dependable Service",
-                 description: "In aviation, timing is everything. Our experienced drivers and dedicated coordination team prioritize punctuality, carefully planning routes and monitoring traffic conditions to ensure timely arrivals and departures. With Odyra Safaris, airlines and crew members can rely on a transportation partner that understands the importance of operational efficiency."
-              },
-              {
-                id: 2, 
-                title: "Comfortable Travel Between Assignments",
-                description: "Cabin crew members often travel after long working hours and demanding schedules. Our fleet of modern, well-maintained vehicles provides a comfortable and relaxing environment, allowing crew members to rest and recharge while traveling between airports, hotels, and accommodation facilities."
-              },
-              {
-                id: 3,
-                title: "Professional Drivers and Exceptional Service",
-                description: "Our drivers are trained to deliver a high standard of professionalism, discretion, and customer care. Familiar with airport procedures, hotel locations, and airline transportation requirements, they ensure every journey is smooth, efficient, and aligned with the expectations of aviation professionals."
-              },
-              {
-                 id: 4,
-                 title: "Flexible Solutions for Airlines and Crew",
-                 description: "Whether supporting individual crew transfers, entire flight crews, or ongoing airline transportation contracts, Odyra Safaris offers scalable solutions tailored to operational needs. We work closely with airlines, aviation service providers, and accommodation partners to deliver reliable transportation that supports seamless crew movement."
-              },
-        ],
-        extra: "Odyra Safaris combines industry understanding, professional service, and operational reliability to deliver transportation solutions tailored specifically for cabin crew and airline personnel. With 24/7 availability, punctual service, comfortable vehicles, and experienced drivers, we help aviation professionals travel with confidence while supporting the efficiency of airline operations every step of the way."
-    },
+     
+   
 ]
