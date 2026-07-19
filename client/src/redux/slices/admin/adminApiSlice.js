@@ -69,6 +69,14 @@ export const adminApiSlice = apiSlice.injectEndpoints({
                    })
              }),
 
+             //Get all transactions
+             getAllTransactions: builder.query({
+                    query: () => ({
+                          url: "/admin/all-transactions",
+                          method: "GET"
+                    })
+             }),
+
             //Update Settings
             updateProfileSettings: builder.mutation({
                   query: (payload) => ({
@@ -111,5 +119,6 @@ export const {
      useResendPaymentLinkMutation,
      useUpdateProfileSettingsMutation,
      useUpdatePricingSettingsMutation,
-     useGetPlatformSettingsQuery
+     useGetPlatformSettingsQuery,
+     useGetAllTransactionsQuery
 } = adminApiSlice;

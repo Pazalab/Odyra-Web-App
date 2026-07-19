@@ -23,6 +23,7 @@ import Services from './pages/clientside/Services';
 import About from './pages/clientside/About';
 import Contact from './pages/clientside/Contact';
 import SingleService from './pages/clientside/SingleService';
+import AdminTransactions from './pages/serverside/AdminTransactions';
 
 function App() {
   const location = useLocation();
@@ -58,6 +59,7 @@ function App() {
                         <Route path='/admin/:id/bookings' element={<AdminBookings />} />
                         <Route path='/admin/:id/booking/:book_id' element={<SingleAdminBooking />} />
                         <Route path="/admin/:id/settings" element={<AdminSettings />} />
+                        <Route path="/admin/:id/transactions" element={<AdminTransactions />} />
                </Route>
     </Routes>
   )

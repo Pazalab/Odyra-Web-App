@@ -52,7 +52,9 @@ const Header2 = () => {
                                                             <li><NavLink to={"/about"}>About</NavLink></li>
                                                             <li><NavLink to={"/services"}>Services</NavLink></li>
                                                             <li><NavLink to={"/contact"}>Contact</NavLink></li>
+                                                             <li><Link to={"https://odyrasafaris.com.au"} target="_blank" >Safaris</Link></li>
                                                         </ul>
+                                                        
                                             </nav>
                                             <div className="header-actions">
                                                         <div className="action-links">

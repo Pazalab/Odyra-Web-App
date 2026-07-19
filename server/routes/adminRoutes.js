@@ -4,6 +4,7 @@ import {
     GetAllBookings, 
     GetAllCustomers, 
     GetPlatformSettings, 
+    GetStripeTransactions, 
     LoginUser, 
     LogoutUser, 
     RegisterUser, 
@@ -12,7 +13,6 @@ import {
     UpdateAdminProfile, 
     UpdateBookingStatus,
     UpdatePricingSettings,
-    
  } from "../controllers/AdminController.js";
 import { protect } from "../middlewares/authMiddleware.js";
 import { upload_pic } from "../utils/chores.js";
@@ -30,6 +30,7 @@ router.post("/booking/send-payment-link", protect, SendPaymentLink);
 router.post("/booking/resend-payment-link", protect, ResendPaymentLink); 
 router.put("/settings/update-profile-settings", protect, upload_pic.single("profilePic"), UpdateAdminProfile);
 router.put("/settings/update-pricing-settings", protect, UpdatePricingSettings);
-router.get("/settings", protect, GetPlatformSettings)
+router.get("/settings", protect, GetPlatformSettings);
+router.get("/all-transactions", protect, GetStripeTransactions);
 
 export default router; 

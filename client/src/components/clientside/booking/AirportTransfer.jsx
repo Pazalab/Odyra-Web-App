@@ -182,6 +182,9 @@ const handleAirportTransferBooking = async(data) => {
                                                                               { packageOption === "odyra-premium" ? 
                                                                                         <select {...register("bagsNumber", { required: "Please enter no. of bags"})}>
                                                                                                 <option value="1">1 luggage</option>
+                                                                                                <option value="2">2 luggages</option>
+                                                                                                <option value="3">3 luggages</option>
+                                                                                                <option value="4">4 luggages</option>
                                                                                         </select>
                                                                                         :
                                                                                         <select {...register("bagsNumber", { required: "Please enter no. of bags"})}>

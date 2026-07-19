@@ -49,7 +49,7 @@ const DashboardSidebar = () => {
                      <ul>
                               <li><NavLink to={`/admin/${identifier}/dashboard`}><span><RxDashboard /></span> Dashboard</NavLink></li>
                               <li><NavLink to={`/admin/${identifier}/bookings`}><span><BsJournalBookmark /></span> Bookings</NavLink></li>
-                              <li><NavLink to={`/admin/${identifier}/analytics`}><span><MdOutlineAnalytics  /></span> Analytics</NavLink></li>
+                              {/* <li><NavLink to={`/admin/${identifier}/analytics`}><span><MdOutlineAnalytics  /></span> Analytics</NavLink></li> */}
                               <li><NavLink to={`/admin/${identifier}/transactions`}><span><AiOutlineBank /></span> Transactions</NavLink></li>
                               <li><NavLink to={`/admin/${identifier}/settings`}><span><IoSettingsOutline /></span> Settings</NavLink></li>
                      </ul>

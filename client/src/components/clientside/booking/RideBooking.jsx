@@ -5,10 +5,6 @@ import { BsFillLuggageFill } from "react-icons/bs";
 import { IoPeopleOutline } from "react-icons/io5";
 import { RiCircleLine } from "react-icons/ri";
 import { PiCheckCircleFill } from "react-icons/pi";
-// import visa from "../../../assets/visa.png"
-// import mastercard from "../../../assets/mastercard.png"
-// import gpay from "../../../assets/google-pay.png"
-// import paypal from "../../../assets/paypal.png"
 import { APIProvider, Map, useMapsLibrary, useMap }  from "@vis.gl/react-google-maps";
 import usePlacesAutocomplete from "use-places-autocomplete";
 import { useForm } from 'react-hook-form';
@@ -165,6 +161,9 @@ const RideBooking = () => {
                                                                               { packageOption === "odyra-premium" ? 
                                                                                         <select {...register("bagsNumber", { required: "Please enter no. of bags"})}>
                                                                                                 <option value="1">1 luggage</option>
+                                                                                                <option value="2">2 luggages</option>
+                                                                                                <option value="3">3 luggages</option>
+                                                                                                <option value="4">4 luggages</option>
                                                                                         </select>
                                                                                         :
                                                                                         <select {...register("bagsNumber", { required: "Please enter no. of bags"})}>

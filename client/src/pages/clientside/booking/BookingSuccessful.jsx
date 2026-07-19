@@ -41,7 +41,7 @@ const BookingSuccessful = () => {
                                                                 <h2>Booking made successfully!</h2>
                                                                 { data && 
                                                                         <div className="booking-data">
-                                                                                <p>Hi,{data.ride.customer}. Thank you for booking your ride with Odyra safaris, the driver will send you a payment link 1 hour before your journey to confirm the booking.</p>
+                                                                                <p>Hi,{data.ride.customer}. Thank you for booking your ride with Odyra safaris, we will send you a payment link 1 hour before your journey to confirm the booking.</p>
                                                                                 <p>Below is a summary of your ride:</p>
                                                                                 <div className="booking-data-content">
                                                                                          <div className="booking-data-item">

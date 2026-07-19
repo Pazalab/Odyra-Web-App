@@ -37,6 +37,7 @@ const Footer = () => {
                                                         <li><Link to={"/service/corporate-events"}>Corporate Events</Link></li>
                                                         <li><Link to={"/service/cruise-transfers"}>Cruise Transfers</Link></li>
                                                         <li><Link to={"/service/wine-tasting-and-scenery-tours"}>Wine Tasting & Scenery Tours</Link></li>
+                                                        <li><Link to={"https://odyrasafaris.com.au"} target="_blank" >African Safaris</Link></li>
                                                 </ul>
                                         </div>
                                 <div className="footer-socials">

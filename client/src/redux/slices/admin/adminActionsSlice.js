@@ -5,6 +5,7 @@ const initialState = {
      profile: localStorage.getItem("Profile") ? JSON.parse(localStorage.getItem("Profile")) : null,
      bookings: [],
      customers: [],
+     transactions: [],
      isSidebarActive: false,
      platformSettings: null
 }
@@ -43,6 +44,10 @@ const adminActionSlice = createSlice({
                      state.platformSettings = action.payload;
               },
 
+              setAdminTransactions: (state, action) => {
+                    state.transactions = action.payload;
+              },
+
               clearEverything: (state) => {
                      state.bookings = []
                      state.customers = []
@@ -62,6 +67,8 @@ export const {
       setAllCustomers,
       openMobileSidebar,
       closeMobileSidebar,
+      setAdminTransactions,
+
       setAdminPlatformSettings,
       clearAdminPlatformSettings,
       clearEverything,

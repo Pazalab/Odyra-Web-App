@@ -12,7 +12,7 @@ const ServicesBody = () => {
                      </div>
 
                      <div className="services-body-row">
-                            { services.map(item => 
+                            { services.slice(0, 6).map(item => 
                                 <div className="service-moja" key={item.id}>
                                         <img src={item.image} alt="" />
 

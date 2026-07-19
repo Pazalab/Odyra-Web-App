@@ -281,7 +281,12 @@ export const services = [
             "/services/wine-tasting7.jpeg"
         ]
     },
-
-     
-   
+    {
+         id: 45,
+        title: "African Safaris",
+        subtitle: "Relax and explore Australia's finest vineyards and landscapes in comfort and style.",
+        intro_desc: "At Odyra Safaris, we believe that the journey is just as important as the destination. Our Wine Tasting & Scenery Tours are designed to provide guests with a relaxing and memorable experience that combines breathtaking landscapes, exceptional wines, and comfortable transportation. Whether you're planning a romantic getaway, a celebration with friends, a corporate outing, or simply looking to explore the beauty of the region, our professionally guided transportation service allows you to immerse yourself in the experience while we handle the logistics.",
+        link: "https://odyrasafaris.com.au",
+        image: "/services/african-safari2.jpg",
+    }
 ]

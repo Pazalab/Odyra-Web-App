@@ -6,7 +6,12 @@ import { sendPaymentLinkMail } from "../mail/actions/sendPaymentLinkMail.js"
 import { ResendPaymentLinkMail } from "../mail/actions/resendPaymentLinkMail.js";
 import mongoose from "mongoose";
 import Settings from "../models/settingsModel.js";
+import Stripe from "stripe";
+import dotenv from "dotenv";
 
+dotenv.config();
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 //Register user
 export const RegisterUser = asyncHandler(async(req, res) => {
        const { name, email, password, role } = req.body;
@@ -245,6 +250,22 @@ export const ResendPaymentLink = asyncHandler(async(req, res) => {
       } catch (error) {
             res.status(500).json({ message: 'Internal server error: resending payment link failed'})
       }
+})
+
+//Get all stripe transactions
+export const GetStripeTransactions = asyncHandler(async(req, res) => {
+     const paymentIntents = await stripe.checkout.sessions.list({
+            limit: 100,
+            expand: ["data.customer", "data.payment_intent"],
+     });
+
+     const transactions = paymentIntents.data.filter(payment => 
+           payment.status === "succeeded" ||
+           payment.status === "requires_payment_method"
+     );
+
+//      console.log(transactions)
+     res.status(200).json({ transactions})
 })
 
 
