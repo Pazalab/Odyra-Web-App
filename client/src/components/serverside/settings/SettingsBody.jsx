@@ -6,6 +6,7 @@ import { useGetPlatformSettingsQuery } from "../../../redux/slices/admin/adminAp
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setAdminPlatformSettings } from "../../../redux/slices/admin/adminActionsSlice";
+import {useLocation} from 'react-router-dom'
 
 const settingTabs = [
     { id: 0, name: "Profile"},
@@ -17,8 +18,9 @@ const settingTabs = [
 const SettingsBody = () => {
   const [ tab, setTab ] = useState("Profile");
   const [ tabDropdown, setTabDropdown ] = useState(false);
-  const { data } = useGetPlatformSettingsQuery({ refetchOnMountOrArgChange: true})
+  const { data } = useGetPlatformSettingsQuery()
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const handleTabDropdown = (val) => {
          setTab(val);
@@ -29,7 +31,7 @@ const SettingsBody = () => {
        if(data){
            dispatch(setAdminPlatformSettings({...data.settings}))
        }
-  }, [data, dispatch])
+  }, [data, dispatch, location])
   return (
     <div className="dashboard-settings">
               <div className="dash-settings-wrapper">

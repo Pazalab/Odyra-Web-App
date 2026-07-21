@@ -283,6 +283,12 @@
      gap: 20px;
 }
 
+.input-grid-row-4{
+     display: grid;
+     grid-template-columns: 1fr 1fr 1fr 1fr;
+     gap: 20px;
+}
+
 .input-row-col{
      display: flex;
      flex-direction: column;
@@ -528,7 +534,8 @@
           display: none;
      }
      .input-grid-row,
-     .input-grid-row-3{
+     .input-grid-row-3,
+     .input-grid-row-4{
            grid-template-columns: 1fr;
      }
      .settings-tab-wrap{

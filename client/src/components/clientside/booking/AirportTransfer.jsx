@@ -61,12 +61,14 @@ const rideID = useMemo(() => generateRideID(), []);
 const costPerTenKm = settings && Number(settings.pricingSettings.perKilometerRate.tenKilometreRate);
 const costPerTwentyKm = settings && Number(settings.pricingSettings.perKilometerRate.twentyKilometreRate);
 const costBeyondTwentyKm = settings && Number(settings.pricingSettings.perKilometerRate.beyondTwentyKilometreRate);
+const costBeyondFifty = settings && Number(settings.pricingSettings.perKilometerRate.beyondFiftyKilometreRate)
 
 const totalDistance = chosenLeg ? Number(chosenLeg.distance.text.split(" ")[0]) : 0;
 
-const calculatedDistanceCost = totalDistance <= 10 ? (totalDistance * costPerTenKm) : 
+    const calculatedDistanceCost = totalDistance <= 10 ? (totalDistance * costPerTenKm) : 
                                 totalDistance > 10 && totalDistance <= 20 ? (totalDistance * costPerTwentyKm) :
-                                (totalDistance * costBeyondTwentyKm);
+                                totalDistance > 20 && totalDistance <= 50 ? (totalDistance * costBeyondTwentyKm) : 
+                                (totalDistance * costBeyondFifty);
    
 
 const handleAirportTransferBooking = async(data) => {

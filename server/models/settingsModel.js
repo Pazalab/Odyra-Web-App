@@ -11,7 +11,8 @@ const settingsSchema = mongoose.Schema({
            perKilometerRate: { 
                 tenKilometreRate: { type: Number, required: true },
                 twentyKilometreRate: { type: Number, required: true },
-                beyondTwentyKilometreRate: { type: Number, required: true}
+                beyondTwentyKilometreRate: { type: Number, required: true},
+                beyondFiftyKilometreRate: { type: Number, required: true }
            },
            luggageThreshold: { type: Number, required: true },
            luggageCost: { type: Number, required: true },

@@ -277,11 +277,11 @@ export const UpdatePricingSettings = asyncHandler(async(req, res) => {
             tenKilometreRate,
             twentyKilometreRate,
             beyondTwentyKilometreRate,
+            beyondFiftyKilometreRate,
             luggageThreshold, 
             luggageCost, 
             cancellationFee, 
             waitingFee 
-            
       }  = req.body;
 
        try {
@@ -293,6 +293,7 @@ export const UpdatePricingSettings = asyncHandler(async(req, res) => {
                         'pricingSettings.perKilometerRate.tenKilometreRate': tenKilometreRate,
                          'pricingSettings.perKilometerRate.twentyKilometreRate': twentyKilometreRate,
                           'pricingSettings.perKilometerRate.beyondTwentyKilometreRate': beyondTwentyKilometreRate,
+                         'pricingSettings.perKilometerRate.beyondFiftyKilometreRate': beyondFiftyKilometreRate,
                         'pricingSettings.luggageThreshold': luggageThreshold,
                         'pricingSettings.luggageCost': luggageCost,
                         'pricingSettings.cancellationFee': cancellationFee,

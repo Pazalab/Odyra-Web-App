@@ -1,34 +1,56 @@
 import { useForm } from "react-hook-form"
-import { useUpdatePricingSettingsMutation } from "../../../../redux/slices/admin/adminApiSlice"
+import { useGetPlatformSettingsQuery, useUpdatePricingSettingsMutation } from "../../../../redux/slices/admin/adminApiSlice"
 import ActionLoader from "../../common/spinners/ActionLoader";
 import { useDispatch, useSelector } from "react-redux";
 import { setDashboardNotification } from "../../../../redux/slices/util/utilActionsSlice";
 import { setAdminPlatformSettings } from "../../../../redux/slices/admin/adminActionsSlice";
+import { useEffect } from "react";
 const PricingSettingsTab = () => {
   const { platformSettings } = useSelector(state => state.admin);
-  const { register, handleSubmit, formState: { errors }} = useForm({
-       defaultValues: {
-                baseFare: platformSettings?.pricingSettings.baseFare || 0,
-                cancellationFee: platformSettings?.pricingSettings.cancellationFee || 0,
-                luggageCost: platformSettings?.pricingSettings.luggageCost || 0,
-                luggageThreshold: platformSettings?.pricingSettings.luggageThreshold || 0,
-                perHourRate: platformSettings?.pricingSettings.perHourRate || 0,
-                perKilometreRate: platformSettings?.pricingSettings.perKilometerRate || 0,
-                waitingFee: platformSettings?.pricingSettings.waitingFee || 0,
-                tenKilometreRate: platformSettings?.pricingSettings.perKilometerRate.tenKilometreRate || 0,
-                twentyKilometreRate: platformSettings?.pricingSettings.perKilometerRate.twentyKilometreRate || 0,
-                beyondTwentyKilometreRate: platformSettings?.pricingSettings.perKilometerRate.beyondTwentyKilometreRate || 0
+  const { register, handleSubmit, formState: { errors }, reset} = useForm({
+       values: {
+                baseFare: 0,
+                cancellationFee: 0,
+                luggageCost: 0,
+                luggageThreshold: 0,
+                perHourRate:  0,
+                perKilometreRate: 0,
+                waitingFee: 0,
+                tenKilometreRate: 0,
+                twentyKilometreRate: 0,
+                beyondTwentyKilometreRate: 0,
+                beyondFiftyKilometreRate: 0
        }
   })
   const dispatch = useDispatch();
-
+  const { refetch } = useGetPlatformSettingsQuery();
   const [ UpdateSettings, { isLoading }] = useUpdatePricingSettingsMutation();
+
+  useEffect(() => {
+         if(platformSettings){
+                reset({
+                        baseFare: platformSettings?.pricingSettings.baseFare,
+                        cancellationFee: platformSettings?.pricingSettings.cancellationFee,
+                        luggageCost: platformSettings?.pricingSettings.luggageCost,
+                        luggageThreshold: platformSettings?.pricingSettings.luggageThreshold,
+                        perHourRate: platformSettings?.pricingSettings.perHourRate,
+                        perKilometreRate: platformSettings?.pricingSettings.perKilometerRate,
+                        waitingFee: platformSettings?.pricingSettings.waitingFee,
+                        tenKilometreRate: platformSettings?.pricingSettings.perKilometerRate.tenKilometreRate,
+                        twentyKilometreRate: platformSettings?.pricingSettings.perKilometerRate.twentyKilometreRate,
+                        beyondTwentyKilometreRate: platformSettings?.pricingSettings.perKilometerRate.beyondTwentyKilometreRate,
+                        beyondFiftyKilometreRate: platformSettings?.pricingSettings.perKilometerRate.beyondFiftyKilometreRate
+                })
+         }
+  },[platformSettings, reset])
+
 
   const SubmitPricingSettings = async (data) => {
          try {
                 const res = await UpdateSettings(data).unwrap();
-                dispatch(setAdminPlatformSettings({...res.settings}))
-                dispatch(setDashboardNotification({ status: true, message: res.message, type: "success"}))
+                dispatch(setAdminPlatformSettings(res.settings))
+                dispatch(setDashboardNotification({ status: true, message: res.message, type: "success"}));
+                 refetch();
          } catch (error) {
                 dispatch(setDashboardNotification({ status: true, message: error.data.message, type: "error"}))
          }
@@ -52,22 +74,27 @@ const PricingSettingsTab = () => {
                              <div className="input-row">
                                     <label htmlFor="fullname">Per Kilometre Rate($)<span className="required">*</span></label>
                             </div>
-                            <div className="input-grid-row-3">
+                            <div className="input-grid-row-4">
                                      <div className="input-row">
                                             <label htmlFor="0-10kms">From 0 - 10 Kilometres Rate <span className="required">*</span></label>
                                             <input type="text" {...register("tenKilometreRate", { required: "Enter your rate for the first 10 kilometres"})} className="form-control" placeholder="1.85"/>
                                             { errors.tenKilometreRate && <span className="error">{errors.tenKilometreRate.message}</span>}
                                      </div>
                                       <div className="input-row">
-                                            <label htmlFor="0-10kms">From 0 - 10 Kilometres Rate <span className="required">*</span></label>
+                                            <label htmlFor="0-10kms">From 10 - 20 Kilometres Rate <span className="required">*</span></label>
                                             <input type="text" {...register("twentyKilometreRate", { required: "Enter your rate for the first 20 kilometres"})} className="form-control" placeholder="1.85"/>
                                             { errors.twentyKilometreRate && <span className="error">{errors.twentyKilometreRate.message}</span>}
                                      </div>
                                       <div className="input-row">
-                                            <label htmlFor="0-10kms">From 0 - 10 Kilometres Rate <span className="required">*</span></label>
+                                            <label htmlFor="0-10kms">From 20 - 50 Kilometres Rate <span className="required">*</span></label>
                                             <input type="text" {...register("beyondTwentyKilometreRate", { required: "Enter your rate for beyond 20 kilometres"})} className="form-control" placeholder="1.85"/>
                                             { errors.beyondTwentyKilometreRate && <span className="error">{errors.beyondTwentyKilometreRate.message}</span>}
-                                     </div>
+                                       </div>
+                                        <div className="input-row">
+                                                <label htmlFor="0-10kms">Above 50 Kilometres Rate <span className="required">*</span></label>
+                                                <input type="text" {...register("beyondFiftyKilometreRate", { required: "Enter your rate for beyond 50 kilometres"})} className="form-control" placeholder="2.5"/>
+                                                { errors.beyondFiftyKilometreRate && <span className="error">{errors.beyondFiftyKilometreRate.message}</span>}
+                                        </div>
                             </div>
                              <div className="input-row">
                                     <label htmlFor="fullname">Waiting Fee($)<span className="required">*</span></label>

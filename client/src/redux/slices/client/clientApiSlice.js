@@ -78,11 +78,12 @@ export const clientApiSlice = apiSlice.injectEndpoints({
                  })
            }),
 
-           getPlatformSettings: builder.query({
+           getPlatformSettingsForClient: builder.query({
                  query: () => ({
                        url: "/client/settings",
                        method: "GET"
-                 })
+                 }),
+                 providesTags: ["Settings"]
            })
        })
 })
@@ -97,5 +98,5 @@ export const {
      useGetCustomerBookingsQuery,
      useCheckRideStatusQuery,
      useVerifyPaymentLinkMutation,
-     useGetPlatformSettingsQuery
+     useGetPlatformSettingsForClientQuery
 } = clientApiSlice;

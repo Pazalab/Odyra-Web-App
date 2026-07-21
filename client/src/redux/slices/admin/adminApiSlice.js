@@ -100,9 +100,9 @@ export const adminApiSlice = apiSlice.injectEndpoints({
             getPlatformSettings: builder.query({
                    query: () => ({
                           url: "/admin/settings",
-                          method: "GET"
+                          method: "GET",
                    }),
-                   providesTags: ["Settings"]
+                   providesTags: ["Settings"],
             }),
 
        })
