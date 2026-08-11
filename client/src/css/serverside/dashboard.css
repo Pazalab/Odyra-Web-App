@@ -858,6 +858,8 @@
      -moz-border-radius: 8px;
      -ms-border-radius: 8px;
      -o-border-radius: 8px;
+      word-break: break-word; 
+      overflow-wrap: anywhere
 }
 
 .booking-table-row:hover,
@@ -922,6 +924,9 @@
 }
 .status.completed{
     background: rgba(137, 255, 186, 0.6);
+}
+.status.failed{
+    background: rgba(255, 137, 137, 0.6);
 }
 
 .booking-status h5,

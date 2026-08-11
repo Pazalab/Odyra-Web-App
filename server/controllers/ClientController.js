@@ -2,12 +2,15 @@ import asyncHandler from "express-async-handler";
 import Booking from "../models/bookings.js";
 import Stripe from "stripe";
 import dotenv from "dotenv"
-import { generateCustomerId, generateRideID } from "../utils/chores.js";
+import { generateCustomerId, generateRideID, sanitizeDate } from "../utils/chores.js";
 import { CreateNewRide } from "../services/newBookingService.js";
 import User from "../models/userModel.js";
 import { generateAuthTokenForCustomers, VerifyPaymentToken } from "../utils/tokens.js";
 import { sendBookingSuccessfulMail } from "../mail/actions/BookingSuccessMail.js";
 import { sendBookingConfirmationMail } from "../mail/actions/BookingConfirmationMail.js";
+import Transaction from "../models/transactions.js";
+import { SendCustomerRegistrationNotification } from "../mail/actions/NewCustomerEmailRegistration.js";
+import Settings from "../models/settingsModel.js";
 dotenv.config()
 
 //Register Customer
@@ -27,18 +30,43 @@ export const RegisterCustomer = asyncHandler(async(req, res) => {
        const customer = await User.create({ name, email, password, role, profilePicture: default_photo, phone })
 
        if(customer){
-              generateAuthTokenForCustomers(res, customer._id);
-                 res.status(201).json({
-                        message: "Account created successfully.",
-                        email: customer.email,
-                        name: customer.name
-                 })
-       }else{
-                res.status(500).json({
-                        message: "Account creation failed. Please try again later."
-                })
-       }
+              const customerEmailPayload = {
+                     name: customer.name.split(" ")[0],
+                     email: customer.email,
+              }
 
+              const setting = await Settings.find({ _id: "platform_settings"}).select("notificationSettings");
+       
+              const notificationSetting = setting[0].notificationSettings.customerNotification;
+
+              if(notificationSetting){
+                     //send email to admin
+                     const admins = await User.find({ role: "Admin"}).select("email name");
+                     
+                     for(const admin of admins){
+                            const adminEmailPayload = {
+                                   name: customer.name,
+                                   adminName: admin.name.split(" ")[0],
+                                   adminEmail: admin.email,
+                                   email: customer.email,
+                                   phone: customer.phone || "N/A",
+                                   date: sanitizeDate(customer.createdAt),
+                            }
+                            await SendCustomerRegistrationNotification(adminEmailPayload);
+                     }
+              }
+
+              generateAuthTokenForCustomers(res, customer._id);
+              res.status(201).json({
+                     message: "Account created successfully.",
+                     email: customer.email,
+                     name: customer.name
+              })
+       }else{
+              res.status(500).json({
+                     message: "Account creation failed. Please try again later."
+              })
+       }
 })
 
 //Login Customer
@@ -171,8 +199,7 @@ export const RequestRide = asyncHandler(async(req, res) => {
               });
               res.json({ rideID: newBooking.rideID })
       } catch (error) {
-               console.log(error)
-
+              //  console.log(error)
                if (error.code === 11000) {
                      // Extremely rare with proper ID generation, but handle gracefully
                      return res.status(409).json({ 
@@ -183,8 +210,6 @@ export const RequestRide = asyncHandler(async(req, res) => {
               res.status(500).json({ message: "An error occured. We are currently resolving it."})
       }
 })
-
-
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -207,6 +232,8 @@ export const InitiateStripePayment = asyncHandler(async(req, res) => {
        const totalRideCost = Math.round((Number(rideCost)+Number(waitingCharge))*100); // Convert to cents
        
        const customerRideId = generateRideID();
+
+       const redirectHost = process.env.NODE_ENV === "production" ? `${process.env.PROD_URL}` :  `${process.env.CLIENT_URL}`;
 
       const session = await stripe.checkout.sessions.create({
             customer_email: customerEmail,
@@ -239,7 +266,7 @@ export const InitiateStripePayment = asyncHandler(async(req, res) => {
                    bags: bagsNumber
              },
              mode: "payment",
-             cancel_url: "http://localhost:5174/new-booking",
+             cancel_url: `${redirectHost}/new-booking`,
              success_url: `/payment-confirmation?rideID=${customerRideId}`
       })
 
@@ -263,23 +290,130 @@ export const fullfillStripePayment = asyncHandler(async(req, res) => {
             throw new Error(`Webhook error: ${error.message}`)
        }
 
-       res.status(200).json({ received: true })
-
        if(event.type === `checkout.session.completed`){
               const session = event.data.object;
-              const { id, payment_status } = session;
-              const booking_payload = {
-                      id,
-                      payment_status,
-                      ...session.metadata
+              //console.log(session)
+              const {
+                     customer_email,
+                     payment_status,
+                     payment_intent,
+                     client_reference_id,
+                     currency,
+                     amount_total,
+                     customer_details,
+              } = session;
+
+              //create the transaction entry and update booking
+              try {
+                     const paymentIntent = await stripe.paymentIntents.retrieve(payment_intent, {
+                            expand: ['latest_charge.balance_transaction']
+                     });
+
+                     const ledgerItem = paymentIntent.latest_charge?.balance_transaction;
+                     const chargeId = paymentIntent.latest_charge?.id;
+
+                     let stripeFee = 0;
+                     let netAmount = amount_total/100;
+
+                     if(ledgerItem){
+                            stripeFee = ledgerItem.fee / 100;
+                            netAmount = ledgerItem.net / 100;
+                     }else{
+                            stripeFee = Math.round(((amount_total/100)*0.0175 + 0.30)*100)/100;
+                            netAmount = (amount_total/100)-stripeFee;
+                     }
+
+                    //Update booking payment status
+                    const updateBooking =  await Booking.findOneAndUpdate({ rideID: client_reference_id },
+                            {
+                                "rideCost.paymentStatus": payment_status,
+                                 rideStatus: "Payment Made",
+                                 isConfirmed: true
+                            },
+                            { new: true}
+                     );
+
+                     if(!updateBooking){
+                            throw new Error(`Booking ${client_reference_id} not found. Rolling back transaction writing`)
+                     }
+
+                     //if booking was marked paid, create a transaction entry
+                     const newTransaction = await Transaction.create({
+                           charge_id: chargeId,
+                           payment_intent_id: payment_intent,
+                           booking_id: client_reference_id,
+                           grossAmount: amount_total/100,
+                           stripeFee: stripeFee,
+                           netAmount: netAmount,
+                           currency: currency,
+                           customerEmail: customer_email || customer_details?.email,
+                           customerName: customer_details?.name,
+                           paidAt: new Date(),
+                           paymentStatus: "succeeded"
+                     })
+
+                     
+                    const payload = {
+                            email: updateBooking.customer.email,
+                            name: updateBooking.customer.name.split(" ")[0],
+                            pickup: updateBooking.pickup.address,
+                            dropoff: updateBooking.dropoff.address,
+                            duration: updateBooking.estimatedRideDuration,
+                            stopOverAddress: updateBooking.stopOver.address,
+                            rideCost: updateBooking.rideCost.totalFare,
+                            date: updateBooking.pickup.scheduledTimeofPickup,
+                            bookingId: updateBooking.rideID,
+                            charge_id: chargeId,
+                            rideType: updateBooking.rideType,
+                            paidAt: newTransaction.paidAt,
+                     }
+                     //send confirmation email
+                     await sendBookingConfirmationMail(payload).catch(err => {
+                            console.error("Payment notification email failed", err);
+                     })
+
+                     res.status(200).json({ received: true })
+              } catch (error) {
+                     //console.log(error)
+                     console.error("An error occured. While trying to doing the webhook update operation")
               }
-              await Booking.findOneAndUpdate({ rideID: booking_payload.ride_id },
-                     {
-                          "rideCost.paymentStatus": booking_payload.payment_status,
-                     },
-              )
        }
-      
+
+       //If the payment fails
+        if (event.type === 'charge.failed') {
+              const charge = event.data.object;
+         
+              const {
+                     id,
+                     amount,
+                     currency,
+                     payment_intent,
+                     status,
+                     metadata,
+                     billing_details
+              } = charge;
+ 
+              try {
+                     let stripeFee = 0;
+                     //proceed to create the failed transaction
+                     await Transaction.create({
+                            charge_id: id,
+                            payment_intent_id: payment_intent,
+                            booking_id: metadata.ride_id,
+                            grossAmount: amount/100,
+                            stripeFee: stripeFee,
+                            netAmount: amount/100,
+                            currency: currency,
+                            customerEmail: billing_details.email,
+                            customerName: billing_details.name,
+                            paymentStatus: status,
+                            paidAt: new Date(),
+                     })
+              } catch (error) {
+                     //console.log(error)
+                     console.error("An error occured. While trying to doing the webhook update operation")
+              }
+        }
 })
 
 export const ConfirmRideCreation = asyncHandler(async(req, res) => {
@@ -289,25 +423,6 @@ export const ConfirmRideCreation = asyncHandler(async(req, res) => {
 
               if(!booking){
                      return res.status(404).json({ message: "Sorry! Your booking was not found"})
-              }
-
-              if(booking.rideCost.paymentStatus === "paid"){
-                     await Booking.findOneAndUpdate({ rideID: rideID}, {
-                            rideStatus: "Payment Made"
-                     })
-                    const payload = {
-                            email: booking.customer.email,
-                            name: booking.customer.name.split(" ")[0],
-                            pickup: booking.pickup.address,
-                            dropoff: booking.dropoff.address,
-                            stopOverAddress: booking.stopOver.address,
-                            rideCost: booking.rideCost.totalFare,
-                            date: booking.pickup.scheduledTimeofPickup,
-                            bookingId: rideID
-                     }
-                     sendBookingConfirmationMail(payload).catch(err => {
-                            console.error("Payment notification email failed", err)
-                     })
               }
 
               res.status(200).json({ exists: true, ride: {
@@ -323,6 +438,62 @@ export const ConfirmRideCreation = asyncHandler(async(req, res) => {
              console.log(error)
              res.status(500).json({ message: "Internal server error"})
       }
+})
+
+export const ConfirmBookingConfirmation = asyncHandler(async(req, res) => {
+       const { rideID } = req.params;
+
+       try {
+              const txn = await Transaction.findOne({ booking_id: rideID });
+
+              if(!txn){
+                     return res.status(404).json({ message: "Sorry! Your booking was not found"})
+              }
+
+              const paymentIntent = await stripe.paymentIntents.retrieve(txn.payment_intent_id);
+
+              if(paymentIntent.status === "succeeded"){
+                     const booking = await Booking.findOneAndUpdate({ rideID: txn.booking_id }, {
+                             "rideCost.paymentStatus": "Paid",
+                             rideStatus: "Payment Made"
+                     }, { new: true })
+
+                     if(!booking){
+                           return res.status(404).json({ message: "Sorry! Your booking was not found"})
+                     }
+
+                     const payload = {
+                            email: booking.customer.email,
+                            name: booking.customer.name.split(" ")[0],
+                            pickup: booking.pickup.address,
+                            dropoff: booking.dropoff.address,
+                            stopOverAddress: booking.stopOver.address,
+                            rideCost: booking.rideCost.totalFare,
+                            date: booking.pickup.scheduledTimeofPickup,
+                            bookingId: rideID
+                     }
+
+                     //if booking has not been confirmed to the customer
+                     if(!booking.isConfirmed){
+                            sendBookingConfirmationMail(payload).catch(err => {
+                                   console.error("Payment notification email failed", err)
+                            })
+                     }
+
+                     res.status(200).json({ ride: {
+                            customer: booking.customer.name.split(" ")[0],
+                            pickupAddress: booking.pickup.address,
+                            stopOverAddress: booking.stopOver.address,
+                            dropOff: booking.dropoff.address,
+                            duration: booking.estimatedRideDuration,
+                            rideCost: booking.rideCost.totalFare,
+                            paymentStatus: booking.rideCost.paymentStatus
+                     }})
+              }
+       } catch (error) {
+              console.log(error)
+             res.status(500).json({ message: "Internal server error. Our technical team is on site sorting it out"})
+       }
 })
 
 export const GetCustomerBookings = asyncHandler(async(req, res) => {
@@ -362,7 +533,7 @@ export const VerifyPaymentLink = asyncHandler(async(req, res) => {
              })
        }
 
-       const redirectHost = process.env.NODE_ENV === "production" ? `${process.env.PROD_URL}` : `http://localhost:5173`;
+       const redirectHost = process.env.NODE_ENV === "production" ? `${process.env.PROD_URL}` :  `${process.env.CLIENT_URL}`;
 
        const booking = await Booking.findOne({ rideID: verification.data.rideID});
 
@@ -384,7 +555,11 @@ export const VerifyPaymentLink = asyncHandler(async(req, res) => {
               })
        }
 
-       const totalRideCost = Math.round((Number(booking.rideCost.rideFare)+Number(booking.rideCost.waitingFee))*100); //
+       const totalRideCost = Math.round(
+              (Number(booking.rideCost.rideFare)+
+              Number(booking.rideCost.waitingFee)+
+              Number(booking.rideCost.platinumExtraCost)
+       )*100); //total ride cost
 
        const session = await stripe.checkout.sessions.create({
             customer_email: booking.customer.email,
@@ -400,21 +575,10 @@ export const VerifyPaymentLink = asyncHandler(async(req, res) => {
                   }
              }],
              client_reference_id: booking.rideID,
-             metadata: {
-                   ride_id: booking.rideID,
-                   ride_type: booking.rideType,
-                   drop_off: booking.dropoff.address,
-                   pickup: booking.pickup.address,
-                   duration: booking.estimatedRideDuration,
-                   ride_cost: Math.round(Number(booking.rideCost.rideFare)*100),
-                   waiting_fee: Math.round(Number(booking.rideCost.waitingFee)*100),
-                   full_ride_cost: (totalRideCost/100),
-                   c_name: booking.customer.name,
-                   c_email: booking.customer.email,
-                   c_phone: booking.customer.phone,
-                   pickup_time_date: booking.pickup.scheduledTimeofPickup,
-                   passengers: booking.passengers,
-                   bags: booking.luggageCount
+             payment_intent_data: {
+                  metadata: {
+                        ride_id: booking.rideID
+                  }
              },
              mode: "payment",
              cancel_url: `${redirectHost}/new-booking`,

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, } from "react"
 import CustomDropSelection from "../common/utils/CustomDropSelection"
 import { CiFilter } from "react-icons/ci";
 import SimpleTable from "../common/utils/SimpleTable";
@@ -9,10 +9,11 @@ import defaultPhoto from "../../../assets/default_photo.png"
 import { ConvertDateToReadable } from "../../../utils/chores";
 import { useNavigate, useSearchParams, useLocation } from "react-router-dom"
 import PaginationBlock from "../common/utils/PaginationBlock";
+import DataLoader from "../../clientside/common/spinners/DataLoader";
 
 const BookingsBody = () => {
-  const [ statusFilter, setStatusFilter ] = useState("All");
-  const [ timeFilter, setTimeFilter ] = useState("All");
+//   const [ statusFilter, setStatusFilter ] = useState("All");
+//   const [ timeFilter, setTimeFilter ] = useState("All");
   const { data, isLoading } = useGetAllBookingsQuery();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -56,7 +57,7 @@ const BookingsBody = () => {
                        <p>View and manage all your ride requests in one place. Track trip details, driver information, and ride status with ease.</p>
                </div>
         
-               <div className="table-filters">
+               {/* <div className="table-filters">
                        <span className="filter-icon"><CiFilter /></span>
                         <CustomDropSelection
                                   selected={statusFilter}
@@ -70,12 +71,19 @@ const BookingsBody = () => {
                               onSelection={setTimeFilter}
                               options={["All", "Today", "This month", "This year"]}
                         />
-               </div>
+               </div> */}
 
-               <div className="table-container">
+               { isLoading ? (
+                       <div className="loader-col">
+                               <DataLoader />
+                       </div>
+               ) : (
+                  <div className="table-container">
                         <div className="table-container-wrap">
                                      <SimpleTable 
                                                 headerTitles={headerTitles}
+                                                term={"No bookings Yet"}
+                                                description={"No bookings have been placed yet. Once a customer books a ride, their bookings details will appear here."}
                                                 isFetchingData={isLoading}
                                                 gridClass="bookingTable"
                                                 rowData={paginatedData}
@@ -125,8 +133,7 @@ const BookingsBody = () => {
                                                 />
                         </div>
                </div>
-
-                
+               )}                
     </div>
   )
 }

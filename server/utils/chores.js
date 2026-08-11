@@ -39,3 +39,14 @@ export const upload_pic= multer({
           }
       })
 })
+
+export const sanitizeDate = (rawDate) => {
+       const dateObj = new Date(rawDate);
+
+       const readable = dateObj.toLocaleString("en-US", {
+              dateStyle: "long",
+              timeStyle: "short"
+       })
+
+       return readable;
+}

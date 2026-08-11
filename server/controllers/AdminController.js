@@ -8,6 +8,9 @@ import mongoose from "mongoose";
 import Settings from "../models/settingsModel.js";
 import Stripe from "stripe";
 import dotenv from "dotenv";
+import Transaction from "../models/transactions.js";
+import { SendRideCompleteMail } from "../mail/actions/RideCompleteMail.js";
+import { sanitizeDate } from "../utils/chores.js";
 
 dotenv.config();
 
@@ -149,6 +152,41 @@ export const UpdateBookingStatus = asyncHandler(async(req, res) => {
                     rideStatus: updateText
             }, { new: true})
 
+            const emailPayload = {
+                   bookingID: updatedBooking.rideID,
+                   name: updatedBooking.customer.name.split(" ")[0],
+                   email: updatedBooking.customer.email,
+                   service: updatedBooking.ridePackage,
+                   rideType: updatedBooking.rideType,
+                   duration: updatedBooking.estimatedRideDuration,
+                   rideCost: updatedBooking.rideCost.totalFare,
+                   date: sanitizeDate(updatedBooking.updatedAt),
+                   pickup: updatedBooking.pickup.address,
+                   dropoff: updatedBooking.dropoff.address,
+            }
+
+            //update the time of pickup
+            if(updateText === "Customer Picked"){
+                  await Booking.findOneAndUpdate({ rideID: bookingID, "pickup.timeOfPickup": { $exists: false }}, {
+                        $set: {
+                              "pickup.timeOfPickup": new Date()
+                        }
+                  })
+            }
+
+            if(updateText === "Ride Completed" && !updatedBooking.isRideCompleteEmailSent){
+                  await Booking.findOneAndUpdate({ rideID: bookingID, "dropoff.timeOfDropoff": { $exists: false }}, {
+                        $set: {
+                              "dropoff.timeOfDropoff": new Date()
+                        }
+                  })
+                  //Send email thank you
+                 const emailSent =  await SendRideCompleteMail(emailPayload)
+                 await Booking.findOneAndUpdate({ rideID: bookingID}, {
+                         isRideCompleteEmailSent: emailSent
+                  })
+            }
+
              if(!updatedBooking){
                     res.status(404).json({ message: "You booking couldn't be updated at this time."})
              }
@@ -158,6 +196,7 @@ export const UpdateBookingStatus = asyncHandler(async(req, res) => {
                    data: updatedBooking
             })
        } catch (error) {
+            console.log(error)
             res.status(500).json({ message: 'Internal server error: booking status update failed'})
        }
 })
@@ -253,19 +292,15 @@ export const ResendPaymentLink = asyncHandler(async(req, res) => {
 })
 
 //Get all stripe transactions
-export const GetStripeTransactions = asyncHandler(async(req, res) => {
-     const paymentIntents = await stripe.checkout.sessions.list({
-            limit: 100,
-            expand: ["data.customer", "data.payment_intent"],
-     });
+export const GetBookedTransactions = asyncHandler(async(req, res) => {
+      try {
+           const transactions = await Transaction.find({})
+             res.status(200).json({ transactions})
+      } catch (error) {
+            //console.log(error)
+            res.status(500).json({ message: 'Error pulling transactions'})
+      }
 
-     const transactions = paymentIntents.data.filter(payment => 
-           payment.status === "succeeded" ||
-           payment.status === "requires_payment_method"
-     );
-
-//      console.log(transactions)
-     res.status(200).json({ transactions})
 })
 
 
@@ -306,7 +341,7 @@ export const UpdatePricingSettings = asyncHandler(async(req, res) => {
                    res.status(201).json({ settings: updatedPricing, message: "Pricing settings updated successfully"})
             }
        } catch (error) {
-            console.log(error)
+            //console.log(error)
             res.status(500).json({ message: "Sorry. Your pricing settings cannot be updated at this time"})
        }
 })
@@ -319,5 +354,61 @@ export const GetPlatformSettings = asyncHandler(async(req, res) => {
              res.status(200).json({ settings: settings[0] })
        }else{
              res.status(500).json({ message: "Sorry we could not fetch your platform settings at this time"})
+       }
+})
+
+//Update Admin Password
+export const UpdateAdminCredentials = asyncHandler(async(req, res) => {
+        const {
+             currentPassword,
+             newPassword
+        } = req.body;
+
+        const user = await User.findOne({ _id: req.user._id});
+
+        if(!user){
+              res.status(401);
+              throw new Error("Update error. Please try again later");
+        }
+
+        if(user && (await user.matchPasswords(currentPassword))){
+              user.password = newPassword;
+              await user.save();
+              return res.status(201).json({ message: 'Password updated successfully'})
+        }else{
+              res.status(401);
+              throw new Error("Invalid current password. Please try again with correct ones")
+        }
+})
+
+//Update notifications
+export const UpdateAdminNotifications = asyncHandler(async(req, res) => {
+       const {
+            bookingNotification,
+            paymentNotification,
+            customerNotification,
+            pickupNotification,
+            requestPaymentLinkNotification
+       } = req.body;
+
+       console.log(req.body)
+       try {
+            const updatedNotifications = await Settings.findOneAndUpdate(
+                     { _id: "platform_settings"},
+                     {  $set: {
+                          'notificationSettings.bookingNotification': bookingNotification,
+                          'notificationSettings.paymentNotification': paymentNotification,
+                          'notificationSettings.customerNotification': customerNotification,
+                          'notificationSettings.pickupNotification': pickupNotification,
+                          'notificationSettings.requestPaymentLinkNotification': requestPaymentLinkNotification
+                     }},
+                     { upsert: true, new: true, runValidators: true }
+            )
+            
+            if(updatedNotifications){
+                   res.status(201).json({ updatedNotifs: updatedNotifications.notificationSettings, message: "Pricing settings updated successfully"})
+            }
+       } catch (error) {
+            res.status(500).json({ message: "Sorry. Your notification settings cannot be updated at this time"})
        }
 })

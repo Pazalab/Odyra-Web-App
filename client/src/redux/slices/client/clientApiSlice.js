@@ -42,7 +42,8 @@ export const clientApiSlice = apiSlice.injectEndpoints({
                            url: "/client/create-booking",
                            method: "POST",
                            body: payload
-                     })
+                     }),
+                     invalidatesTags: ["Bookings"]
               }),
               //initiate payment
               initiatePayment: builder.mutation({
@@ -67,6 +68,14 @@ export const clientApiSlice = apiSlice.injectEndpoints({
                           url: `/client/check-ride/${rideID}`,
                           method: "GET"
                    })
+             }),
+
+             //confirm ride confirmation
+             checkRideTransaction: builder.query({
+                  query: (rideID) => ({
+                         url: `/client/check-transaction/${rideID}`,
+                         method: "GET"
+                  })
              }),
 
                         //Verify Payment Link
@@ -97,6 +106,7 @@ export const {
      useLogoutCustomerMutation,
      useGetCustomerBookingsQuery,
      useCheckRideStatusQuery,
+     useCheckRideTransactionQuery,
      useVerifyPaymentLinkMutation,
      useGetPlatformSettingsForClientQuery
 } = clientApiSlice;

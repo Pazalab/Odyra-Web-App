@@ -265,7 +265,7 @@ const RideBooking = () => {
                                                                                 <label htmlFor="name">Name</label>
                                                                                 <input { ...register("customerName", { required: "Please enter your name"})} type="text" placeholder="Enter name" className="input-row-control" />
                                                                     </div>
-                                                            </div>
+                                                              </div>
                                                             { errors.customerName && <span className="error">{errors.customerName.message}</span>}
                                                 </div>
                                                 <div className="booking-form-row split">

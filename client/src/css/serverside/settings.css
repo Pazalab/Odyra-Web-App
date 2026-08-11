@@ -478,20 +478,47 @@
 }
 
 
+.settings-tab-wrap .intro{
+      color: rgb(50, 50, 50);
+      margin-bottom: 30px;
+}
 
+.settings-form-row{ 
+     display: flex;
+     gap: 20px;
+     align-items: center;
+     justify-content: space-between;
+     margin-top: 20px;
+}
 
+.form-texts p{
+     font-size: 15px;
+     color: rgb(120, 120, 120);
+}
 
+.form-texts h5{
+      font-size: 16px;
+      font-weight: 550;
+      color: rgb(40, 40, 40);
+}
 
+.form-submit-btn.adjust{
+     margin-top: 30px ;
+}
 
+.auth-form-row.settings{
+     margin: 20px 0;
+}
+.auth-form-row.settings label{
+     font-weight: 500;
+     color: rgb(60, 60, 60);
+     margin-bottom: 5px;
+     display: block;
+}
 
-
-
-
-
-
-
-
-
+.account-form{
+      width: 600px;
+}
 
 
 
@@ -538,7 +565,8 @@
      .input-grid-row-4{
            grid-template-columns: 1fr;
      }
-     .settings-tab-wrap{
+     .settings-tab-wrap,
+     .account-form{
            width: 100%;
      }
 }

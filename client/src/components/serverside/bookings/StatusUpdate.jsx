@@ -28,6 +28,7 @@ const StatusUpdate = ({ currentStatus, booking_id, statusChange }) => {
 
         try {
                 const res = await updateStatus(payload).unwrap();
+                console.log(res.data)
                 sessionStorage.setItem("Current Booking", JSON.stringify(res.data));
                 statusChange(res.data)
                 dispatch(setDashboardNotification({ status: true, message: res.message, type: "success"}))
@@ -36,6 +37,8 @@ const StatusUpdate = ({ currentStatus, booking_id, statusChange }) => {
         }
 
   }
+
+  const selectedIndex = statusOptions.indexOf(selectedStatus);
   return (
     <div className="status-update">
               <div className="status-current" onClick={() => setIsOpen(!isOpen)}>
@@ -46,7 +49,18 @@ const StatusUpdate = ({ currentStatus, booking_id, statusChange }) => {
               </div>
               <div ref={optionsRef} className={ isOpen ? "update-options active" : "update-options"}>
                       <ul>
-                               { statusOptions.map(item => <li onClick={() => handleSelection(item)} key={item} className={item === selectedStatus ? "active" : ""}>{item}</li>)}
+                               { 
+                                  statusOptions.map((item, index) => {
+                                         const isSelected = item === selectedStatus;
+                                         const isPast = index < selectedIndex;
+
+                                         return(
+                                                <li key={item} onClick={() => !isPast && handleSelection(item)} className={isSelected ? "active": ""} style={{
+                                                        pointerEvents: isPast ? "none" : "auto"
+                                                }}>{item}</li>
+                                         )
+                                  })
+                                }
                       </ul>
               </div>
     </div>

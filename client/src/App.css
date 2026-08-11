@@ -15,6 +15,7 @@
      --bg-faded: rgba(240, 234, 229, 0.3);
      --line: rgb(245, 232, 229);
      --main-filter: invert(17%) sepia(78%) saturate(1835%) hue-rotate(348deg) brightness(88%) contrast(85%);
+     --hash: #813020;
 }
 
 body{

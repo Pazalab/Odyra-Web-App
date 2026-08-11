@@ -1,6 +1,6 @@
 import { Link, useSearchParams } from "react-router-dom"
 import Navbar from "../../../components/clientside/common/navigation/Navbar"
-import { useCheckRideStatusQuery } from "../../../redux/slices/client/clientApiSlice";
+import { useCheckRideTransactionQuery } from "../../../redux/slices/client/clientApiSlice";
 import DataLoader from "../../../components/clientside/common/spinners/DataLoader";
 import successIcon from "../../../assets/order.png"
 import Footer from "../../../components/clientside/common/Footer";
@@ -11,7 +11,7 @@ const BookingConfirmation = () => {
     const [searchParams] = useSearchParams();
 
     const rideID = searchParams.get("rideID");
-    const { data, isLoading, error } = useCheckRideStatusQuery(rideID, {
+    const { data, isLoading, error } = useCheckRideTransactionQuery(rideID, {
         skip: !rideID
     })
     const { profile } = useSelector(state => state.client);
@@ -32,7 +32,7 @@ const BookingConfirmation = () => {
                                                         <div className="booking-error-block">
                                                                   <img src={errorIcon} alt="" />
                                                                   <h2>{error.data.message}</h2>
-                                                                  <p>We could not fetch your booking at this time. Kindly contact our support at <span> support@odyrasafaris.com.au</span> for further assistance.</p>
+                                                                  <p>We could not fetch your booking transaction at this time. Kindly contact our support at <span> support@odyrasafaris.com.au</span> for further assistance.</p>
                                                         </div>
                                                         :
                                                         <>

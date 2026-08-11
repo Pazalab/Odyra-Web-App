@@ -105,6 +105,28 @@ export const adminApiSlice = apiSlice.injectEndpoints({
                    providesTags: ["Settings"],
             }),
 
+            //update admin credentials
+            updateAdminCredentials: builder.mutation({
+                  query: (payload) => ({
+                         url: "/admin/settings/update-password",
+                         method: "PUT",
+                         body: payload
+                  }),
+                  invalidatesTags: ["Settings"]
+            }),
+
+            //update admin notifications
+            updateAdminNotifications: builder.mutation({
+                  query: (payload) => ({
+                        url: "/admin/settings/update-notifications",
+                        method: "PUT",
+                        body: payload
+                  }),
+                  invalidatesTags: ["Settings"]
+            }),
+
+
+
        })
 })
 
@@ -120,5 +142,7 @@ export const {
      useUpdateProfileSettingsMutation,
      useUpdatePricingSettingsMutation,
      useGetPlatformSettingsQuery,
-     useGetAllTransactionsQuery
+     useGetAllTransactionsQuery,
+     useUpdateAdminCredentialsMutation,
+     useUpdateAdminNotificationsMutation
 } = adminApiSlice;

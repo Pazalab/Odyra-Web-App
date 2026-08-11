@@ -46,6 +46,31 @@
      color: rgb(80, 80, 80);
 }
 
+.transactionTable{
+     display: grid;
+     grid-template-columns: 1fr 1.5fr 1fr 1fr 1fr 1fr 1fr 1fr;
+     gap:10px
+}
+
+.basic-customer-profile{
+     display: flex;
+     flex-direction: column;
+}
+
+.basic-customer-profile h3{
+     font-size: 16px;
+     font-weight: 500;
+     color: rgb(50, 50, 50);
+}
+.basic-customer-profile span{
+      font-size: 14px;
+      color: rgb(120, 120, 120);
+}
+
+.booking-col.fin h4{
+     font-weight: 600;
+     color: rgb(50, 50, 50);
+}
 
 
 @media(max-width: 1090px){

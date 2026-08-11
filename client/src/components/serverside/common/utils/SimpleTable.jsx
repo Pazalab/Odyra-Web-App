@@ -1,7 +1,8 @@
 import { memo } from "react"
 import DataLoader from "../../../clientside/common/spinners/DataLoader"
+import noData from "../../../../assets/folder.png"
 
-const SimpleTable = ({ headerTitles, gridClass, rowData, renderRow, isFetching, redirectHandler }) => {
+const SimpleTable = ({ term, description, headerTitles, gridClass, rowData, renderRow, isFetching, redirectHandler }) => {
   return (
     <div className="simple-table">
               <div className="simple-table-wrap">
@@ -32,8 +33,11 @@ const SimpleTable = ({ headerTitles, gridClass, rowData, renderRow, isFetching, 
                                          ))
                                          :
                                          <div className="table-empty-block">
-                                                  {/* <p>No data found</p> */}
-                                                  <DataLoader />
+                                                 <div className="data-empty">
+                                                        <img src={noData} alt="" />
+                                                        <h3>{term}</h3>
+                                                        <p>{description}</p>
+                                                </div>
                                          </div>
                                  }
                         </div>

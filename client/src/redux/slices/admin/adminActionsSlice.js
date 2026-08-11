@@ -7,7 +7,7 @@ const initialState = {
      customers: [],
      transactions: [],
      isSidebarActive: false,
-     platformSettings: null
+     platformSettings: null,
 }
 
 const adminActionSlice = createSlice({
@@ -48,11 +48,16 @@ const adminActionSlice = createSlice({
                     state.transactions = action.payload;
               },
 
+              setAdminNotifications: (state, action ) => {
+                     state.platformSettings.notificationSettings = action.payload
+              },
+
               clearEverything: (state) => {
                      state.bookings = []
                      state.customers = []
                      localStorage.clear();
                      state.platformSettings = null;
+                     state.notificationSettings = null;
                      state.profile = null;
               }
        }
@@ -68,7 +73,7 @@ export const {
       openMobileSidebar,
       closeMobileSidebar,
       setAdminTransactions,
-
+      setAdminNotifications,
       setAdminPlatformSettings,
       clearAdminPlatformSettings,
       clearEverything,

@@ -13,17 +13,25 @@ const RideDetails = ({ data }) => {
                                         <h5>Pickup</h5>
                                         <p>{data.pickup.address}</p>
                                         <p><span>Scheduled Time of Pickup:</span>{ConvertDateToReadable(data.pickup.scheduledTimeofPickup)}</p>
-                                        <p><span>Customer picked at:</span> N/A</p>
+                                        <p><span>Customer picked up at:</span> {
+                                                 data.pickup.timeOfPickup ? ConvertDateToReadable(data.pickup.timeOfPickup) : "N/A"
+                                        }</p>
                                 </div>
                                 <span className="separator"></span>
                                 <div className="ride-dropoff">
                                         <h5>Drop off</h5>
                                         <p>{data.dropoff.address}</p>
-                                        <p><span>Customer dropped off at: </span> N/A</p>
+                                        <p><span>Customer dropped off at: </span> {
+                                                 data.dropoff.timeOfDropoff ? ConvertDateToReadable(data.dropoff.timeOfDropoff) : "N/A"
+                                        }</p>
                                 </div>
                        </div>
                        <div className="ride-extras">
-                                { data.stopOver.address && (
+                               <div className="ride-extra-block package">
+                                                <h5>Ride Package</h5>
+                                                <p>{data.ridePackage.replace("-", " ")}</p>
+                                </div>
+                                 { data.stopOver.address && (
                                         <div className="ride-extra-block">
                                                  <h5>Stop Over Address</h5>
                                                  <p>{data.stopOver.address}</p>
@@ -59,21 +67,27 @@ const RideDetails = ({ data }) => {
 
                      <div className="ride-payment-block">
                               <span>Ride Fare</span>
-                              <h5><span className="ksh">Ksh.</span>{data.rideCost.rideFare}</h5>
+                              <h5>{data.rideCost.rideFare} <span className="ksh">AUD</span></h5>
                      </div>
 
-                     { data.rideCost.waitingFee &&
-                      <div className="ride-payment-block">
-                              <span>Waiting Fee</span>
-                              <h5><span className="ksh">Ksh.</span>{data.rideCost.waitingFee}</h5>
-                     </div>
+                     { data.rideCost.waitingFee !== 0 &&
+                        <div className="ride-payment-block">
+                                <span>Waiting Fee</span>
+                                <h5>{data.rideCost.waitingFee} <span className="ksh">AUD</span></h5>
+                        </div>
                      }
+                     { data.ridePackage === "odyra-platinum" && (
+                             <div className="ride-payment-block">
+                                     <span>Platinum Extra Cost</span>
+                                     <h5>{data.rideCost.platinumExtraCost}<span className="ksh">AUD</span></h5>
+                             </div>
+                     )}
                     <div className="total-block">
                               <span className="dotted"></span>
                               <span className="dotted"></span>
                               <div className="ride-payment-block">
                                         <p>Total</p>
-                                        <h5>{ data.rideCost.totalFare }</h5>
+                                        <h5>{ data.rideCost.totalFare } <span className="ksh">AUD</span></h5>
                               </div>
                     </div>
              </div>

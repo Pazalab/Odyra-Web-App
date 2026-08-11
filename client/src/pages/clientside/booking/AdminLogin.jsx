@@ -9,23 +9,26 @@ import { useLoginAdminMutation } from "../../../redux/slices/admin/adminApiSlice
 import BtnSpinner from "../../../components/clientside/common/BtnSpinner";
 import { useDispatch } from "react-redux";
 import { setAdminCredentials } from "../../../redux/slices/admin/adminActionsSlice";
+import { setAuthNotification } from "../../../redux/slices/util/utilActionsSlice";
 
 const AdminLogin = () => {
  const [ passwordStatus, setPasswordStatus ] = useState(false);
  const { register, handleSubmit, formState: { errors}} = useForm();
+ const [ loginError, setLoginError ] = useState("")
  const dispatch = useDispatch();
  const navigate = useNavigate();
 
  const [ loginUser, { isLoading }] = useLoginAdminMutation();
 
  const submitLogin = async(data) => {
+      setLoginError("")
        try {
             const res = await loginUser(data).unwrap();
             dispatch(setAdminCredentials({...res}));
             navigate(`/admin/auth/stage`)
        } catch (error) {
-            alert("Error occured");
-            console.log(error)
+             dispatch(setAuthNotification({ status: true, message: error.data.message, type: "error"}))
+             setLoginError(error.data.message)
        }
  }
 
@@ -44,6 +47,9 @@ const AdminLogin = () => {
                                                          <h2>Welcome Back</h2>
                                                          <p>Enter your details to access your account and manage the platform.</p>
                                                </div>
+                                               { loginError !== "" && (
+                                                      <p className="error">{loginError}</p>
+                                               )}
                                                <form onSubmit={handleSubmit(submitLogin)}>
                                                          <div className="auth-form-row">
                                                                    <div className="auth-form-inner">

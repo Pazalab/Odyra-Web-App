@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import ejs from "ejs";
 import fs from "fs";
 import { mailMsg } from "../../config/mailgunConfig.js";
+import { generateTransactionPDF } from "../../services/pdfService.js";
 
 dotenv.config();
 
@@ -11,21 +12,28 @@ export const sendBookingConfirmationMail = async(userData) => {
             name,
             pickup,
             dropoff,
+            duration,
             date,
             rideCost,
-            bookingId
+            bookingId,
+            charge_id,
+            rideType,
+            paidAt
        } = userData;
 
     try {
         const templateString = fs.readFileSync("./mail/views/BookingConfirmationMail.ejs", "utf-8");
 
+        const pdfBuffer = await generateTransactionPDF(userData)
+
         const dynamicData = {
             name: name,
             pickup: pickup,
             dropoff: dropoff,
+            duration: duration,
             date: date,
             rideCost: rideCost,
-            bookingId: bookingId
+            bookingId: bookingId,
         }
 
         const html = ejs.render(templateString, dynamicData);
@@ -35,7 +43,12 @@ export const sendBookingConfirmationMail = async(userData) => {
                 to: `${email}`,
                 name: "Odyra Safaris",
                 subject: "Payment Confirmed - Your Ride with Odyra Safaris is Ready!",
-                html: html
+                html: html,
+                attachment: {
+                    filename: `Receipt-${bookingId}.pdf`,
+                    data: pdfBuffer,
+                    contentType: "application/pdf"
+                }
         }
 
         //send mail

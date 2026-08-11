@@ -39,8 +39,8 @@ const bookingsSchema = mongoose.Schema({
        rideCost: {
               rideFare: Number,
               taxes: Number,
-              platinumExtraCost: Number,
-              waitingFee: Number,
+              platinumExtraCost: { type: Number, default: 0},
+              waitingFee: { type: Number, default: 0},
               discounts: Number,
               totalFare: Number,
               paymentStatus: {
@@ -48,12 +48,16 @@ const bookingsSchema = mongoose.Schema({
                     default: "Not paid"
               },
        },
-       stripeSessionId: String,
+       isConfirmed: {
+             type: Boolean,
+             default: false,
+       },
        paymentLink: {
              sent: Boolean,
              expiresAt: Date,
              paidAt: Date
-       }
+       },
+       isRideCompleteEmailSent: { type: Boolean, default: false }
 }, { timestamps: true });
 
 const Booking = mongoose.model("Booking", bookingsSchema);

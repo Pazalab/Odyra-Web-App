@@ -19,6 +19,13 @@ const settingsSchema = mongoose.Schema({
            cancellationFee: { type: Number, required: true },
            waitingFee: { type: Number, required: true }
      },
+     notificationSettings: {
+           bookingNotification: { type: Boolean, default: false},
+           paymentNotification: { type: Boolean, default: false },
+           customerNotification: { type: Boolean, default: false },
+           pickupNotification: { type: Boolean, default: false },
+           requestPaymentLinkNotification: { type: Boolean, default: false}
+     }
 }, { timestamps: true })
 
 const Settings = mongoose.model("Settings", settingsSchema);

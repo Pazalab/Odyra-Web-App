@@ -7,6 +7,8 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setAdminPlatformSettings } from "../../../redux/slices/admin/adminActionsSlice";
 import {useLocation} from 'react-router-dom'
+import NotificationSettingsTab from "./tabs/NotificationSettingsTab";
+import AccountSecurityTab from "./tabs/AccountSecurityTab";
 
 const settingTabs = [
     { id: 0, name: "Profile"},
@@ -60,6 +62,8 @@ const SettingsBody = () => {
                        <div className="dash-settings-wrapper">
                                { tab === "Profile" && <ProfileSettingsTab />}
                                { tab === "Pricing" && <PricingSettingsTab />}
+                               { tab === "Notifications" && <NotificationSettingsTab />}
+                               { tab === "Account Security" && <AccountSecurityTab />}
                        </div>
               </div>
     </div>

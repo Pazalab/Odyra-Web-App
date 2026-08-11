@@ -3,13 +3,15 @@ import {
     GetAdminProfile,
     GetAllBookings, 
     GetAllCustomers, 
+    GetBookedTransactions, 
     GetPlatformSettings, 
-    GetStripeTransactions, 
     LoginUser, 
     LogoutUser, 
     RegisterUser, 
     ResendPaymentLink, 
     SendPaymentLink, 
+    UpdateAdminCredentials, 
+    UpdateAdminNotifications, 
     UpdateAdminProfile, 
     UpdateBookingStatus,
     UpdatePricingSettings,
@@ -31,6 +33,8 @@ router.post("/booking/resend-payment-link", protect, ResendPaymentLink);
 router.put("/settings/update-profile-settings", protect, upload_pic.single("profilePic"), UpdateAdminProfile);
 router.put("/settings/update-pricing-settings", protect, UpdatePricingSettings);
 router.get("/settings", protect, GetPlatformSettings);
-router.get("/all-transactions", protect, GetStripeTransactions);
+router.get("/all-transactions", protect, GetBookedTransactions);
+router.put("/settings/update-password", protect, UpdateAdminCredentials);
+router.put("/settings/update-notifications", protect, UpdateAdminNotifications);
 
 export default router; 

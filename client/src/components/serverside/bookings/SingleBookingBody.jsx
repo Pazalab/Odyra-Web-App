@@ -176,8 +176,6 @@ const SingleBookingBody = () => {
                                  <RideDetails
                                          data={currentBooking}
                                  />
-
-                                   
                         </div>
 
                </div>

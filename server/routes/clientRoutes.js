@@ -1,5 +1,6 @@
 import express from "express";
 import { 
+    ConfirmBookingConfirmation,
     ConfirmRideCreation,
     fullfillStripePayment, 
     GetCustomerBookings, 
@@ -24,6 +25,7 @@ router.post("/create-booking", RequestRide);
 router.post("/initiate-payment", InitiateStripePayment);
 router.post("/stripe-webhook", fullfillStripePayment);
 router.get("/check-ride/:rideID", ConfirmRideCreation);
+router.get("/check-transaction/:rideID", ConfirmBookingConfirmation)
 router.get("/customer-bookings", customerProtect, GetCustomerBookings);
 router.post("/booking/verify-payment-link", VerifyPaymentLink);
 router.get("/settings", GetPlatformSettings);

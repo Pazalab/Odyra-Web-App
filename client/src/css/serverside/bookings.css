@@ -4,7 +4,7 @@
 
 .admin-bookings-title{
      padding-bottom: 10px;
-     border-bottom: 1px solid var(--line);
+     /* border-bottom: 1px solid var(--line); */
      margin-bottom: 10px;
 }
 
@@ -126,7 +126,7 @@
 }
 
 .table-container-wrap{
-      min-width: 960px;
+      min-width: 1090px;
 }
 .simple-table{
      position: relative;
@@ -661,6 +661,9 @@
 }
 .ride-extra-block h5{
      font-size: 15px;
+}
+.ride-extra-block.package p{
+     text-transform: capitalize;
 }
 .extra-info-block h5{
      font-size: 11px;
