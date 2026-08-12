@@ -41,10 +41,10 @@ const InitiatePayment = () => {
                            <h2>{serverMessage.title}</h2>
                            <p>{serverMessage.message}</p>
 
-                           <div className="failure-btns">
+                           {/* <div className="failure-btns">
                                     <button className="request">Request a New Payment Link</button>
                                     <button>Cancel Ride</button>
-                           </div>
+                           </div> */}
                </div>
           }
     </div>

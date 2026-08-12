@@ -124,6 +124,7 @@ export const RequestRide = asyncHandler(async(req, res) => {
             customerName, 
             customerEmail, 
             rideDuration, 
+            rideDistance,
             rideCost, 
             waitingCharge,
             pickupDateTime,
@@ -168,6 +169,7 @@ export const RequestRide = asyncHandler(async(req, res) => {
                      },
                      flightNumber: flightNumber,
                      estimatedRideDuration: rideDuration,
+                     estimatedRideDistance: rideDistance,
                      passengers: passengersNumber,
                      luggageCount: bagsNumber,
                      ridePackage: ridePackage,
@@ -283,8 +285,9 @@ export const fullfillStripePayment = asyncHandler(async(req, res) => {
        const signature = req.headers["stripe-signature"];
        let event;
 
+       const host = process.env.NODE_ENV === "production" ? `${process.env.STRIPE_WEBHOOK_LIVE_SECRET }` :  `${process.env.STRIPE_WEBHOOK_TEST_SECRET}`;
        try {
-            event = stripe.webhooks.constructEvent(req.body, signature, process.env.STRIPE_WEBHOOK_SECRET);
+            event = stripe.webhooks.constructEvent(req.body, signature, host);
        } catch (error) {
             res.status(400);
             throw new Error(`Webhook error: ${error.message}`)
@@ -359,6 +362,7 @@ export const fullfillStripePayment = asyncHandler(async(req, res) => {
                             pickup: updateBooking.pickup.address,
                             dropoff: updateBooking.dropoff.address,
                             duration: updateBooking.estimatedRideDuration,
+                            distance: updateBooking.estimatedRideDistance,
                             stopOverAddress: updateBooking.stopOver.address,
                             rideCost: updateBooking.rideCost.totalFare,
                             date: updateBooking.pickup.scheduledTimeofPickup,

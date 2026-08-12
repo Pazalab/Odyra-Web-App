@@ -76,6 +76,8 @@ export function generateTransactionPDF(data) {
                         doc.text(`Pickup Point: ${data.pickup || 'Not Specified'}`);
                         doc.text(`Drop-off Point: ${data.dropoff || 'Not Specified'}`);
                         doc.text(`Ride Duration: ${data.duration || 'Not Specified'}`);
+                        doc.text(`Ride Distance: ${data.distance || 'Not Specified'}`);
+                        
                         doc.moveDown(1.5);
 
                         doc.moveTo(50, doc.y).lineTo(550, doc.y).stroke('#CCCCCC');

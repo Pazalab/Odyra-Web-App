@@ -80,6 +80,7 @@ const handleAirportTransferBooking = async(data) => {
               stopOverAddress: chosenLeg ? chosenLeg.stopoverAddress  : "",
              waitingCharge: chosenLeg && waitingCharge ? Math.round(calculatedDistanceCost * 0.2) : 0,
              rideDuration: chosenLeg ? chosenLeg.duration.text : "",
+             rideDistance: chosenLeg ? chosenLeg.distance.text : "",
              rideCost: chosenLeg ? Math.round(calculatedDistanceCost) : 0,
              ridePackage: packageOption,
              platinumCost: packageOption === "odyra-platinum" ? Math.round(calculatedDistanceCost * 0.25) : 0,

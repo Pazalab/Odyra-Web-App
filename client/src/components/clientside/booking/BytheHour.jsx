@@ -68,6 +68,7 @@ const handleStopoverChange = () => {
              dropoffAddress: chosenLeg ? chosenLeg.endAddress : "",
              waitingCharge: selectedHours && waitingCharge ? Math.round(calculatedDistanceCost * 0.2) : 0,
              rideDuration: selectedHours ? `${selectedHours} hours` : "",
+             rideDistance: chosenLeg ? chosenLeg.distance.text : "",
              rideCost: selectedHours ? Math.round(calculatedDistanceCost) : 0,
               ridePackage: packageOption,
              platinumCost: packageOption === "odyra-platinum" ? Math.round(calculatedDistanceCost * 0.25) : 0,

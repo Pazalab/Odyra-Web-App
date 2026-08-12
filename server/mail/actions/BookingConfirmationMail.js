@@ -3,6 +3,7 @@ import ejs from "ejs";
 import fs from "fs";
 import { mailMsg } from "../../config/mailgunConfig.js";
 import { generateTransactionPDF } from "../../services/pdfService.js";
+import { sanitizeDate } from "../../utils/chores.js";
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ export const sendBookingConfirmationMail = async(userData) => {
             pickup,
             dropoff,
             duration,
+            distance,
             date,
             rideCost,
             bookingId,
@@ -31,7 +33,8 @@ export const sendBookingConfirmationMail = async(userData) => {
             pickup: pickup,
             dropoff: dropoff,
             duration: duration,
-            date: date,
+            distance: distance,
+            date: sanitizeDate(date),
             rideCost: rideCost,
             bookingId: bookingId,
         }

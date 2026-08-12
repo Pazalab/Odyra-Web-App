@@ -33,6 +33,7 @@ const bookingsSchema = mongoose.Schema({
        },
        flightNumber: { type: String },
        estimatedRideDuration: { type: String, required: true },
+       estimatedRideDistance: { type: String },
        passengers: { type: String, required: true },
        luggageCount: { type: String, required: true },
        ridePackage: { type: String },
