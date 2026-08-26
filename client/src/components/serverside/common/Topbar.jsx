@@ -48,6 +48,7 @@ const Topbar = () => {
     const handleOpenMobileSidebar = () => {
           dispatch(openMobileSidebar());
     }
+     const identifier = (profile?.username  && profile?.username.trim() !== "") ? profile.username : adminInfo.id;
   return (
     <div className="dashboard-topbar">
                <div className="search-bar">
@@ -83,9 +84,9 @@ const Topbar = () => {
                                                      <p>{ profile && profile.email}</p>
                                              </div>
                                              <ul>
-                                                     <li><Link to={"/"}>Profile</Link></li>
-                                                     <li><Link to={"/"}>Advanced settings</Link></li>
-                                                     <li><Link to={"/"}>Password & Security</Link></li>
+                                                     <li><Link to={`/admin/${identifier}/settings`}>Profile</Link></li>
+                                                     <li><Link to={`/admin/${identifier}/settings`}>Pricing settings</Link></li>
+                                                     <li><Link to={`/admin/${identifier}/settings`}>Account Security</Link></li>
                                              </ul>
                                              <button onClick={handleUserLogout}>Logout</button>
                                    </div>

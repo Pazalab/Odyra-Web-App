@@ -1,5 +1,5 @@
 import { HiChevronDoubleRight } from "react-icons/hi";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { CiEdit } from "react-icons/ci";
 
@@ -7,7 +7,7 @@ const PersonalInfoBody = () => {
     const { pathname } = useLocation();
     const activePath = pathname.slice(10, pathname.length);
     const { profile } = useSelector(state => state.client)
-    
+    const navigate = useNavigate();
   return (
         <div className="customer-body">
              <div className="customer-body-navigation">
@@ -33,15 +33,15 @@ const PersonalInfoBody = () => {
                                                  <div className="customer-body-inner">
                                                             <div className="customer-content-header">
                                                                       <h3>Welcome { profile && profile.name}</h3>
-                                                                      <button className="delete">Delete account</button>
+                                                                      {/* <button className="delete">Delete account</button> */}
                                                             </div>
                                                             <div className="customer-content-wrapper">
                                                                     <div className="customer-ride-block">
                                                                               <div className="personal-block-header">
                                                                                         <h3>Personal information</h3>
                                                                                         <div className="info-btns">
-                                                                                                  <button>Change password</button>
-                                                                                                 <button><span><CiEdit /></span>Edit</button>
+                                                                                                  <button onClick={() => navigate("/customer/personal-information//password-edit")}>Change password</button>
+                                                                                                 <button onClick={() => navigate("/customer/personal-information/edit")}><span><CiEdit /></span>Edit</button>
                                                                                         </div>
                                                                               </div>
                                                                               <div className="ride-block-content">

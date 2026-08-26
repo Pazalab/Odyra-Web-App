@@ -71,9 +71,9 @@ const AdminLogin = () => {
                                                                   </div>
                                                                   { errors.password && <span className="error">{errors.password.message}</span>}
                                                          </div>
-                                                         <div className="auth-form-forgot">
+                                                         {/* <div className="auth-form-forgot">
                                                                   <p>Forgot your password?</p>
-                                                         </div>
+                                                         </div> */}
                                                          <div className="auth-form-btn">
                                                                  <button type="submit">{ isLoading ? <BtnSpinner /> : "Sign In" }</button>
                                                          </div>

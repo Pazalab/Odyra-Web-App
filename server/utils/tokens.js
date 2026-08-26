@@ -7,7 +7,7 @@ export const generateAuthTokenForAdmin = (res, userId) => {
              httpOnly: true,
              secure: process.env.NODE_ENV == "production",
              sameSite: "strict",
-             maxAge: 2592000000 
+             maxAge: 86400000
        })
 }
 
@@ -18,7 +18,7 @@ export const generateAuthTokenForCustomers = (res, userId) => {
              httpOnly: true,
              secure: process.env.NODE_ENV == "production",
              sameSite: "strict",
-             maxAge: 2592000000 
+             maxAge: 86400000
        })
 }
 

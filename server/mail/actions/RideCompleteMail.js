@@ -49,7 +49,7 @@ export const SendRideCompleteMail = async(userData) => {
 
             return true
      } catch (error) {
-           console.error("Failed to send ride completion email", error);
+           //console.error("Failed to send ride completion email", error);
            return false
      }
 }

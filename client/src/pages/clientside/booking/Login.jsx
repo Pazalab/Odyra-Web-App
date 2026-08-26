@@ -78,7 +78,7 @@ const Login = () => {
                                                                       { errors.password && <span className="error">{errors.password.message}</span>}
                                                               </div>
                                                               <div className="auth-form-forgot">
-                                                                        <p>Forgot your password?</p>
+                                                                        <p onClick={() => navigate("/auth/forgot-password")}>Forgot your password?</p>
                                                               </div>
                                                               <div className="auth-form-btn">
                                                                       <button type="submit">{ isLoading ? <BtnSpinner /> : "Sign in" }</button>

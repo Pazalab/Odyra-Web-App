@@ -18,9 +18,6 @@ export const sendBookingConfirmationMail = async(userData) => {
             date,
             rideCost,
             bookingId,
-            charge_id,
-            rideType,
-            paidAt
        } = userData;
 
     try {

@@ -620,6 +620,12 @@ header{
     display: inline-flex;
     animation: rotation 1s linear infinite;
 }
+.btn-loader.working{
+     width: 20px;
+     height: 20px;
+     border: 2px solid var(--main-color) !important;
+     border-bottom-color: transparent !important;
+}
 
 .data-loader {
       width: 40px;

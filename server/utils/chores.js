@@ -26,6 +26,17 @@ export const generateCustomerId = () => {
   return result;
 };
 
+export const generateRandomCode = () => {
+    const numbers = "012345678";
+    let code = "";
+   
+    for (let i = 0; i < 8; i++) {
+       const randomIndex = Math.floor(Math.random() * numbers.length);
+       code += numbers[randomIndex];
+    }
+
+      return code;
+}
 
 export const upload_pic= multer({
       storage: multerS3({

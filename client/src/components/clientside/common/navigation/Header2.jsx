@@ -61,7 +61,7 @@ const Header2 = () => {
                                                                 { profile ? 
                                                                         <div className="action-profile"  onMouseOver={() => setProfileStatus(true)} onMouseLeave={() =>setProfileStatus(false)}>
                                                                             <div className="action-profile-image">
-                                                                                            <img src={profile.profilePicture} alt=""  crossOrigin="anonymous" />
+                                                                                            <img src={profile?.profilePicture} alt="profile picture"  />
                                                                             </div>
             
                                                                                 <div className={ profileStatus ? "action-profile-box active" : "action-profile-box"}>

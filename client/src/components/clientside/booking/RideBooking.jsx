@@ -360,7 +360,7 @@ const RideBooking = () => {
                                                           ): (
                                                                 <h5>
                                                                  {chosenLeg && waitingCharge ? 
-                                                                        Math.round(calculatedDistanceCost + (calculatedDistanceCost * 0.2)) :
+                                                                        Math.round(calculatedDistanceCost + Math.round(calculatedDistanceCost * 0.2)) :
                                                                         chosenLeg ? 
                                                                         Math.round(calculatedDistanceCost) : 
                                                                         "0"

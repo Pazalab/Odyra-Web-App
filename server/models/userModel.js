@@ -10,7 +10,12 @@ const userSchema = mongoose.Schema({
         phone: { type: String },
         role: { type: String, required: true },
         password: { type: String, required: true },
-        profilePicture: { type: String }
+        profilePicture: { type: String },
+        resetCode: {
+              type: String,
+              select: false,
+        },
+        resetCodeExpires: { type: Date, select: false },
 }, { timestamps: true })
 
 //Hash password input

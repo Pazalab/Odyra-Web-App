@@ -316,6 +316,7 @@ export const UpdatePricingSettings = asyncHandler(async(req, res) => {
             luggageThreshold, 
             luggageCost, 
             cancellationFee, 
+            gstPercentage,
             waitingFee 
       }  = req.body;
 
@@ -332,6 +333,7 @@ export const UpdatePricingSettings = asyncHandler(async(req, res) => {
                         'pricingSettings.luggageThreshold': luggageThreshold,
                         'pricingSettings.luggageCost': luggageCost,
                         'pricingSettings.cancellationFee': cancellationFee,
+                        'pricingSettings.gstPercentage': gstPercentage,
                         'pricingSettings.waitingFee': waitingFee,
                   }},
                   { upsert: true, new: true, runValidators: true }
@@ -391,7 +393,7 @@ export const UpdateAdminNotifications = asyncHandler(async(req, res) => {
             requestPaymentLinkNotification
        } = req.body;
 
-       console.log(req.body)
+
        try {
             const updatedNotifications = await Settings.findOneAndUpdate(
                      { _id: "platform_settings"},

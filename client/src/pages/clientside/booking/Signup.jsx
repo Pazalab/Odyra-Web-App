@@ -28,7 +28,7 @@ const Signup = () => {
          try {
               const res = await InitiateRegistration(data).unwrap();
                dispatch(setCustomerCredentials({...res}))
-               navigate("/auth/stage")
+              if(res)  navigate("/auth/stage")
          } catch (error) {
               //console.log(error)
               dispatch(setAuthNotification({ status: true, message: error.data.message, type: "error"}))

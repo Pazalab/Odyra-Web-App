@@ -87,13 +87,22 @@ export function generateTransactionPDF(data) {
                         doc.fontSize(14).fillColor('#813020').font('CustomFont').text('Payment Summary', { align: "left"});
                         doc.fontSize(12).fillColor('#333333').font('CustomFont').moveDown(0.5);
 
-                        doc.text('Description', 50, doc.y, { continued: true });
-                        doc.text('Amount', { align: 'right' });
+                        const headerY = doc.y; 
+                        doc.fontSize(11); 
+                        doc.text('Description', 50, headerY);
+                        doc.text('Amount', 50, headerY, { align: 'right', width: 500 });
                         doc.moveDown(0.5);
-                        
+
+                        const rideY = doc.y; 
                         doc.fontSize(11);
-                        doc.text('Odyra Safaris Ride', 50, doc.y, { continued: true });
-                        doc.text(`$${data.rideCost.toFixed(2)} AUD`, { align: 'right' });
+                        doc.text('Odyra Safaris Ride', 50, rideY);
+                        doc.text(`$${data.rideCost.toFixed(2)} AUD`, 50, rideY, { align: 'right', width: 500 });
+                        doc.moveDown(0.5);
+
+                        const gstY = doc.y; 
+                        doc.fontSize(11);
+                        doc.text(`GST(${data.gstPercentage}%)`, 50, gstY);
+                        doc.text(`$${data.gstValue.toFixed(2)} AUD`, 50, gstY, { align: 'right', width: 500 });
                         doc.moveDown(1);
 
                         doc.moveTo(50, doc.y).lineTo(550, doc.y).stroke('#EAECEE');

@@ -31,6 +31,7 @@ const PricingSettingsTab = () => {
                 reset({
                         baseFare: platformSettings?.pricingSettings.baseFare,
                         cancellationFee: platformSettings?.pricingSettings.cancellationFee,
+                        gstPercentage: platformSettings?.pricingSettings.gstPercentage || "",
                         luggageCost: platformSettings?.pricingSettings.luggageCost,
                         luggageThreshold: platformSettings?.pricingSettings.luggageThreshold,
                         perHourRate: platformSettings?.pricingSettings.perHourRate,
@@ -113,6 +114,11 @@ const PricingSettingsTab = () => {
                                                 <input type="text" { ...register("luggageCost", { required: "Please enter the luggage cost"})} className="form-control" placeholder="30"/>
                                                 { errors.luggageCost && <span className="error">{errors.luggageCost.message}</span>}
                                         </div>
+                            </div>
+                             <div className="input-row">
+                                    <label htmlFor="fullname">GST Percentage(%))<span className="required">*</span></label>
+                                    <input type="text" { ...register("gstPercentage", { required: "Please enter the gst percentage"})} className="form-control" placeholder="10"/>
+                                    { errors.gstPercentage && <span className="error">{errors.gstPercentage.message}</span>}
                             </div>
                              <div className="input-row">
                                     <label htmlFor="fullname">Cancellation Fee($)<span className="required">*</span></label>

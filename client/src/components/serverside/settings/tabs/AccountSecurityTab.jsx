@@ -81,7 +81,7 @@ const AccountSecurityTab = () => {
                                  validators={{
                                         onChange: ({ value }) => {
                                               if(!value || value.trim() === ""){
-                                                    return "Current password field is required."
+                                                    return "New password field is required."
                                               }
                                               return undefined;
                                         }
@@ -95,8 +95,8 @@ const AccountSecurityTab = () => {
                                                                       <span><SlLock /></span>
                                                                       <input value={field.state.value} onChange={(e) => field.handleChange(e.target.value)} type={ newPasswordStatus ? "text" : "password"} placeholder="New Password"/>
                                                           </div>
-                                                          <div className="password-toggle" onClick={() => setNewPasswordStatus(!passwordStatus)}>
-                                                                      { passwordStatus ? <span><LiaEyeSlash /></span> : <span><LiaEye /></span>}
+                                                          <div className="password-toggle" onClick={() => setNewPasswordStatus(!newPasswordStatus)}>
+                                                                      { newPasswordStatus ? <span><LiaEyeSlash /></span> : <span><LiaEye /></span>}
                                                           </div>
                                                   </div>
                                                        {field.state.meta.errors.length > 0 && (

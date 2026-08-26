@@ -39,7 +39,7 @@ const TransactionsBody = () => {
           const startIndex = (page - 1) * limit;
           const endIndex = startIndex + limit;
 
-          return transactions.slice(startIndex, endIndex)
+          return transactions.toReversed().slice(startIndex, endIndex)
   }, [page, limit, transactions])
 
   return (

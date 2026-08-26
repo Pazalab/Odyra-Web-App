@@ -2,8 +2,7 @@ import asyncHandler from "express-async-handler";
 import Booking from "../models/bookings.js";
 import Stripe from "stripe";
 import dotenv from "dotenv"
-import { generateCustomerId, generateRideID, sanitizeDate } from "../utils/chores.js";
-import { CreateNewRide } from "../services/newBookingService.js";
+import { generateCustomerId, generateRandomCode, generateRideID, sanitizeDate } from "../utils/chores.js";
 import User from "../models/userModel.js";
 import { generateAuthTokenForCustomers, VerifyPaymentToken } from "../utils/tokens.js";
 import { sendBookingSuccessfulMail } from "../mail/actions/BookingSuccessMail.js";
@@ -11,6 +10,9 @@ import { sendBookingConfirmationMail } from "../mail/actions/BookingConfirmation
 import Transaction from "../models/transactions.js";
 import { SendCustomerRegistrationNotification } from "../mail/actions/NewCustomerEmailRegistration.js";
 import Settings from "../models/settingsModel.js";
+import crypto from "crypto"
+import { sendResetPasswordInstructions } from "../mail/actions/SendResetInstructionMail.js";
+import { sendResetPasswordSuccess } from "../mail/actions/SendPasswordResetSuccessMail.js";
 dotenv.config()
 
 //Register Customer
@@ -24,7 +26,7 @@ export const RegisterCustomer = asyncHandler(async(req, res) => {
                throw new Error("User account already exists")
         }
 
-       const default_photo = "https://files.pazalab.com/odyra/images/avatar.jpg";
+       const default_photo = "https://cdn.odyra.com.au/assets/avatar-image.jpg";
        const role = "Customer";
 
        const customer = await User.create({ name, email, password, role, profilePicture: default_photo, phone })
@@ -96,7 +98,112 @@ export const LoginCustomer = asyncHandler(async(req, res) => {
        }
 })
 
-//
+//send reset instructions
+export const SendResetInstructions = asyncHandler(async(req, res) => {
+       const { email } = req.body;
+       try {
+              const customer = await User.findOne({ email: email });
+              if(!customer){
+                     res.status(401);
+                     throw new Error("Invalid! Please create an account with Odyra Safaris");
+              }
+
+              const code = generateRandomCode();
+              const hashedCode = crypto.createHash("sha256").update(code).digest("hex");
+
+              const emailPayload = {
+                     email: email,
+                     code: code,
+                     name: customer.name.split(" ")[0]
+              }
+
+              const updateUser = await User.findOneAndUpdate({ email: email }, {
+                     resetCode: hashedCode,
+                     resetCodeExpires: Date.now() + 600000
+              }, { new: true })
+
+              if(updateUser){
+                     await sendResetPasswordInstructions(emailPayload);
+                     res.status(200).json({
+                            message: "A verification code has been sent to your account email",
+                     })
+              }
+       } catch (error) {
+              res.status(500).json({ message: 'Something went wrong. Please try again.' });
+       }
+})
+
+export const VerifyPasswordResetCode = asyncHandler(async(req, res) => {
+       const { code, email } = req.body;
+ 
+       try {
+              const customer = await User.findOne({ email:  email }).select("+resetCode +resetCodeExpires")
+
+              if(!customer){
+                     res.status(401);
+                     throw new Error("Invalid or expired reset password session. Please try again.");
+              }
+
+              if(!customer.resetCode || customer.resetCodeExpires < Date.now()){
+                     res.status(500);
+                     throw new Error("Invalid or expired verification reset code.")
+              }
+
+              const hashedCode = crypto.createHash("sha256").update(code).digest("hex");
+
+              const isCodeValid = hashedCode === customer.resetCode;
+
+              if(!isCodeValid){
+                     res.status(500);
+                     throw new Error("Invalid or expired verification reset code.")
+              }
+                
+              res.status(200).json({
+                     message: "Verification successful",
+              })
+       } catch (error) {
+               res.status(500).json({ message: 'Something went wrong. Please try again later.'  });
+       }
+
+})
+
+
+export const ResetCustomerPassword  = asyncHandler(async(req, res) => {
+      const { email, password } = req.body;
+
+      try {
+           const customer = await User.findOne({ email: email });
+           if(!customer){
+                res.status(401);
+                throw new Error("Invalid or expired reset password session. Please try again.");
+           }
+
+          const updateUser = await User.findOneAndUpdate({ email: email }, {
+                password: password
+         }, { new: true })
+
+          if(!updateUser){
+               res.status(500);
+               throw new Error("An unexpected error occured. Please try again later")
+          }
+
+          const emailPayload = {
+               email: email,
+               name: customer.name.split(" ")[0]
+          }
+          await sendResetPasswordSuccess(emailPayload);
+          res.status(200).json({
+              message: 'Password has been reset successfully.',
+          });
+
+      } catch (error) {
+            res.status(500).json({ message: 'Something went wrong. Please try again later.'  });
+      }
+})
+
+
+
+//logout
 export const LogoutCustomer = asyncHandler(async(req, res) => {
        res.cookie("cjwt", "", {
             httpOnly: true,
@@ -113,6 +220,49 @@ export const GetCustomerProfile = asyncHandler(async(req, res) => {
        })
 })
 
+
+//edit customer profile
+export const UpdateCustomerProfile = asyncHandler(async(req, res) => {
+        const { email, name, phone } = JSON.parse(req.body.data);
+        let profileURL = req.user.profilePicture;
+
+        if(req.file) profileURL = `https://cdn.odyra.com.au/${req.file.key}`;
+
+        try {
+              const updatedProfile = await User.findByIdAndUpdate(req.user._id, {
+                     name: name,
+                     email: email,
+                     phone: phone,
+                     profilePicture: profileURL,
+              }, { new: true, select: "-password"})
+
+              if(updatedProfile){
+                     res.status(201).json({ profile: updatedProfile, message: "Your profile has been updated successfully"})
+              }
+        } catch (error) {
+               res.status(500).json({ message: "Error occured while updating your profile"})
+        }
+})
+
+//update Customer password
+export const UpdateCustomerPassword = asyncHandler(async(req, res) => {
+        const { newPassword } = req.body;
+        const customer = await User.findOne({ _id: req.user._id });
+
+        if(!customer){
+              res.status(401);
+              throw new Error("Update error. Please try again later")
+        }
+
+       try {
+             customer.password = newPassword;
+             await customer.save();
+             return res.status(201).json({ message: "You password has been updated successfully."})
+       } catch (error) {
+              res.status(500);
+              throw new Error("Update error. Please try again later")
+       }
+})
 
 //Request booking
 export const RequestRide = asyncHandler(async(req, res) => {
@@ -295,7 +445,7 @@ export const fullfillStripePayment = asyncHandler(async(req, res) => {
 
        if(event.type === `checkout.session.completed`){
               const session = event.data.object;
-              //console.log(session)
+              
               const {
                      customer_email,
                      payment_status,
@@ -308,6 +458,12 @@ export const fullfillStripePayment = asyncHandler(async(req, res) => {
 
               //create the transaction entry and update booking
               try {
+                     const existingEvent = await Transaction.findOne({ stripeEventId: event.id });
+
+                     if(existingEvent){
+                            return res.status(200).json({ received: true, message: "Webhook already sorted"})
+                     }
+
                      const paymentIntent = await stripe.paymentIntents.retrieve(payment_intent, {
                             expand: ['latest_charge.balance_transaction']
                      });
@@ -333,58 +489,76 @@ export const fullfillStripePayment = asyncHandler(async(req, res) => {
                                  rideStatus: "Payment Made",
                                  isConfirmed: true
                             },
-                            { new: true}
-                     );
+                            { new: true }
+                     ).lean();
 
                      if(!updateBooking){
-                            throw new Error(`Booking ${client_reference_id} not found. Rolling back transaction writing`)
+                            return res.status(200).json({
+                                   received: true,
+                                   message: "Booking not found",
+                            });
+                     }
+                     const duplicateTransaction = await Transaction.findOne({ charge_id: chargeId});
+
+                     if(duplicateTransaction){
+                             return res.status(200).json({ received: true, message: "Webhook already sorted"})
                      }
 
-                     //if booking was marked paid, create a transaction entry
-                     const newTransaction = await Transaction.create({
-                           charge_id: chargeId,
-                           payment_intent_id: payment_intent,
-                           booking_id: client_reference_id,
-                           grossAmount: amount_total/100,
-                           stripeFee: stripeFee,
-                           netAmount: netAmount,
-                           currency: currency,
-                           customerEmail: customer_email || customer_details?.email,
-                           customerName: customer_details?.name,
-                           paidAt: new Date(),
-                           paymentStatus: "succeeded"
-                     })
-
-                     
-                    const payload = {
-                            email: updateBooking.customer.email,
-                            name: updateBooking.customer.name.split(" ")[0],
-                            pickup: updateBooking.pickup.address,
-                            dropoff: updateBooking.dropoff.address,
-                            duration: updateBooking.estimatedRideDuration,
-                            distance: updateBooking.estimatedRideDistance,
-                            stopOverAddress: updateBooking.stopOver.address,
-                            rideCost: updateBooking.rideCost.totalFare,
-                            date: updateBooking.pickup.scheduledTimeofPickup,
-                            bookingId: updateBooking.rideID,
+                    const transaction = await Transaction.create({
                             charge_id: chargeId,
-                            rideType: updateBooking.rideType,
-                            paidAt: newTransaction.paidAt,
+                            stripeEventId: event.id,
+                            payment_intent_id: payment_intent,
+                            booking_id: client_reference_id,
+                            grossAmount: amount_total/100,
+                            stripeFee: stripeFee,
+                            netAmount: netAmount,
+                            currency: currency,
+                            customerEmail: customer_email || customer_details?.email,
+                            customerName: customer_details?.name,
+                            paidAt: new Date(),
+                            paymentStatus: "succeeded",
+                            confirmationEmailSent: false
+                    })
+
+                     const platformSettings = await Settings.findById("platform_settings").lean();
+
+                     const gstPercentage = Number(platformSettings?.pricingSettings?.gstPercentage || 0);
+                     const totalFare = Number(updateBooking?.rideCost?.totalFare || 0);
+                     const gstValue = totalFare * (gstPercentage / 100);
+
+                     const payload = {
+                            email: updateBooking?.customer?.email,
+                            name: updateBooking?.customer?.name?.split(" ")[0] ?? "Customer Name",
+                            pickup: updateBooking?.pickup?.address,
+                            dropoff: updateBooking?.dropoff?.address,
+                            duration: updateBooking?.estimatedRideDuration,
+                            distance: updateBooking?.estimatedRideDistance,
+                            stopOverAddress: updateBooking?.stopOver?.address || "None",
+                            rideCost: updateBooking?.rideCost?.totalFare,
+                            date: updateBooking?.pickup?.scheduledTimeofPickup,
+                            bookingId: updateBooking?.rideID,
+                            charge_id: chargeId,
+                            rideType: updateBooking?.rideType,
+                            paidAt: transaction?.paidAt || new Date(),
+                            gstPercentage: gstPercentage,
+                            gstValue: gstValue
                      }
+
                      //send confirmation email
-                     await sendBookingConfirmationMail(payload).catch(err => {
-                            console.error("Payment notification email failed", err);
-                     })
+                     await sendBookingConfirmationMail(payload);
+                     
+                     return res.status(200).json({ received: true })
 
-                     res.status(200).json({ received: true })
-              } catch (error) {
-                     //console.log(error)
-                     console.error("An error occured. While trying to doing the webhook update operation")
+              } catch (error) { 
+                    // console.log(error)
+                     // console.error("An error occured. While trying to doing the webhook update operation")
+                     return res.status(500).json({ error: "Internal webhook failure"})
               }
-       }
-
-       //If the payment fails
-        if (event.type === 'charge.failed') {
+        }
+       
+       
+       
+       if(event.type === 'charge.failed'){
               const charge = event.data.object;
          
               const {
@@ -400,24 +574,34 @@ export const fullfillStripePayment = asyncHandler(async(req, res) => {
               try {
                      let stripeFee = 0;
                      //proceed to create the failed transaction
-                     await Transaction.create({
-                            charge_id: id,
-                            payment_intent_id: payment_intent,
-                            booking_id: metadata.ride_id,
-                            grossAmount: amount/100,
-                            stripeFee: stripeFee,
-                            netAmount: amount/100,
-                            currency: currency,
-                            customerEmail: billing_details.email,
-                            customerName: billing_details.name,
-                            paymentStatus: status,
-                            paidAt: new Date(),
-                     })
+                     try {
+                             await Transaction.create({
+                                   charge_id: id,
+                                   payment_intent_id: payment_intent,
+                                   booking_id: metadata.ride_id,
+                                   stripeEventId: event.id,
+                                   grossAmount: amount/100,
+                                   stripeFee: stripeFee,
+                                   netAmount: amount/100,
+                                   currency: currency,
+                                   customerEmail: billing_details.email,
+                                   customerName: billing_details.name,
+                                   paymentStatus: status,
+                                   paidAt: new Date(),
+                            })
+                     } catch (dbError) {
+                            if(dbError.code === 11000) throw dbError;
+                     }
+
+                     return res.status(200).json({ received: true })
               } catch (error) {
                      //console.log(error)
-                     console.error("An error occured. While trying to doing the webhook update operation")
+                     // console.error("An error occured. While trying to doing the webhook update operation");
+                     return res.status(500).json({ error: "Internal webhook failure"})
               }
-        }
+       }
+
+       return res.status(200).json({ received: true })
 })
 
 export const ConfirmRideCreation = asyncHandler(async(req, res) => {
@@ -439,7 +623,7 @@ export const ConfirmRideCreation = asyncHandler(async(req, res) => {
                       paymentStatus: booking.rideCost.paymentStatus
               }})
       } catch (error) {
-             console.log(error)
+             //console.log(error)
              res.status(500).json({ message: "Internal server error"})
       }
 })
@@ -466,19 +650,32 @@ export const ConfirmBookingConfirmation = asyncHandler(async(req, res) => {
                            return res.status(404).json({ message: "Sorry! Your booking was not found"})
                      }
 
+                    const { pricingSettings: settings } = await Settings.findById("platform_settings").select("pricingSettings").lean();
+                    const gstPercentage = Number(settings?.gstPercentage);
+                     
+                    const gstValue = (Number(booking.rideCost.totalFare) * (gstPercentage/100))
+
                      const payload = {
                             email: booking.customer.email,
                             name: booking.customer.name.split(" ")[0],
                             pickup: booking.pickup.address,
                             dropoff: booking.dropoff.address,
+                            duration: booking.estimatedRideDuration,
+                            distance: booking.estimatedRideDistance,
                             stopOverAddress: booking.stopOver.address,
                             rideCost: booking.rideCost.totalFare,
                             date: booking.pickup.scheduledTimeofPickup,
-                            bookingId: rideID
+                            bookingId: rideID,
+                            paidAt: txn.paidAt,
+                            charge_id: paymentIntent.latest_charge,
+                            rideType: booking.rideType,
+                            gstPercentage: gstPercentage,
+                            gstValue: gstValue
                      }
-
+                   
                      //if booking has not been confirmed to the customer
                      if(!booking.isConfirmed){
+                            console.log("Email from Redirect")
                             sendBookingConfirmationMail(payload).catch(err => {
                                    console.error("Payment notification email failed", err)
                             })
@@ -495,7 +692,7 @@ export const ConfirmBookingConfirmation = asyncHandler(async(req, res) => {
                      }})
               }
        } catch (error) {
-              console.log(error)
+              //console.log(error)
              res.status(500).json({ message: "Internal server error. Our technical team is on site sorting it out"})
        }
 })

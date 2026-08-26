@@ -17,7 +17,8 @@ const settingsSchema = mongoose.Schema({
            luggageThreshold: { type: Number, required: true },
            luggageCost: { type: Number, required: true },
            cancellationFee: { type: Number, required: true },
-           waitingFee: { type: Number, required: true }
+           waitingFee: { type: Number, required: true },
+           gstPercentage: { type: Number, required: true }
      },
      notificationSettings: {
            bookingNotification: { type: Boolean, default: false},

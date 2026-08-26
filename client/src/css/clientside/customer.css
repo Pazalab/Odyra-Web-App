@@ -308,9 +308,19 @@
     color: rgb(50, 50, 50);
 }
 
+.customer-content-wrapper.adjust h4{
+    font-size: 15px;
+    margin-bottom: 10px;
+    font-weight: 500;
+    color: #444;
+}
 
-
-
+.customer-content-wrapper.adjust .picture-upload{
+    margin-bottom: 20px;
+}
+.customer-content-wrapper.adjust .input-row{
+    margin-bottom: 20px;
+}
 
 
 

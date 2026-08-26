@@ -20,6 +20,33 @@ export const clientApiSlice = apiSlice.injectEndpoints({
                    })
               }),
 
+              //send reset code
+              sendResetInstructions: builder.mutation({
+                   query: (payload) => ({
+                        url: "/client/send-reset-instructions",
+                        body: payload,
+                        method: "POST"
+                   })
+              }),
+
+              //verify reset code
+              verifyResetCode: builder.mutation({
+                   query: (payload) => ({
+                        url: "/client/verify-reset-code",
+                        body: payload,
+                        method: "POST"
+                   })
+              }),
+
+              //reset password initiation
+              resetPasswordCustomer: builder.mutation({
+                  query: (payload) => ({
+                        url: "/client/reset-password",
+                        method: "PUT",
+                        body: payload
+                  })
+              }),
+
               //Logout Customer
               logoutCustomer: builder.mutation({
                     query: () => ({
@@ -62,6 +89,23 @@ export const clientApiSlice = apiSlice.injectEndpoints({
                    })
              }),
 
+             //edit customer profile
+             updateCustomerProfile: builder.mutation({
+                   query: (payload) => ({
+                        url: "/client/customer-update",
+                        method: "PUT",
+                        body: payload,
+                   })
+             }),
+
+             updateCustomerPassword: builder.mutation({
+                   query: (payload) => ({
+                         url: "/client/customer-password-update",
+                         method: "PUT",
+                         body: payload
+                   })
+             }),
+
              //confirm ride creation
              checkRideStatus: builder.query({
                    query: (rideID) => ({
@@ -100,9 +144,14 @@ export const clientApiSlice = apiSlice.injectEndpoints({
 export const {
      useCreateNewAccountMutation,
      useLoginCustomerMutation,
+     useSendResetInstructionsMutation,
+     useVerifyResetCodeMutation,
+     useResetPasswordCustomerMutation,
      useCreateNewBookingMutation,
      useInitiatePaymentMutation,
      useGetCustomerProfileQuery,
+     useUpdateCustomerProfileMutation,
+     useUpdateCustomerPasswordMutation,
      useLogoutCustomerMutation,
      useGetCustomerBookingsQuery,
      useCheckRideStatusQuery,

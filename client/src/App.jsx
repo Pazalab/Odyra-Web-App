@@ -24,6 +24,10 @@ import About from './pages/clientside/About';
 import Contact from './pages/clientside/Contact';
 import SingleService from './pages/clientside/SingleService';
 import AdminTransactions from './pages/serverside/AdminTransactions';
+import ForgotPassword from './pages/clientside/booking/ForgotPassword';
+import ResetPassword from './pages/clientside/booking/ResetPassword';
+import PersonalInfoEdit from './pages/clientside/customer/PersonalInfoEdit';
+import CustomerPasswordReset from './pages/clientside/customer/CustomerPasswordReset';
 
 function App() {
   const location = useLocation();
@@ -36,6 +40,8 @@ function App() {
                <Route path='/' element={<Home />} />
                <Route path='/new-booking' element={<NewBooking />} />
                <Route path='/auth/login' element={<Login />} />
+               <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+               <Route path="/auth/reset-password" element={<ResetPassword /> } />
                <Route path='/admin/auth/login' element={<AdminLogin />} />
                <Route path="/admin/auth/stage" element={<AuthStage />} />
                <Route path="/auth/signup" element={<Signup />} />
@@ -51,6 +57,8 @@ function App() {
                <Route element={<CustomerRoutes />}>
                          <Route path='/customer/account' element={<CustomerAccount />} />
                         <Route path='/customer/personal-information' element={<PersonalInfo />} />
+                        <Route path="/customer/personal-information/edit" element={<PersonalInfoEdit />} />
+                        <Route path="/customer/personal-information/password-edit" element={<CustomerPasswordReset />} />
                </Route>
 
                { /* Protected admin routes */}

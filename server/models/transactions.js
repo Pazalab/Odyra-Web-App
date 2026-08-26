@@ -8,6 +8,13 @@ const transactionsSchema = mongoose.Schema({
          trim: true,
          index: true,
     },
+    stripeEventId: {
+        type: String,
+        required: true,
+        unique: true,
+        trim: true,
+        index: true,
+    },
     payment_intent_id: {
           type: String,
           required: true,
@@ -59,7 +66,11 @@ const transactionsSchema = mongoose.Schema({
          type: Date,
          default: Date.now,
          required: true,
-    }
+    },
+    confirmationEmailSent: {
+        type: Boolean,
+        default: false,
+    },
 }, { timestamps: true });
 
 const Transaction = mongoose.model("Transaction", transactionsSchema);
