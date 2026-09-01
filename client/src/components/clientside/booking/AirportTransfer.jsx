@@ -236,7 +236,7 @@ const handleAirportTransferBooking = async(data) => {
                                                                         <span><PiClipboardText/></span>
                                                                         <div className="input-row">
                                                                                     <label htmlFor="pickup">Flight Number</label>
-                                                                                    <input {...register("flightNumber")} type="text" placeholder="Enter flight number(optional)" className="input-row-control" />
+                                                                                    <input {...register("flightNumber", { required: "Please enter your flight number"})} type="text" placeholder="Enter flight number" className="input-row-control" />
                                                                         </div>
                                                                 </div>
                                                                 { errors.flightNumber && <span className="error">{errors.flightNumber.message}</span>}
